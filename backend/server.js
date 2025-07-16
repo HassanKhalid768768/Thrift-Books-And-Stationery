@@ -22,10 +22,10 @@ app.use(express.json());
 
 // ✅ Allow frontend & admin (Render + localhost)
 const allowedOrigins = [
-  'https://thrift-books-and-stationery-frontend.onrender.com',
-  'https://thrift-books-and-stationery-admin.onrender.com',
-  'http://localhost:3000', // frontend local
-  'http://localhost:3001'  // admin local
+  "http://localhost:3000",
+  "http://localhost:3001", // local admin
+  "https://thrift-books-and-stationery.onrender.com",
+  "https://thrift-books-and-stationery-admin.onrender.com"
 ];
 
 app.use(cors({
