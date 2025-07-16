@@ -76,9 +76,9 @@ const ListProduct = () => {
                         <p>{product.name}</p>
                         <p>PKR {product.old_price.toLocaleString('en-PK')}</p>
                         <p>PKR {product.new_price.toLocaleString('en-PK')}</p>
-                        <p>{product.category === "polo" ? "Polo" : 
-                           product.category === "tshirts" ? "T-Shirts" : 
-                           product.category === "formalshirts" ? "Formal Shirts" : 
+                        <p>{product.category === "books" ? "Books" : 
+                           product.category === "stationary" ? "Stationary" : 
+                           product.category === "gadgets" ? "Gadgets" : 
                            product.category}</p>
                         <img 
                             onClick={() => openEditModal(product)} 

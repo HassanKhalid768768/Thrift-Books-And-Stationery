@@ -3,31 +3,31 @@ import { Link } from 'react-router-dom';
 import './FeaturedCategories.css';
 
 const FeaturedCategories = () => {
-    // Category data with images, titles, and links - now focused on shirt types
+    // Category data with images, titles, and links - focused on books, stationary, and gadgets
     const categories = [
         {
             id: 1,
-            title: "T-Shirts",
-            subtitle: "Casual Comfort",
-            image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHqdr3lNyrJcrBbFB3WMBdiiS8MgspH1TAfw&s",
+            title: "Books",
+            subtitle: "Knowledge & Learning",
+            image: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
             color: "#3498db",
-            link: "/tshirts"
+            link: "/books"
         },
         {
             id: 2,
-            title: "Polo Shirts",
-            subtitle: "Smart Casual",
-            image: "https://images.unsplash.com/photo-1586363104862-3a5e2ab60d99?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+            title: "Stationary",
+            subtitle: "Office & School Supplies",
+            image: "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
             color: "#e74c3c",
-            link: "/polo"
+            link: "/stationary"
         },
         {
             id: 3,
-            title: "Formal Shirts",
-            subtitle: "Professional Elegance",
-            image: "https://images.unsplash.com/photo-1603252109303-2751441dd157?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+            title: "Gadgets",
+            subtitle: "Tech & Electronics",
+            image: "https://images.unsplash.com/photo-1498049794561-7780e7231661?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
             color: "#647687",
-            link: "/formalshirts"
+            link: "/gadgets"
         }
     ];
 

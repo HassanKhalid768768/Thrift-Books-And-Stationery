@@ -20,9 +20,9 @@ const SearchResults = () => {
     
     // Available categories
     const categories = [
-        { id: "tshirts", name: "T-Shirts" },
-        { id: "polo", name: "Polo" },
-        { id: "formalshirts", name: "Formal Shirts" }
+        { id: "books", name: "Books" },
+        { id: "stationary", name: "Stationary" },
+        { id: "gadgets", name: "Gadgets" }
     ];
 
     useEffect(() => {

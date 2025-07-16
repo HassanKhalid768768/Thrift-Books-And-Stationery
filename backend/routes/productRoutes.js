@@ -24,7 +24,7 @@ router.post("/",authMiddleware, upload.single("product"),productController.creat
 router.delete("/:id", authMiddleware, adminMiddleware, productController.deleteProduct);
 router.patch("/:id", authMiddleware, adminMiddleware, upload.single("product"), productController.updateProduct);
 router.get("/newCollections", productController.getNewCollections);
-router.get("/popularTShirts", productController.getPopularTShirts);
+router.get("/popularBooks", productController.getPopularBooks);
 router.get("/category/:category", productController.getProductsByCategory);
 router.get("/:id", productController.getProductById);
 router.post("/:id/reviews", authMiddleware, productController.createReview);

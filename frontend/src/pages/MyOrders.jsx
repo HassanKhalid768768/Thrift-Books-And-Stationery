@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import './CSS/MyOrders.css'
 import { toast } from 'react-toastify';
 import { DarkModeContext } from '../context/DarkModeContext';
+import { api } from '../utils/api';
 
 const MyOrders = () => {
     const { darkMode } = useContext(DarkModeContext);
@@ -9,36 +10,46 @@ const MyOrders = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const token = localStorage.getItem('token');
-
-    const backend_url = process.env.REACT_APP_BACKEND_URL;
     
     const fetchOrders = async () => {
         setIsLoading(true);
         setError(null);
         
+        // Check if user has token
+        if (!token) {
+            setError('Please login to view your orders');
+            setIsLoading(false);
+            return;
+        }
+        
         try {
-            const response = await fetch(`${backend_url}/api/orders/userorders`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`,
-                }
-            });
+            console.log('Fetching orders for user with token:', token ? 'Token present' : 'No token');
+            const response = await api.getUserOrders();
+            console.log('API response status:', response.status);
             
             const json = await response.json();
+            console.log('API response data:', json);
             
             if (response.ok) {
                 // Extract orders array from response
                 const ordersData = json.orders || [];
+                console.log('Fetched orders:', ordersData);
                 setOrders(ordersData);
+                
+                if (ordersData.length === 0) {
+                    console.log('No orders found for user');
+                }
             } else {
-                setError(json.error || 'Failed to fetch orders');
-                toast.error(json.error || 'Failed to fetch orders');
+                const errorMessage = json.error || `Failed to fetch orders (${response.status})`;
+                console.error('API error:', errorMessage);
+                setError(errorMessage);
+                toast.error(errorMessage);
             }
         } catch (err) {
-            setError('Error connecting to server');
-            toast.error('Error connecting to server');
-            console.error('Error fetching orders:', err);
+            const errorMessage = 'Error connecting to server';
+            console.error('Network error:', err);
+            setError(errorMessage);
+            toast.error(errorMessage);
         } finally {
             setIsLoading(false);
         }
@@ -79,7 +90,7 @@ const MyOrders = () => {
                 ) : orders.length === 0 ? (
                     <div className="empty-orders">
                         <p>You haven't placed any orders yet.</p>
-                        <a href="/shop" className="shop-now-btn">Shop Now</a>
+                        <a href="/books" className="shop-now-btn">Shop Now</a>
                     </div>
                 ) : (
                     // Render orders when available

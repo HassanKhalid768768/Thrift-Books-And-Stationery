@@ -22,7 +22,7 @@ const Home = () => {
     };
     
     const handleShopClick = () => {
-        navigate('/formalshirts');
+        navigate('/books');
         window.scrollTo(0, 0);
     };
     

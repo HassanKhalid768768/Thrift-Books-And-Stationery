@@ -26,9 +26,9 @@ const Dashboard = () => {
 
     const getCategoryStats = () => {
         return {
-            "Polo": products.filter(p => p.category === "polo").length,
-            "T-Shirts": products.filter(p => p.category === "tshirts").length,
-            "Formal Shirts": products.filter(p => p.category === "formalshirts").length,
+            "Books": products.filter(p => p.category === "books").length,
+            "Stationary": products.filter(p => p.category === "stationary").length,
+            "Gadgets": products.filter(p => p.category === "gadgets").length,
             "Total": products.length
         };
     };
@@ -45,27 +45,27 @@ const Dashboard = () => {
                     <div className="stat-value">{stats.Total}</div>
                 </div>
                 
-                <div className="stats-card polo">
-                    <h2>Polo Shirts</h2>
-                    <div className="stat-value">{stats["Polo"]}</div>
+                <div className="stats-card books">
+                    <h2>Books</h2>
+                    <div className="stat-value">{stats["Books"]}</div>
                     <div className="stat-percent">
-                        {stats.Total > 0 ? Math.round((stats["Polo"] / stats.Total) * 100) : 0}%
+                        {stats.Total > 0 ? Math.round((stats["Books"] / stats.Total) * 100) : 0}%
                     </div>
                 </div>
                 
-                <div className="stats-card tshirts">
-                    <h2>T-Shirts</h2>
-                    <div className="stat-value">{stats["T-Shirts"]}</div>
+                <div className="stats-card stationary">
+                    <h2>Stationary</h2>
+                    <div className="stat-value">{stats["Stationary"]}</div>
                     <div className="stat-percent">
-                        {stats.Total > 0 ? Math.round((stats["T-Shirts"] / stats.Total) * 100) : 0}%
+                        {stats.Total > 0 ? Math.round((stats["Stationary"] / stats.Total) * 100) : 0}%
                     </div>
                 </div>
                 
-                <div className="stats-card formalshirts">
-                    <h2>Formal Shirts</h2>
-                    <div className="stat-value">{stats["Formal Shirts"]}</div>
+                <div className="stats-card gadgets">
+                    <h2>Gadgets</h2>
+                    <div className="stat-value">{stats["Gadgets"]}</div>
                     <div className="stat-percent">
-                        {stats.Total > 0 ? Math.round((stats["Formal Shirts"] / stats.Total) * 100) : 0}%
+                        {stats.Total > 0 ? Math.round((stats["Gadgets"] / stats.Total) * 100) : 0}%
                     </div>
                 </div>
             </div>
@@ -82,9 +82,9 @@ const Dashboard = () => {
                                 <div className="product-details">
                                     <h3>{product.name}</h3>
                                     <p className="category">
-                                        {product.category === "polo" ? "Polo" : 
-                                        product.category === "tshirts" ? "T-Shirts" : 
-                                        product.category === "formalshirts" ? "Formal Shirts" : 
+                                        {product.category === "books" ? "Books" : 
+                                        product.category === "stationary" ? "Stationary" : 
+                                        product.category === "gadgets" ? "Gadgets" : 
                                         product.category}
                                     </p>
                                     <p className="price">${product.new_price}</p>

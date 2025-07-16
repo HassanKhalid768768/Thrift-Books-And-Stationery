@@ -27,7 +27,7 @@ const EditProduct = ({ isOpen, onClose, product, onProductUpdated }) => {
         if (product && isOpen) {
             setProductDetails({
                 name: product.name || "",
-                category: product.category || "tshirts",
+                category: product.category || "books",
                 description: product.description || "",
                 new_price: product.new_price || "",
                 old_price: product.old_price || ""
@@ -170,9 +170,9 @@ const EditProduct = ({ isOpen, onClose, product, onProductUpdated }) => {
                             name="category" 
                             className="edit-product-selector"
                         >
-                            <option value="tshirts">T-Shirts</option>
-                            <option value="polo">Polo</option>
-                            <option value="formalshirts">Formal Shirts</option>
+                            <option value="books">Books</option>
+                            <option value="stationary">Stationary</option>
+                            <option value="gadgets">Gadgets</option>
                         </select>
                     </div>
                     

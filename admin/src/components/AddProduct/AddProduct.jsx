@@ -14,7 +14,7 @@ const AddProduct = () => {
     const [uploading, setUploading] = useState(false);
     const [productDetails, setProductDetails] = useState({
         name: "",
-        category:"tshirts",
+        category:"books",
         description: "", // Added description field
         new_price:"",
         old_price:""
@@ -68,7 +68,7 @@ const AddProduct = () => {
         if(response.ok){
             setProductDetails({
                 name: "",
-                category:"tshirts",
+                category:"books",
                 description: "", // Reset description
                 new_price:"",
                 old_price:""
@@ -136,9 +136,9 @@ const AddProduct = () => {
                     name="category" 
                     className="add-product-selector"
                 >
-                    <option value="tshirts">T-Shirts</option>
-                    <option value="polo">Polo</option>
-                    <option value="formalshirts">Formal Shirts</option>
+                    <option value="books">Books</option>
+                    <option value="stationary">Stationary</option>
+                    <option value="gadgets">Gadgets</option>
                 </select>
             </div>
             

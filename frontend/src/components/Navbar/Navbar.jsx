@@ -173,7 +173,7 @@ const Navbar = () => {
             <div className='navbar'>
                 <div className="nav-logo">
                     <Link to="/" style={{textDecoration: 'none'}}>
-                        <p>Urban<span>Style</span></p>
+                        <p>Thrift Books<span> & Stationery</span></p>
                     </Link>
                 </div>
                 
@@ -183,14 +183,14 @@ const Navbar = () => {
                     <li onClick={() => handleMenuClick("home")}>
                         <Link style={{textDecoration: 'none'}} to="/" className={menu==="home"?"active":""}>Home</Link>
                     </li>
-                    <li onClick={() => handleMenuClick("polo")}>
-                        <Link style={{textDecoration: 'none'}} to="/polo" className={menu==="polo"?"active":""}>Polo</Link>
+                    <li onClick={() => handleMenuClick("books")}>
+                        <Link style={{textDecoration: 'none'}} to="/books" className={menu==="books"?"active":""}>Books</Link>
                     </li>
-                    <li onClick={() => handleMenuClick("tshirts")}>
-                        <Link style={{textDecoration: 'none'}} to="/tshirts" className={menu==="tshirts"?"active":""}>T-Shirts</Link>
+                    <li onClick={() => handleMenuClick("stationary")}>
+                        <Link style={{textDecoration: 'none'}} to="/stationary" className={menu==="stationary"?"active":""}>Stationary</Link>
                     </li>
-                    <li onClick={() => handleMenuClick("formalshirts")}>
-                        <Link style={{textDecoration: 'none'}} to="/formalshirts" className={menu==="formalshirts"?"active":""}>Formal Shirts</Link>
+                    <li onClick={() => handleMenuClick("gadgets")}>
+                        <Link style={{textDecoration: 'none'}} to="/gadgets" className={menu==="gadgets"?"active":""}>Gadgets</Link>
                     </li>
                 </ul>
                 <div className="nav-search" ref={searchRef}>

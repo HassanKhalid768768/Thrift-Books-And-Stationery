@@ -66,7 +66,10 @@ export const api = {
     body: JSON.stringify(orderData)
   }),
 
-  getUserOrders: () => apiCall('/api/orders/user'),
+  getUserOrders: (filters = {}) => apiCall('/api/orders/userorders', {
+    method: 'POST',
+    body: JSON.stringify(filters)
+  }),
 
   verifyPayment: (paymentData) => apiCall('/api/orders/verify', {
     method: 'POST',

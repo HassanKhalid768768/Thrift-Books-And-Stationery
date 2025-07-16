@@ -4,19 +4,21 @@
 
 // Map of valid categories (lowercase) to their canonical form
 const validCategories = {
-  'tshirts': 'tshirts',
-  't-shirts': 'tshirts',
-  'tshirt': 'tshirts',
-  't-shirt': 'tshirts',
-  'polo': 'polo',
-  'polos': 'polo',
-  'poloshirt': 'polo',
-  'polo-shirt': 'polo',
-  'formalshirts': 'formalshirts',
-  'formal': 'formalshirts',
-  'formal-shirts': 'formalshirts',
-  'formalshirt': 'formalshirts',
-  'formal-shirt': 'formalshirts'
+  'books': 'books',
+  'book': 'books',
+  'textbooks': 'books',
+  'textbook': 'books',
+  'stationary': 'stationary',
+  'stationery': 'stationary',
+  'office-supplies': 'stationary',
+  'office': 'stationary',
+  'supplies': 'stationary',
+  'gadgets': 'gadgets',
+  'gadget': 'gadgets',
+  'electronics': 'gadgets',
+  'electronic': 'gadgets',
+  'tech': 'gadgets',
+  'technology': 'gadgets'
 };
 
 /**

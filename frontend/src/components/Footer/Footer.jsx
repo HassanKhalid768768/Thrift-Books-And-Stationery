@@ -45,14 +45,14 @@ const Footer = () => {
           <Typography variant="h6" gutterBottom>
             Shop
           </Typography>
-          <Button component="a" href="/tshirts" color="inherit" sx={{ display: "block", textAlign: "left" }}>
-            T-Shirts
+          <Button component="a" href="/books" color="inherit" sx={{ display: "block", textAlign: "left" }}>
+            Books
           </Button>
-          <Button component="a" href="/polo" color="inherit" sx={{ display: "block", textAlign: "left" }}>
-            Polo
+          <Button component="a" href="/stationary" color="inherit" sx={{ display: "block", textAlign: "left" }}>
+            Stationary
           </Button>
-          <Button component="a" href="/formalshirts" color="inherit" sx={{ display: "block", textAlign: "left" }}>
-            Formal Shirts
+          <Button component="a" href="/gadgets" color="inherit" sx={{ display: "block", textAlign: "left" }}>
+            Gadgets
           </Button>
         </Grid>
 

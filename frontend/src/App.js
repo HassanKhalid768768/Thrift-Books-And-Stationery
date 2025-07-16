@@ -41,16 +41,16 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route
-            path="/polo"
-            element={<ShopCategory category="polo" />}
+            path="/books"
+            element={<ShopCategory category="books" />}
           />
           <Route
-            path="/tshirts"
-            element={<ShopCategory category="tshirts" />}
+            path="/stationary"
+            element={<ShopCategory category="stationary" />}
           />
           <Route
-            path="/formalshirts"
-            element={<ShopCategory category="formalshirts" />}
+            path="/gadgets"
+            element={<ShopCategory category="gadgets" />}
           />
           <Route path="/product" element={<Product />}>
             <Route path=":productId" element={<Product/>}/>
