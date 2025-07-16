@@ -52,4 +52,9 @@ const startServer = async () => {
   }
 };
 
+app.get('/', (req, res) => {
+  res.send('Backend is up and running');
+});
+
+
 startServer();
