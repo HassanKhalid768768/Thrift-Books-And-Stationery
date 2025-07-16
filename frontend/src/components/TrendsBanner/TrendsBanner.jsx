@@ -9,7 +9,7 @@ const TrendsBanner = () => {
         
         // Add delay to ensure scroll completes before navigation
         setTimeout(() => {
-            window.location.href = 'http://localhost:3000/';
+            window.location.href = '/';
         }, 500); // 500ms delay to allow scroll animation to be visible
     };
     

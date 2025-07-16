@@ -98,7 +98,7 @@ const ContactUs = () => {
     setIsSubmitting(true);
     
     try {
-      const backend_url = process.env.REACT_APP_API_URL || 'http://localhost:4000';
+      const backend_url = process.env.REACT_APP_API_URL;
       
       // Send message to backend API
       const response = await fetch(`${backend_url}/api/messages`, {
