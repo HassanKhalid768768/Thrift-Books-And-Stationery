@@ -20,8 +20,11 @@ const port = process.env.PORT || 4000;
 // middleware
 app.use(express.json());
 
-// 🔧 Proper CORS config
-const allowedOrigins = [process.env.FRONTEND_URL];
+// ✅ Allow both frontend and admin panel origins
+const allowedOrigins = [
+  'https://thrift-books-and-stationery-frontend.onrender.com',
+  'https://thrift-books-and-stationery-admin.onrender.com'
+];
 
 app.use(cors({
   origin: function (origin, callback) {
