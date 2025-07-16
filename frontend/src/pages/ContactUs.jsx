@@ -367,14 +367,9 @@ const ContactUs = () => {
                       <Typography variant="h6" gutterBottom sx={{ fontWeight: 500 }}>
                         Email Us
                       </Typography>
-                      <Typography variant="body1" sx={{ mb: 1 }}>
-                        <a href="mailto:support@thriftbooksandstationery.com" style={{ color: 'inherit', textDecoration: 'none' }}>
-                          support@thriftbooksandstationery.com
-                        </a>
-                      </Typography>
                       <Typography variant="body1">
-                        <a href="mailto:info@thriftbooksandstationery.com" style={{ color: 'inherit', textDecoration: 'none' }}>
-                          info@thriftbooksandstationery.com
+                        <a href="mailto:thriftbooksstationars@gmail.com" style={{ color: 'inherit', textDecoration: 'none' }}>
+                          thriftbooksstationars@gmail.com
                         </a>
                       </Typography>
                     </Box>
@@ -461,7 +456,8 @@ const ContactUs = () => {
             
             <Box sx={{ 
               height: '610px',  
-              width: '685px',
+              width: '665px', // Reduced from 685px to 500px (about 27% reduction)
+              maxWidth: '100%', // Ensure responsiveness
               border: `1px solid ${darkMode ? 'var(--border-color)' : '#eee'}`, 
               borderRadius: 1,  
               overflow: 'hidden',
