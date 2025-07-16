@@ -19,7 +19,26 @@ const port = process.env.PORT || 4000;
 
 // middleware
 app.use(express.json());
-app.use(cors());
+
+// 🔧 Proper CORS config
+const allowedOrigins = [process.env.FRONTEND_URL];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true
+}));
+
+// Optional: log incoming origins (for debugging CORS)
+app.use((req, res, next) => {
+  console.log("Request origin:", req.headers.origin);
+  next();
+});
 
 // api endpoints
 app.use("/images", express.static("upload/images"));
@@ -30,6 +49,11 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/subscribers", subscriberRoutes);
 app.use("/api/coupons", couponRoutes);
 app.use("/api/messages", messageRoutes);
+
+// Root test route
+app.get('/', (req, res) => {
+  res.send('Backend is up and running');
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -51,10 +75,5 @@ const startServer = async () => {
     process.exit(1);
   }
 };
-
-app.get('/', (req, res) => {
-  res.send('Backend is up and running');
-});
-
 
 startServer();
