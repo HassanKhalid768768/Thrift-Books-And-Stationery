@@ -16,6 +16,14 @@ exports.placeOrder = async (req, res, next) => {
 
   const { items, amount, address, appliedCoupon } = req.body;
   try {
+    // Clean up old pending orders (older than 1 hour) for this user
+    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+    await Order.deleteMany({
+      userId: _id,
+      payment: false,
+      createdAt: { $lt: oneHourAgo }
+    });
+    console.log('Cleaned up old pending orders for user', _id);
     // Normalize categories in items before saving
     const normalizedItems = items.map(item => {
       if (item.category) {
@@ -32,16 +40,18 @@ exports.placeOrder = async (req, res, next) => {
     console.log('After:', normalizedItems.map(item => item.category));
 
     // Create the order with coupon information if applied and normalized categories
+    // Mark as pending payment initially - cart will be cleared only after successful payment
     const order = await Order.create({
       userId: _id,
       items: normalizedItems,
       amount,
       address,
-      appliedCoupon
+      appliedCoupon,
+      payment: false, // Explicitly set to false until payment is verified
+      status: 'Pending Payment'
     });
 
-    // Clear user's cart
-    await User.findByIdAndUpdate(_id, { cartData: {} });
+    // DO NOT clear cart here - only clear after successful payment verification
 
     // Calculate original total (without shipping)
     const originalTotal = items.reduce((sum, item) => sum + (item.new_price * item.quantity), 0);
@@ -111,15 +121,32 @@ exports.verifyOrder = async (req, res, next) => {
   const { orderId, success } = req.body;
   try {
     if (success == "true") {
-      const order = await Order.findByIdAndUpdate(
+      // Find the order first to get user details
+      const order = await Order.findById(orderId);
+      if (!order) {
+        return res.status(404).json({ success: false, error: "Order not found" });
+      }
+      
+      // Update order status to paid and confirmed
+      const updatedOrder = await Order.findByIdAndUpdate(
         orderId,
-        { payment: true },
+        { 
+          payment: true,
+          status: 'Order Confirmed'
+        },
         { new: true }
       );
-      res.status(200).json(order);
+      
+      // Clear user's cart ONLY after successful payment
+      await User.findByIdAndUpdate(order.userId, { cartData: {} });
+      
+      console.log(`Payment successful for order ${orderId}, cart cleared for user ${order.userId}`);
+      res.status(200).json(updatedOrder);
     } else {
-      const order = await Order.findByIdAndDelete(orderId);
-      res.status(200).json(order);
+      // Payment cancelled or failed - delete the pending order
+      const deletedOrder = await Order.findByIdAndDelete(orderId);
+      console.log(`Payment cancelled for order ${orderId}, order deleted`);
+      res.status(200).json(deletedOrder);
     }
   } catch (err) {
     next(err);
@@ -134,8 +161,11 @@ exports.userOrders = async (req, res, next) => {
   try {
     console.log(`Finding orders for user ${_id} with productId: ${productId}, category: ${productCategory}`);
     
-    // Start with basic query for user's orders
-    let query = { userId: _id.toString() };
+    // Start with basic query for user's orders - only return paid orders
+    let query = { 
+      userId: _id.toString(),
+      payment: true // Only show successfully paid orders
+    };
     
     // We'll fetch all user orders and then filter for product matches
     // This allows more flexible matching including by category
