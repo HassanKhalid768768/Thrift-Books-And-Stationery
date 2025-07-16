@@ -1,5 +1,5 @@
 // API utility for admin
-const backend_url = process.env.REACT_APP_BACKEND_URL || "http://localhost:4000";
+const backend_url = (process.env.REACT_APP_BACKEND_URL || "http://localhost:4000").replace(/\/$/, "");
 
 // Helper function to get auth headers
 const getAuthHeaders = () => {

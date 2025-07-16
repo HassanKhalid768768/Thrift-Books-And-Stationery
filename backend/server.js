@@ -22,11 +22,11 @@ app.use(express.json());
 
 // ✅ Allow frontend & admin (Render + localhost)
 const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  process.env.ADMIN_URL,
   "http://localhost:3000",
-  "http://localhost:3001", // local admin
-  "https://thrift-books-and-stationery.onrender.com",
-  "https://thrift-books-and-stationery-admin.onrender.com"
-];
+  "http://localhost:3001"
+].filter(Boolean); // Remove any undefined values
 
 app.use(cors({
   origin: function (origin, callback) {
