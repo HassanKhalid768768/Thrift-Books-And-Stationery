@@ -383,14 +383,9 @@ const ContactUs = () => {
                     <Typography variant="h6" gutterBottom sx={{ fontWeight: 500 }}>
                       Call Us
                     </Typography>
-                    <Typography variant="body1" sx={{ mb: 1 }}>
-                      <a href="tel:+923001234567" style={{ color: 'inherit', textDecoration: 'none' }}>
-                        +92 300 123 4567
-                      </a>
-                    </Typography>
                     <Typography variant="body1">
-                      <a href="tel:+923001234568" style={{ color: 'inherit', textDecoration: 'none' }}>
-                        +92 300 123 4568
+                      <a href="tel:+923003383851" style={{ color: 'inherit', textDecoration: 'none' }}>
+                        0300 3383851
                       </a>
                     </Typography>
                   </Box>
@@ -405,10 +400,8 @@ const ContactUs = () => {
                       Visit Us
                     </Typography>
                     <Typography variant="body1">
-                      Thrift Books & Stationery Headquarters<br />
-                      123 Book Street<br />
-                      Gulberg III, Lahore<br />
-                      Pakistan 54000
+                      Thrift Books & Stationery<br />
+                      Karachi, Pakistan
                     </Typography>
                   </Box>
                 </Box>
@@ -456,7 +449,7 @@ const ContactUs = () => {
             
             <Box sx={{ 
               height: '610px',  
-              width: '665px', // Reduced from 685px to 500px (about 27% reduction)
+              width: '665px', // Keeping original width as requested
               maxWidth: '100%', // Ensure responsiveness
               border: `1px solid ${darkMode ? 'var(--border-color)' : '#eee'}`, 
               borderRadius: 1,  
@@ -464,7 +457,7 @@ const ContactUs = () => {
               position: 'relative',
               transition: 'all 0.3s ease'
             }}>
-                  {mapError ? (
+              {mapError ? (
                     <Box sx={{ 
                       display: 'flex', 
                       flexDirection: 'column',
@@ -491,7 +484,7 @@ const ContactUs = () => {
                       </Alert>
                       <Button 
                         variant="outlined" 
-                        href="https://maps.google.com/?q=Gulberg+III,+Lahore" 
+                        href="https://maps.google.com/?q=Karachi" 
                         target="_blank"
                         rel="noopener noreferrer"
                         sx={{
@@ -508,7 +501,7 @@ const ContactUs = () => {
                     </Box>
                   ) : (
                     <iframe
-                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13611.846903161665!2d74.34676005!3d31.515719049999998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39190483e58107d9%3A0xc23abe6ccc7e2462!2sGulberg%20III%2C%20Lahore%2C%20Punjab%2C%20Pakistan!5e0!3m2!1sen!2s!4v1682767253851!5m2!1sen!2s"
+                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3620.144379067651!2d67.001112!3d24.860734!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3eb33f1a567412e5%3A0xabcde123456789f0!2sKarachi%2C%20Pakistan!5e0!3m2!1sen!2s!4v1682767253851!5m2!1sen!2s"
                       width="100%"
                       height="100%"
                       style={{ border: 0 }}

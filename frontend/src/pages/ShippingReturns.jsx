@@ -51,7 +51,7 @@ const ShippingReturns = () => {
 
       <Box sx={{ mb: 5 }}>
         <Typography variant="body1" paragraph align="center" sx={{ color: 'var(--text-secondary)' }}>
-          Our policies are designed to ensure you have a seamless shopping experience from purchase to delivery.
+          Our policies are designed to ensure you have a seamless shopping experience for all your books and stationery needs.
         </Typography>
       </Box>
 
@@ -107,9 +107,11 @@ const ShippingReturns = () => {
         <Typography variant="body1" paragraph sx={{ color: 'var(--text-primary)' }}>
           We accept returns within 30 days of delivery if the items meet the following criteria:
           <br /><br />
-          • Item is unworn, unwashed, and in original condition<br />
-          • All original tags and packaging are intact<br />
+          • Item is unused and in original condition<br />
+          • All original packaging and protective materials are intact<br />
           • You have proof of purchase (order number or receipt)<br />
+          • Books with damaged pages, writing, or highlighting are not eligible for return<br />
+          • Personalized or custom stationery items are not eligible for return<br />
           • Items marked as "Final Sale" are not eligible for return
         </Typography>
         
@@ -117,10 +119,10 @@ const ShippingReturns = () => {
           How to Initiate a Return
         </Typography>
         <Typography variant="body1" paragraph sx={{ color: 'var(--text-primary)' }}>
-          1. Contact our customer service representative at <strong>+92 300 123 4567</strong> or <strong>support@thriftbooksandstationery.com</strong><br />
+          1. Contact our customer service representative at <strong>0300 3383851</strong> or <strong>thriftbooksstationars@gmail.com</strong><br />
           2. Provide your order number and details about the item you wish to return<br />
           3. Our representative will guide you through the return process<br />
-          4. Package the item securely with all original tags and packaging<br />
+          4. Package the item securely with all original packaging and protective materials<br />
           5. Return the parcel to our return address (listed below)<br />
           6. We recommend using a tracked shipping service for your protection
         </Typography>
@@ -131,7 +133,7 @@ const ShippingReturns = () => {
         <Typography variant="body1" paragraph sx={{ fontStyle: 'italic', color: 'var(--text-primary)' }}>
           Thrift Books & Stationery Returns Department<br />
           123 Book Street<br />
-          Gulberg III, Lahore<br />
+          Gulberg III, Karachi<br />
           Pakistan 54000
         </Typography>
       </Paper>
@@ -147,7 +149,7 @@ const ShippingReturns = () => {
         <Divider sx={{ ...darkModeStyles.divider, mb: 3 }} />
         
         <Typography variant="body1" paragraph sx={{ color: 'var(--text-primary)' }}>
-          Once we receive your return, our team will inspect the item to ensure it meets our return criteria. After approval:
+          Once we receive your return, our team will inspect the books or stationery items to ensure they meet our return criteria. After approval:
         </Typography>
         
         <Grid container spacing={2} sx={{ mb: 3 }}>
@@ -174,7 +176,7 @@ const ShippingReturns = () => {
         </Grid>
         
         <Typography variant="body1" paragraph sx={{ color: 'var(--text-primary)' }}>
-          Shipping costs are non-refundable unless the return is due to our error (damaged or incorrect item). If you received free shipping on your order, the standard shipping cost will be deducted from your refund.
+          Shipping costs are non-refundable unless the return is due to our error (damaged, defective, or incorrect item). If you received free shipping on your order, the standard shipping cost will be deducted from your refund.
         </Typography>
       </Paper>
 
@@ -189,12 +191,12 @@ const ShippingReturns = () => {
         <Divider sx={{ ...darkModeStyles.divider, mb: 3 }} />
         
         <Typography variant="body1" paragraph sx={{ color: 'var(--text-primary)' }}>
-          Our customer service team is here to help with any questions regarding shipping, returns, or refunds.
+          Our customer service team is here to help with any questions regarding shipping, returns, refunds, or product inquiries for books and stationery items.
         </Typography>
         
         <Box sx={{ textAlign: 'center', mt: 3 }}>
           <Typography variant="body1" sx={{ color: 'var(--text-primary)' }}>
-            Contact us at <strong>support@thriftbooksandstationery.com</strong> or visit our{' '}
+            Contact us at <strong>thriftbooksstationars@gmail.com</strong> or visit our{' '}
             <a href="/contact" style={darkModeStyles.link}>
               Contact Page
             </a>
