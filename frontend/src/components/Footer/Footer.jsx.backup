@@ -148,22 +148,18 @@ const Footer = () => {
               <Facebook fontSize="large" />
             </IconButton>
             <IconButton 
-              href="https://api.whatsapp.com/send?phone=%2B923003383851&context=AfepripkwO52YOtyqBBXmRt-LrMnIucbELBLylQcrKlgU-j-f6Fea8PMKAKPOOqYTa98CwMwkS14vdMR9z30pXBTlj7KjHzNNDPF4xV9djlTG2KbEpD1NvjZev8s8JGvzUVKGFSyXmRuuvljVJbZB2wVTw&source=FB_Page&app=facebook&entry_point=page_cta&fbclid=IwY2xjawLkh9dleHRuA2FlbQIxMABicmlkETF2cjdPbEZuSGs4WHBlMEtrAR63RLZkCAbMXqXvBrotjsPDf9whlscHDWbaVWA3yK2ojFlcAO8qAbw9xUtSIMQ_aem_TMnobXT3-k8sQr9epELmvg"
+                            href="https://api.whatsapp.com/send?phone=%2B923003383851&context=AfepripkwO52YOtyqBBXmRt-LrMnIucbELBLylQcrKlgU-j-f6Fea8PMKAKPOOqYTa98CwMwkS14vdMR9z30pXBTlj7KjHzNNDPF4xV9djlTG2KbEpD1NvjZev8s8JGvzUVKGFSyXmRuuvljVJbZB2wVTw&source=FB_Page&app=facebook&entry_point=page_cta&fbclid=IwY2xjawLkh9dleHRuA2FlbQIxMABicmlkETF2cjdPbEZuSGs4WHBlMEtrAR63RLZkCAbMXqXvBrotjsPDf9whlscHDWbaVWA3yK2ojFcAO8qAbw9xUtSIMQ_aem_TMnobXT3-k8sQr9epELmvg"  
               target="_blank" 
               rel="noopener noreferrer" 
               color="inherit"
               sx={{ 
                 transition: 'transform 0.2s, color 0.2s',
-                '&:hover': { 
+                '&:hover': {
                   transform: 'scale(1.1)',
                   color: '#25D366' // WhatsApp brand color
                 } 
               }}
-            >
-              <WhatsAppIcon fontSize="large" />
-            </IconButton>
-            <IconButton 
-              href="https://twitter.com/thriftbooksandstationery" 
+                                      i className="fab fa-whatsapp" fontSize="large" /
               target="_blank" 
               rel="noopener noreferrer" 
               color="inherit"
