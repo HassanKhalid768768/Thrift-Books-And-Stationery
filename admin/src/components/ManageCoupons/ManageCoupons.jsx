@@ -4,11 +4,11 @@ import bin from './../../assets/recycle-bin.png';
 import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
 import { DarkModeContext } from "../../context/DarkModeContext";
+import { api } from '../../utils/api';
 
 const ManageCoupons = () => {
     const { token, isAuthenticated } = useAuth();
     const { darkMode } = useContext(DarkModeContext);
-    const backend_url = process.env.REACT_APP_BACKEND_URL;
     const [coupons, setCoupons] = useState([]);
     const [couponDetails, setCouponDetails] = useState({
         code: "",
@@ -21,11 +21,7 @@ const ManageCoupons = () => {
             if (!isAuthenticated || !token) return;
             
             try {
-                const response = await fetch(`${backend_url}api/coupons`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
+                const response = await api.getCoupons();
                 const data = await response.json();
                 if (response.ok) {
                     setCoupons(data);
@@ -40,7 +36,7 @@ const ManageCoupons = () => {
         if (isAuthenticated && token) {
             fetchCoupons();
         }
-    }, [isAuthenticated, token, backend_url]);
+    }, [isAuthenticated, token]);
 
     const changeHandler = (e) => {
         setCouponDetails({ ...couponDetails, [e.target.name]: e.target.value });
@@ -52,14 +48,7 @@ const ManageCoupons = () => {
                 return toast.error("Coupon code and value are required");
             }
 
-            const response = await fetch(`${backend_url}api/coupons`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify(couponDetails)
-            });
+            const response = await api.createCoupon(couponDetails);
 
             const data = await response.json();
             
@@ -71,11 +60,7 @@ const ManageCoupons = () => {
                     expiryDate: ""
                 });
                 // Refetch coupons after adding a new one
-                const response = await fetch(`${backend_url}api/coupons`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
+                const response = await api.getCoupons();
                 const couponsData = await response.json();
                 if (response.ok) {
                     setCoupons(couponsData);
@@ -90,23 +75,14 @@ const ManageCoupons = () => {
 
     const deleteCoupon = async (id) => {
         try {
-            const response = await fetch(`${backend_url}api/coupons/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
+            const response = await api.deleteCoupon(id);
 
             const data = await response.json();
             
             if (response.ok) {
                 toast.success("Coupon deleted successfully");
                 // Refetch coupons after deletion
-                const response = await fetch(`${backend_url}api/coupons`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
+                const response = await api.getCoupons();
                 const couponsData = await response.json();
                 if (response.ok) {
                     setCoupons(couponsData);

@@ -4,10 +4,10 @@ import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
 import { DarkModeContext } from "../../context/DarkModeContext";
 import { FiUploadCloud } from 'react-icons/fi';
+import { api } from '../../utils/api';
 
 const AddProduct = () => {
 
-    const backend_url = process.env.REACT_APP_BACKEND_URL;
     const { token, isAuthenticated } = useAuth();
     const { darkMode } = useContext(DarkModeContext);
     const [image,setImage] = useState(false);
@@ -64,13 +64,7 @@ const AddProduct = () => {
         formData.append("new_price", productDetails.new_price);
         formData.append("old_price", productDetails.old_price);
       
-        const response = await fetch(`${backend_url}api/products`,{
-            method:"POST",
-            headers:{
-                "Authorization": `Bearer ${token}`
-            },
-            body:formData,
-        });
+        const response = await api.addProduct(formData);
         if(response.ok){
             setProductDetails({
                 name: "",

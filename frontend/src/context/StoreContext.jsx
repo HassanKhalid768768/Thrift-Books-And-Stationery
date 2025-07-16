@@ -1,5 +1,6 @@
 import React, {createContext, useEffect, useState} from 'react';
 import {toast} from "react-toastify";
+import { api } from '../utils/api';
 
 export const StoreContext = createContext(null);
 
@@ -8,15 +9,13 @@ const StoreContextProvider = (props) => {
     const [all_product, setAll_product] = useState([]);
     const [cartItems, setCartItems] = useState({});
     const [coupon, setCoupon] = useState({ code: "", value: 0, isValid: false });
-    const backend_url = process.env.REACT_APP_BACKEND_URL;
-
-    useEffect(() => {
+useEffect(() => {
         let isMounted = true;
         
         const fetchData = async() => {
             try {
                 // Fetch all products
-                const response = await fetch(`${backend_url}/api/products`);
+                const response = await api.getProducts();
                 const json = await response.json();
                 
                 if (response.ok && isMounted) {
@@ -30,12 +29,7 @@ const StoreContextProvider = (props) => {
                 
                 if (token && isMounted) {
                     try {
-                        const cartResponse = await fetch(`${backend_url}/api/cart/getCart`, {
-                            method: 'GET',
-                            headers: {
-                                'Authorization': `Bearer ${token}`
-                            }
-                        });
+const cartResponse = await api.getCart();
                         
                         const cartJson = await cartResponse.json();
                         
@@ -65,7 +59,7 @@ const StoreContextProvider = (props) => {
         return () => {
             isMounted = false;
         };
-    }, [backend_url]);
+    }, []);
 
     const addToCart = async (itemId, quantity = 1) => {
         // Update cart state with the specified quantity (default is 1)
@@ -92,14 +86,7 @@ const StoreContextProvider = (props) => {
             // Make API calls for each item in the quantity
             for (let i = 0; i < quantity; i++) {
                 try {
-                    const response = await fetch(`${backend_url}/api/cart/addToCart`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`,
-                        },
-                        body: JSON.stringify({'itemId': itemId}),
-                    });
+const response = await api.addToCart(itemId);
                     const json = await response.json();
                     if(!response.ok){
                         toast.error(json.error);
@@ -130,14 +117,7 @@ const StoreContextProvider = (props) => {
         
         const token = localStorage.getItem('token');
         if(token){
-            const response = await fetch(`${backend_url}/api/cart/removeFromCart`,{
-                method:'POST',
-                headers:{
-                    'Content-Type':'application/json',
-                    'Authorization': `Bearer ${token}`,
-                },
-                body:JSON.stringify({'itemId':itemId}),
-            });
+const response = await api.removeFromCart(itemId);
             const json = await response.json();
             if(!response.ok){
                 toast.error(json.error);
@@ -168,14 +148,7 @@ const StoreContextProvider = (props) => {
                 // Remove the item completely from cart - we need to call the API multiple times
                 // to remove all quantities of the item
                 for (let i = 0; i < quantity; i++) {
-                    await fetch(`${backend_url}/api/cart/removeFromCart`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`,
-                        },
-                        body: JSON.stringify({'itemId': itemId}),
-                    });
+await api.removeFromCart(itemId);
                 }
             } catch (error) {
                 console.error("Error removing item from cart:", error);
@@ -186,13 +159,7 @@ const StoreContextProvider = (props) => {
 
     const validateCoupon = async (code) => {
         try {
-            const response = await fetch(`${backend_url}/api/coupons/validate`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ code }),
-            });
+const response = await api.validateCoupon(code);
             
             const data = await response.json();
             

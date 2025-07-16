@@ -4,10 +4,10 @@ import upload_area from "./../../assets/upload_area.svg";
 import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
 import { DarkModeContext } from "../../context/DarkModeContext";
+import { api } from '../../utils/api';
 
 const EditProduct = ({ isOpen, onClose, product, onProductUpdated }) => {
     // Move all hooks to the top level
-    const backend_url = process.env.REACT_APP_BACKEND_URL;
     const { token, isAuthenticated } = useAuth();
     const { darkMode } = useContext(DarkModeContext);
     
@@ -69,13 +69,7 @@ const EditProduct = ({ isOpen, onClose, product, onProductUpdated }) => {
         }
 
         try {
-            const response = await fetch(`${backend_url}api/products/${product.id}`, {
-                method: "PATCH",
-                headers: {
-                    "Authorization": `Bearer ${token}`
-                },
-                body: formData,
-            });
+            const response = await api.updateProduct(product.id, formData);
 
             const data = await response.json();
 

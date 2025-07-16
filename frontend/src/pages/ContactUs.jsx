@@ -24,6 +24,7 @@ import {
   Map as MapIcon
 } from '@mui/icons-material';
 import { toast } from 'react-toastify';
+import { api } from '../utils/api';
 
 const ContactUs = () => {
   const { darkMode } = useContext(DarkModeContext);
@@ -98,16 +99,8 @@ const ContactUs = () => {
     setIsSubmitting(true);
     
     try {
-      const backend_url = process.env.REACT_APP_BACKEND_URL;
-      
       // Send message to backend API
-      const response = await fetch(`${backend_url}/api/messages`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await api.sendMessage(formData);
       
       let data;
       try {

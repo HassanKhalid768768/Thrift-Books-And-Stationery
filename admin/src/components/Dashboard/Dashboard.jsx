@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import './Dashboard.css';
+import { api } from '../../utils/api';
 
 const Dashboard = () => {
-    const backend_url = process.env.REACT_APP_BACKEND_URL;
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await fetch(`${backend_url}api/products`);
+                const response = await api.getProducts();
                 const data = await response.json();
                 if (response.ok) {
                     setProducts(data);
@@ -22,7 +22,7 @@ const Dashboard = () => {
         };
 
         fetchProducts();
-    }, [backend_url]);
+    }, []);
 
     const getCategoryStats = () => {
         return {

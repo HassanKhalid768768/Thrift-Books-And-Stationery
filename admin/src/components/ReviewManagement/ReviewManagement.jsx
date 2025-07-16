@@ -3,11 +3,11 @@ import './ReviewManagement.css';
 import { toast } from 'react-toastify';
 import { useAuth } from '../../context/AuthContext';
 import { DarkModeContext } from "../../context/DarkModeContext";
+import { api } from '../../utils/api';
 
 const ReviewManagement = () => {
     const { token, isAuthenticated } = useAuth();
     const { darkMode } = useContext(DarkModeContext);
-    const backend_url = process.env.REACT_APP_BACKEND_URL;
     
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -23,7 +23,7 @@ const ReviewManagement = () => {
         const fetchProducts = async () => {
             setLoading(true);
             try {
-                const response = await fetch(`${backend_url}api/products`);
+                const response = await api.getProducts();
                 
                 if (!response.ok) {
                     throw new Error(`Failed to fetch products: ${response.status}`);
@@ -47,7 +47,7 @@ const ReviewManagement = () => {
         };
         
         fetchProducts();
-    }, [backend_url]);
+    }, []);
 
     // Handle review deletion
     const handleDeleteReview = async () => {
@@ -62,15 +62,7 @@ const ReviewManagement = () => {
         
         setDeleteLoading(true);
         try {
-            const response = await fetch(
-                `${backend_url}api/products/${selectedReview.productId}/reviews/${selectedReview.reviewId}`,
-                {
-                    method: 'DELETE',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                    }
-                }
-            );
+            const response = await api.deleteReview(selectedReview.reviewId);
             
             if (!response.ok) {
                 const errorData = await response.json();

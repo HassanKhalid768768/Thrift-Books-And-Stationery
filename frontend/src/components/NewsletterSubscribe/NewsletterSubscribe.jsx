@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import './NewsletterSubscribe.css';
 import { toast } from 'react-toastify';
+import { api } from '../../utils/api';
 
 const NewsletterSubscribe = () => {
     const [email, setEmail] = useState('');
     const [status, setStatus] = useState('idle'); // idle, submitting, success, error
     const [message, setMessage] = useState('');
-    const backend_url = process.env.REACT_APP_BACKEND_URL;
     
     const validateEmail = (email) => {
         const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -27,25 +27,18 @@ const NewsletterSubscribe = () => {
         setStatus('submitting');
         
         try {
-            const response = await fetch(`${backend_url}/api/subscribers`, {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email }),
-            });
-            
-            const json = await response.json();
+            const response = await api.subscribe(email);
+            const data = await response.json();
             
             if (response.ok) {
-                toast.success('Subscribed successfully');
+                toast.success('Subscribed successfully!');
                 setStatus('success');
                 setMessage('Thank you for subscribing! Stay tuned for updates.');
                 setEmail('');
             } else {
-                toast.error(json.error || 'Subscription failed');
+                toast.error(data.error || 'Subscription failed');
                 setStatus('error');
-                setMessage(json.error || 'Something went wrong. Please try again later.');
+                setMessage(data.error || 'Subscription failed. Please try again.');
             }
         } catch (error) {
             console.error('Newsletter subscription error:', error);

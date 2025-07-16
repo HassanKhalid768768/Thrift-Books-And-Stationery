@@ -2,37 +2,38 @@ import React, { useState } from "react";
 import { Grid, Typography, Button, TextField, Box, IconButton } from "@mui/material";
 import { Facebook, Instagram, Twitter } from "@mui/icons-material";
 import { toast } from "react-toastify";
+import { api } from '../../utils/api';
 
 const Footer = () => {
   const [email, setEmail] = useState('');
-    const backend_url = process.env.REACT_APP_BACKEND_URL;
+  const [isLoading, setIsLoading] = useState(false);
 
   const changeHandler = (e) => {
     setEmail(e.target.value);
   };
 
   const submitHandler = async () => {
+    if (!email.trim()) {
+      toast.error('Please enter your email address');
+      return;
+    }
+    
+    setIsLoading(true);
     try {
-      const response = await fetch(`${backend_url}/api/subscribers`, {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email }),
-      });
-      
+      const response = await api.subscribe(email);
       const json = await response.json();
       
       if (response.ok) {
-        toast.success('Subscribed successfully');
+        toast.success('Subscribed successfully!');
         setEmail('');
       } else {
         toast.error(json.error || 'Subscription failed');
-        setEmail('');
       }
     } catch (error) {
-      toast.error('Failed to connect to the server');
       console.error('Newsletter subscription error:', error);
+      toast.error('Failed to connect to the server');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -99,6 +100,7 @@ const Footer = () => {
               placeholder="Enter your email"
               value={email}
               onChange={changeHandler}
+              disabled={isLoading}
               sx={{ bgcolor: "white", borderRadius: 1, flexGrow: 1 }}
             />
             <Button 
@@ -106,8 +108,9 @@ const Footer = () => {
               color="secondary" 
               sx={{ whiteSpace: "nowrap" }}
               onClick={submitHandler}
+              disabled={isLoading}
             >
-              Subscribe
+              {isLoading ? 'Subscribing...' : 'Subscribe'}
             </Button>
           </Box>
 

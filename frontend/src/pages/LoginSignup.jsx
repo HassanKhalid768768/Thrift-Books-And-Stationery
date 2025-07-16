@@ -2,6 +2,7 @@ import React, {useState, useContext} from "react";
 import {toast} from "react-toastify";
 import './CSS/LoginSignup.css'
 import { DarkModeContext } from "../context/DarkModeContext";
+import { api } from '../utils/api';
 
 const LoginSignup = () => {
     const { darkMode } = useContext(DarkModeContext);
@@ -13,15 +14,8 @@ const LoginSignup = () => {
         password:"",
     });
     
-    const backend_url = process.env.REACT_APP_BACKEND_URL;
     const login = async () =>{
-        const response = await fetch(`${backend_url}/api/users/login`,{
-            method:'POST',
-            headers:{
-                'Content-Type':'application/json'
-            },
-            body:JSON.stringify(formData),
-        });
+        const response = await api.login(formData);
         const json = await response.json();
         if(response.ok){
             localStorage.setItem("token", json.token);
@@ -34,13 +28,7 @@ const LoginSignup = () => {
     }
 
     const signup = async () =>{
-        const response = await fetch(`${backend_url}/api/users/signup`,{
-            method:'POST',
-            headers:{
-                'Content-Type':'application/json'
-            },
-            body:JSON.stringify(formData),
-        });
+        const response = await api.signup(formData);
         const json = await response.json();
         if(response.ok){
             localStorage.setItem('token',json.token);

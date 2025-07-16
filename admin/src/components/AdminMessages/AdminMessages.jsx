@@ -41,6 +41,7 @@ import { format } from 'date-fns';
 import { useAuth } from '../../context/AuthContext';
 import { DarkModeContext } from '../../context/DarkModeContext';
 import './AdminMessages.css';
+import { api } from '../../utils/api';
 
 const AdminMessages = () => {
   const { token } = useAuth(); // Get token from auth context
@@ -58,19 +59,13 @@ const AdminMessages = () => {
   const [sortBy, setSortBy] = useState('date');
   const [sortOrder, setSortOrder] = useState('desc');
   
-  const backend_url = process.env.REACT_APP_BACKEND_URL;
-
   // Fetch messages from API
   const fetchMessages = async () => {
     setLoading(true);
     setError(null);
     
     try {
-      const response = await fetch(`${backend_url}api/messages`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
+      const response = await api.getMessages();
       
       if (!response.ok) {
         throw new Error('Failed to fetch messages');
@@ -95,14 +90,7 @@ const AdminMessages = () => {
   // Handle changing message status (read/unread)
   const handleChangeStatus = async (id, newStatus) => {
     try {
-      const response = await fetch(`${backend_url}api/messages/${id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ status: newStatus })
-      });
+      const response = await api.updateMessageStatus(id, newStatus);
       
       if (!response.ok) {
         throw new Error('Failed to update message status');
@@ -127,12 +115,7 @@ const AdminMessages = () => {
     if (!messageToDelete) return;
     
     try {
-      const response = await fetch(`${backend_url}api/messages/${messageToDelete}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
+      const response = await api.deleteMessage(messageToDelete);
       
       if (!response.ok) {
         throw new Error('Failed to delete message');

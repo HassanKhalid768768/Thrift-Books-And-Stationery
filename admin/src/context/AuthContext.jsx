@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import customToast from '../utils/toastUtils';
+import { api } from '../utils/api';
 
 // Create the authentication context
 export const AuthContext = createContext();
@@ -37,14 +38,7 @@ export const AuthProvider = ({ children }) => {
   // Login function
   const login = async (email, password) => {
     try {
-      const backend_url = process.env.REACT_APP_BACKEND_URL;
-      const response = await fetch(`${backend_url}api/users/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, password })
-      });
+      const response = await api.login({ email, password });
       
       const data = await response.json();
       

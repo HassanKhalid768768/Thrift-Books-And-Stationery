@@ -7,9 +7,9 @@ import CategoryFilter from "../CategoryFilter/CategoryFilter";
 import EditProduct from "../EditProduct/EditProduct";
 import { useAuth } from "../../context/AuthContext";
 import { DarkModeContext } from "../../context/DarkModeContext";
+import { api } from '../../utils/api';
 
 const ListProduct = () => {
-    const backend_url = process.env.REACT_APP_BACKEND_URL;
     const { token, isAuthenticated } = useAuth();
     const { darkMode } = useContext(DarkModeContext);
     const [allproducts, setAllProducts] = useState([]);
@@ -18,7 +18,7 @@ const ListProduct = () => {
     const [selectedProduct, setSelectedProduct] = useState(null);
 
     const fetchInfo = async ()=>{
-        const response = await fetch(`${backend_url}api/products`);
+        const response = await api.getProducts();
         const json = await response.json();
         if(response.ok){
             setAllProducts(json);
@@ -32,13 +32,7 @@ const ListProduct = () => {
     },[])
 
     const removeProduct = async (id)=>{
-        const response = await fetch(`${backend_url}api/products/${id}`,{
-            method:'DELETE',
-            headers:{
-                'Content-Type':'application/json',
-                'Authorization': `Bearer ${token}`
-            }
-        });
+        const response = await api.deleteProduct(id);
         const json = await response.json();
         if(!response.ok) toast.error(json.error);
         else {

@@ -5,6 +5,7 @@ import {toast} from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
 import { DarkModeContext } from "../../context/DarkModeContext";
 import StatusFilter from "../StatusFilter/StatusFilter";
+import { api } from '../../utils/api';
 
 // Status color mapping
 const statusColors = {
@@ -15,7 +16,6 @@ const statusColors = {
 };
 
 const ListOrder = () => {
-    const backend_url = process.env.REACT_APP_BACKEND_URL;
     const [orders, setOrders] = useState([]);
     const [filteredOrders, setFilteredOrders] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -27,7 +27,7 @@ const ListOrder = () => {
     const fetchOrders = async() => {
         setLoading(true);
         try {
-            const response = await fetch(`${backend_url}api/orders`);
+            const response = await api.getOrders();
             const json = await response.json();
             if(response.ok){
                 // Sort orders by date (newest first)
@@ -57,17 +57,7 @@ const ListOrder = () => {
         try {
             const newStatus = event.target.value;
             
-            const response = await fetch(`${backend_url}api/orders/status`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                    orderId,
-                    status: newStatus
-                }),
-            });
+            const response = await api.updateOrderStatus(orderId, newStatus);
             
             const json = await response.json();
             
