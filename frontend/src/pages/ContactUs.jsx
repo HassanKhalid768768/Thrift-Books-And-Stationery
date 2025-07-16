@@ -375,13 +375,13 @@ const ContactUs = () => {
                         Email Us
                       </Typography>
                       <Typography variant="body1" sx={{ mb: 1 }}>
-                        <a href="mailto:support@urbanstyle.com" style={{ color: 'inherit', textDecoration: 'none' }}>
-                          support@urbanstyle.com
+                        <a href="mailto:support@thriftbooksandstationery.com" style={{ color: 'inherit', textDecoration: 'none' }}>
+                          support@thriftbooksandstationery.com
                         </a>
                       </Typography>
                       <Typography variant="body1">
-                        <a href="mailto:info@urbanstyle.com" style={{ color: 'inherit', textDecoration: 'none' }}>
-                          info@urbanstyle.com
+                        <a href="mailto:info@thriftbooksandstationery.com" style={{ color: 'inherit', textDecoration: 'none' }}>
+                          info@thriftbooksandstationery.com
                         </a>
                       </Typography>
                     </Box>
@@ -417,8 +417,8 @@ const ContactUs = () => {
                       Visit Us
                     </Typography>
                     <Typography variant="body1">
-                      UrbanStyle Headquarters<br />
-                      123 Fashion Avenue<br />
+                      Thrift Books & Stationery Headquarters<br />
+                      123 Book Street<br />
                       Gulberg III, Lahore<br />
                       Pakistan 54000
                     </Typography>
@@ -531,7 +531,7 @@ const ContactUs = () => {
                         setMapLoaded(false);
                         setMapError(true);
                       }}
-                      title="UrbanStyle Location"
+                      title="Thrift Books & Stationery Location"
                     ></iframe>
                   )}
             </Box>

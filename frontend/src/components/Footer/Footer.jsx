@@ -77,10 +77,10 @@ const Footer = () => {
         {/* ABOUT US */}
         <Grid item xs={12} sm={6} md={3}>
           <Typography variant="h6" gutterBottom>
-            About UrbanStyle
+            About Thrift Books & Stationery
           </Typography>
           <Typography variant="body2" sx={{ maxWidth: 280, mb: 2 }}>
-            UrbanStyle is a sleek e-commerce platform dedicated to men's fashion, offering a smooth, user-friendly shopping experience. Customers can browse premium clothing, use smart search features, and track orders easily. Sellers benefit from efficient product, order, and promotion management. The platform ensures seamless navigation and interactive displays for modern shoppers.
+            Thrift Books & Stationery is a comprehensive e-commerce platform offering books, stationery, and educational materials. We provide a smooth, user-friendly shopping experience with smart search features and easy order tracking. Our platform ensures seamless navigation and interactive displays for modern book lovers and students.
           </Typography>
         </Grid>
 
@@ -114,7 +114,7 @@ const Footer = () => {
           {/* SOCIAL MEDIA LINKS */}
           <Box sx={{ mt: 3, display: "flex", justifyContent: "center", gap: 2 }}>
             <IconButton 
-              href="https://www.instagram.com/urbanstyle" 
+              href="https://www.instagram.com/thriftbooksandstationery" 
               target="_blank" 
               rel="noopener noreferrer" 
               color="inherit"
@@ -129,7 +129,7 @@ const Footer = () => {
               <Instagram fontSize="large" />
             </IconButton>
             <IconButton 
-              href="https://www.facebook.com/urbanstyle" 
+              href="https://www.facebook.com/thriftbooksandstationery" 
               target="_blank" 
               rel="noopener noreferrer" 
               color="inherit"
@@ -144,7 +144,7 @@ const Footer = () => {
               <Facebook fontSize="large" />
             </IconButton>
             <IconButton 
-              href="https://twitter.com/urbanstyle" 
+              href="https://twitter.com/thriftbooksandstationery" 
               target="_blank" 
               rel="noopener noreferrer" 
               color="inherit"
@@ -165,7 +165,7 @@ const Footer = () => {
       {/* COPYRIGHT */}
       <Box sx={{ textAlign: "center", mt: 5, opacity: 0.7 }}>
         <Typography variant="body2">
-          © {new Date().getFullYear()} UrbanStyle. All rights reserved.
+          © {new Date().getFullYear()} Thrift Books & Stationery. All rights reserved.
         </Typography>
       </Box>
     </Box>

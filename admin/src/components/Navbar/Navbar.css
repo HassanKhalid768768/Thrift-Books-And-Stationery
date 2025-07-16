@@ -16,7 +16,7 @@
     color: white;
 }
 
-.urbanstyle-logo {
+.thriftbooks-logo {
     color: #171717;
     font-size: 38px;
     font-weight: 800;
@@ -36,7 +36,7 @@
 }
 
 /* Dark mode logo styles */
-.dark-mode .urbanstyle-logo {
+.dark-mode .thriftbooks-logo {
     background: linear-gradient(45deg, #f5f5f5, #b3b3b3, #f5f5f5);
     -webkit-background-clip: text;
     background-clip: text;
@@ -44,12 +44,12 @@
     text-shadow: 2px 2px 4px rgba(0,0,0,0.25);
 }
 
-.urbanstyle-logo:hover {
+.thriftbooks-logo:hover {
     transform: scale(1.01);  /* More subtle scale */
     letter-spacing: 2.2px;  /* Less dramatic spacing change */
 }
 
-.urbanstyle-logo span {
+.thriftbooks-logo span {
     background: linear-gradient(45deg, #ff3d1c, #ff7a66, #ff3d1c);  /* More vibrant */
     background-size: 200% auto;
     -webkit-background-clip: text;
@@ -228,7 +228,7 @@
     .navbar{
         padding: 12px 50px;
     }
-    .urbanstyle-logo {
+    .thriftbooks-logo {
         font-size: 25px;
     }
 }
@@ -237,7 +237,7 @@
     .navbar{
         padding: 15px 30px;
     }
-    .urbanstyle-logo {
+    .thriftbooks-logo {
         font-size: 20px;
     }
 }
@@ -246,7 +246,7 @@
     .navbar{
         padding: 8px 20px;
     }
-    .urbanstyle-logo {
+    .thriftbooks-logo {
         transform: scale(0.8);
     }
 }

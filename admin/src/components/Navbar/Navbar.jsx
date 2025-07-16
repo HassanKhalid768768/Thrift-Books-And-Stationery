@@ -19,7 +19,7 @@ const Navbar = () => {
         return (
             <div className={`navbar ${darkMode ? 'dark-mode' : ''}`}>
                 <Link to="/" className="navbar-brand">
-                    <h1 className="urbanstyle-logo">Urban<span>Style</span></h1>
+                    <h1 className="thriftbooks-logo">Thrift Books & <span>Stationery</span></h1>
                 </Link>
                 <div className="nav-right">
                     <button 
@@ -45,7 +45,7 @@ const Navbar = () => {
     return ( 
         <div className={`navbar ${darkMode ? 'dark-mode' : ''}`}>
             <Link to={isAuthenticated && isAdmin ? "/addproduct" : "/"} className="navbar-brand">
-                <h1 className="urbanstyle-logo">Urban<span>Style</span></h1>
+                <h1 className="thriftbooks-logo">Thrift Books & <span>Stationery</span></h1>
             </Link>
             
             <div className="nav-right">

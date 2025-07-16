@@ -171,7 +171,7 @@ const Contact = () => {
                 </Typography>
               </Box>
               <Typography sx={{ color: 'var(--text-primary)', pl: 6 }}>
-                support@urbanstyle.com
+                support@thriftbooksandstationery.com
               </Typography>
             </Box>
 

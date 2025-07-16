@@ -117,7 +117,7 @@ const ShippingReturns = () => {
           How to Initiate a Return
         </Typography>
         <Typography variant="body1" paragraph sx={{ color: 'var(--text-primary)' }}>
-          1. Contact our customer service representative at <strong>+92 300 123 4567</strong> or <strong>support@urbanstyle.com</strong><br />
+          1. Contact our customer service representative at <strong>+92 300 123 4567</strong> or <strong>support@thriftbooksandstationery.com</strong><br />
           2. Provide your order number and details about the item you wish to return<br />
           3. Our representative will guide you through the return process<br />
           4. Package the item securely with all original tags and packaging<br />
@@ -129,8 +129,8 @@ const ShippingReturns = () => {
           Return Address
         </Typography>
         <Typography variant="body1" paragraph sx={{ fontStyle: 'italic', color: 'var(--text-primary)' }}>
-          UrbanStyle Returns Department<br />
-          123 Fashion Avenue<br />
+          Thrift Books & Stationery Returns Department<br />
+          123 Book Street<br />
           Gulberg III, Lahore<br />
           Pakistan 54000
         </Typography>
@@ -194,7 +194,7 @@ const ShippingReturns = () => {
         
         <Box sx={{ textAlign: 'center', mt: 3 }}>
           <Typography variant="body1" sx={{ color: 'var(--text-primary)' }}>
-            Contact us at <strong>support@urbanstyle.com</strong> or visit our{' '}
+            Contact us at <strong>support@thriftbooksandstationery.com</strong> or visit our{' '}
             <a href="/contact" style={darkModeStyles.link}>
               Contact Page
             </a>
