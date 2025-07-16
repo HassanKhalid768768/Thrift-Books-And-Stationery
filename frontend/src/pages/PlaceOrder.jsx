@@ -27,12 +27,10 @@ const PlaceOrder = () => {
         firstName: "",
         lastName: "",
         email: "",
-        street: "",
+        Address: "",
         city: "",
-        state: "",
-        zipcode: "",
         country: "",
-        phone: ""
+        Phone: ""
     });
     
     const changeHandler = (e) => {
@@ -63,7 +61,7 @@ const PlaceOrder = () => {
         }
         
         // Validate required fields
-        if (!data.firstName || !data.lastName || !data.email || !data.street || !data.city || !data.state || !data.zipcode || !data.country || !data.phone) {
+        if (!data.firstName || !data.lastName || !data.email || !data.Address || !data.city || !data.country || !data.Phone) {
             toast.error('Please fill in all required fields');
             return;
         }
@@ -151,16 +149,12 @@ const PlaceOrder = () => {
                     <input name="lastName" onChange={changeHandler} value={data.lastName} type="text" placeholder="Last Name" required/>
                 </div>
                 <input name="email" onChange={changeHandler} value={data.email} type="email" placeholder="Email Address" required/>
-                <input name="street" onChange={changeHandler} value={data.street} type="text" placeholder="Street" required/>
+                <input name="Address" onChange={changeHandler} value={data.Address} type="text" placeholder="Address" required/>
                 <div className="multi-fields">
                     <input name="city" onChange={changeHandler} value={data.city} type="text" placeholder="City" required/>
-                    <input name="state" onChange={changeHandler} value={data.state} type="text" placeholder="State" required/>
-                </div>
-                <div className="multi-fields">
-                    <input name="zipcode" onChange={changeHandler} value={data.zipcode} type="text" placeholder="Zip code" required/>
                     <input name="country" onChange={changeHandler} value={data.country} type="text" placeholder="Country" required/>
                 </div>
-                <input name="phone" onChange={changeHandler} value={data.phone} type="text" placeholder="phone" required/>
+                <input name="Phone" onChange={changeHandler} value={data.Phone} type="text" placeholder="Phone" required/>
             </div>
             
             <div className="place-order-right card">

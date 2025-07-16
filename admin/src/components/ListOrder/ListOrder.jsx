@@ -164,11 +164,11 @@ const ListOrder = () => {
                                 <div className="customer-details">
                                     <h3 className='customer-name'>{order.address?.firstName + " " + order.address?.lastName}</h3>
                                     <div className="address-details">
-                                        <p>{order.address?.street}</p>
-                                        <p>{order.address?.city}, {order.address?.state}, {order.address?.zipcode}</p>
+                                        <p>{order.address?.Address || order.address?.street}</p>
+                                        <p>{order.address?.city}{order.address?.state ? `, ${order.address.state}` : ''}{order.address?.zipcode ? `, ${order.address.zipcode}` : ''}</p>
                                         <p>{order.address?.country}</p>
                                     </div>
-                                    <p className="customer-phone">{order.address?.phone}</p>
+                                    <p className="customer-phone">{order.address?.Phone || order.address?.phone}</p>
                                 </div>
                             </div>
                             
