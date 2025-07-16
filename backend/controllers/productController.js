@@ -56,9 +56,10 @@ exports.deleteProduct = async (req, res, next) => {
 
 exports.getNewCollections = async (req, res, next) => {
   try {
-    const products = await Product.find({});
-    const newCollection = products.slice(-8);
-    res.status(200).json(newCollection);
+    const products = await Product.find({
+      category: { $in: ['stationary', 'gadgets'] }
+    }).sort({ createdAt: -1 }).limit(8);
+    res.status(200).json(products);
   } catch (err) {
     next(err);
   }
