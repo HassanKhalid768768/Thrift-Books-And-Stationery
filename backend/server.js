@@ -28,6 +28,11 @@ const allowedOrigins = [
   "http://localhost:3001"
 ].filter(Boolean); // Remove any undefined values
 
+// Debug: Log the allowed origins
+console.log('Allowed CORS origins:', allowedOrigins);
+console.log('FRONTEND_URL:', process.env.FRONTEND_URL);
+console.log('ADMIN_URL:', process.env.ADMIN_URL);
+
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
@@ -58,6 +63,16 @@ app.use("/api/messages", messageRoutes);
 // Root route
 app.get('/', (req, res) => {
   res.send('Backend is up and running');
+});
+
+// Test CORS endpoint
+app.get('/test-cors', (req, res) => {
+  res.json({
+    success: true,
+    message: 'CORS is working',
+    origin: req.headers.origin || 'No origin header',
+    allowedOrigins: allowedOrigins
+  });
 });
 
 // Error handling
