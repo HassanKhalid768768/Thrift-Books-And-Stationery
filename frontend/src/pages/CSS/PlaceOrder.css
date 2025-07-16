@@ -1,0 +1,185 @@
+:root {
+    /* Light mode variables */
+    --place-order-bg: #ffffff;
+    --place-order-card-bg: #ffffff;
+    --place-order-text: #333333;
+    --place-order-text-secondary: #555555;
+    --place-order-border: #ddd;
+    --place-order-input-border: #c5c5c5;
+    --place-order-shadow: rgba(0, 0, 0, 0.1);
+    --place-order-success: #12b76a;
+    --place-order-coupon-bg: #e9f7fe;
+    --place-order-coupon-text: #0089d0;
+    --place-order-accent: tomato;
+}
+
+.dark-mode {
+    /* Dark mode variables */
+    --place-order-bg: #121212;
+    --place-order-card-bg: #1e1e1e;
+    --place-order-text: #f5f5f5;
+    --place-order-text-secondary: #b3b3b3;
+    --place-order-border: #333333;
+    --place-order-input-border: #444444;
+    --place-order-shadow: rgba(0, 0, 0, 0.3);
+    --place-order-success: #2ecc71;
+    --place-order-coupon-bg: #1a3f5a;
+    --place-order-coupon-text: #4db5ff;
+    --place-order-accent: #ff6347;
+}
+
+.discount {
+    color: var(--place-order-success);
+    font-weight: 500;
+}
+
+.discount-value {
+    color: var(--place-order-success);
+    font-weight: bold;
+}
+
+.coupon-code-label {
+    display: inline-block;
+    font-weight: bold;
+    background-color: var(--place-order-coupon-bg);
+    padding: 2px 6px;
+    border-radius: 3px;
+    color: var(--place-order-coupon-text);
+    font-size: 0.9em;
+    margin-left: 5px;
+}
+
+
+.place-order{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: auto;
+  margin-top: 50px;
+  margin-bottom: 50px;
+  width: 80%;
+  background-color: var(--place-order-bg);
+  color: var(--place-order-text);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.place-order-left, .place-order-right{
+  width: 100%;
+  max-width: 500px;
+  margin-bottom: 20px;
+}
+
+.card {
+  padding: 40px;
+  border: 1px solid var(--place-order-border);
+  border-radius: 8px;
+  box-shadow: 0 4px 8px var(--place-order-shadow);
+  background-color: var(--place-order-card-bg);
+  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.place-order-left .title{
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 30px;
+  color: var(--place-order-text);
+  transition: color 0.3s ease;
+}
+
+.place-order-left input{
+  margin-bottom: 10px;
+  width:96%;
+  padding: 10px;
+  border: 1px solid var(--place-order-input-border);
+  border-radius: 4px;
+  outline-color: var(--place-order-accent);
+  background-color: var(--place-order-bg);
+  color: var(--place-order-text);
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.dark-mode .place-order-left input {
+  background-color: #2d2d2d;
+}
+
+.dark-mode .place-order-left input:focus {
+  border-color: var(--place-order-accent);
+}
+
+.place-order-left .multi-fields{
+  display: flex;
+  gap: 10px;
+}
+
+.place-order-left .multi-fields input {
+  flex: 1
+}
+
+.cart-total{
+  flex:1;
+  display: flex;
+  flex-direction: column;
+  gap:20px;
+}
+
+.cart-total h1{
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: var(--place-order-text);
+  transition: color 0.3s ease;
+}
+
+.cart-total-details{
+  display: flex;
+  justify-content: space-between;
+  color: var(--place-order-text-secondary);
+  transition: color 0.3s ease;
+}
+  
+.cart-total hr{
+  margin:10px 0px;
+  border-color: var(--place-order-border);
+  transition: border-color 0.3s ease;
+}
+
+.cart-total button{
+  border:none;
+  color:white;
+  background-color: var(--place-order-accent);
+  width:100%;
+  padding:12px 0px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.cart-total button:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+@media (min-width: 768px) {
+  .place-order {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 50px;
+  }
+
+  .place-order-left {
+    flex: 1;
+    margin-right: auto;
+  }
+
+
+  .place-order-right {
+    flex: 1;
+    margin-left: auto;
+  }
+
+  .cart-total button {
+    width: max(15vw, 200px);
+  }
+}
+

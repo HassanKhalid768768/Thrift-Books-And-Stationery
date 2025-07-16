@@ -1,0 +1,29 @@
+.shopCategory-products{
+    margin: 80px 170px;
+    margin-bottom: 100px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    row-gap: 80px;
+}
+
+@media(max-width:1280px){
+    .shopCategory-products{
+        width: 90%;
+        margin: 50px auto;
+        row-gap: 40px;
+    }
+    .shopCategory-products .item{
+        margin: auto;
+    }
+}
+@media(max-width:800px){
+    .shopCategory-products{
+        width: 95%;
+    }
+}
+
+@media(max-width:500px){
+    .shopCategory-products{
+        grid-template-columns: 1fr 1fr;
+    }
+}

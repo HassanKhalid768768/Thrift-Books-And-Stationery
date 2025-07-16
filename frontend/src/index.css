@@ -1,0 +1,227 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+:root {
+  /* Light mode variables */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f9f9f9;
+  --bg-hover: #e0e0e0;
+  --text-primary: #171717;
+  --text-secondary: #626262;
+  --text-muted: #8a8a8a;
+  --accent-color: tomato;
+  --border-color: #e0e0e0;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --card-bg: #ffffff;
+  --input-bg: #ffffff;
+  --accent-bg: #e9f7fe;
+  --accent-text: #0089d0;
+  --error-color: #ff4444;
+  --success-color: #12b76a;
+  --card-shadow: rgba(0, 0, 0, 0.1);
+  
+  /* Toast variables - light mode */
+  --toast-bg: #ffffff;
+  --toast-text: #171717;
+  --toast-border: #e0e0e0;
+  --toast-success: #12b76a;
+  --toast-error: #ff4444;
+  --toast-info: #0089d0;
+  --toast-warning: #ff9800;
+}
+
+.dark-mode {
+  /* Dark mode variables */
+  --bg-primary: #121212;
+  --bg-secondary: #1e1e1e;
+  --bg-hover: #404040;
+  --text-primary: #f5f5f5;
+  --text-secondary: #b3b3b3;
+  --text-muted: #8a8a8a;
+  --accent-color: #ff6347; /* Slightly brighter tomato for dark mode */
+  --border-color: #333333;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  --card-bg: #1e1e1e;
+  --input-bg: #2d2d2d;
+  --accent-bg: #1a3f5a;
+  --accent-text: #4db5ff;
+  --error-color: #ff6666;
+  --success-color: #2ecc71;
+  --card-shadow: rgba(0, 0, 0, 0.3);
+  
+  /* Toast variables - dark mode */
+  --toast-bg: #1e1e1e;
+  --toast-text: #f5f5f5;
+  --toast-border: #333333;
+  --toast-success: #2ecc71;
+  --toast-error: #ff6666;
+  --toast-info: #4db5ff;
+  --toast-warning: #ffa726;
+}
+
+* {
+  margin: 0;
+  box-sizing: border-box;
+  transition: background-color 0.3s ease, 
+              color 0.3s ease,
+              border-color 0.3s ease,
+              box-shadow 0.3s ease;
+}
+
+body {
+  font-family: 'Poppins';
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+/* Dark mode styles for major components */
+.dark-mode .navbar {
+  background-color: var(--bg-primary);
+  box-shadow: 0 1px 3px -2px rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .nav-menu {
+  color: var(--text-secondary);
+}
+
+.dark-mode .nav-logo p {
+  background: linear-gradient(45deg, #f5f5f5, #b3b3b3, #f5f5f5);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.dark-mode .nav-search input {
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+  border-color: var(--accent-color);
+}
+
+.dark-mode .search-results {
+  background-color: var(--card-bg);
+  border-color: var(--accent-color);
+}
+
+.dark-mode .search-result-item {
+  color: var(--text-primary);
+}
+
+.dark-mode .nav-login-cart button {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--accent-color);
+}
+
+.dark-mode .nav-login-cart button:hover {
+  background-color: rgba(255, 99, 71, 0.1);
+}
+
+.dark-mode .nav-profile-dropdown {
+  background-color: var(--card-bg);
+  border-color: var(--accent-color);
+  color: var(--text-primary);
+}
+
+.dark-mode .nav-menu-visible {
+  background-color: var(--bg-secondary);
+}
+
+/* Dark mode styles for product cards and other components */
+.dark-mode .item {
+  background-color: var(--card-bg);
+  color: var(--text-primary);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.dark-mode .item:hover {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .item p {
+  color: var(--text-secondary);
+}
+
+.dark-mode .item-prices {
+  color: var(--text-primary);
+}
+
+.dark-mode .item-price-new {
+  color: var(--accent-color);
+}
+
+.dark-mode button, 
+.dark-mode .button {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--accent-color);
+}
+
+.dark-mode button:hover,
+.dark-mode .button:hover {
+  background-color: var(--accent-color);
+  color: white;
+}
+
+.dark-mode h1, .dark-mode h2, .dark-mode h3 {
+  color: var(--text-primary);
+}
+
+/* Fix for common item components */
+.dark-mode .new-collections,
+.dark-mode .popular,
+.dark-mode .related-products,
+.dark-mode .category-products {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.dark-mode .newsletter {
+  background: linear-gradient(180deg, rgba(50, 50, 50, 0.8) 0%, rgba(30, 30, 30, 0.6) 60%);
+}
+
+/* Toast styling for dark mode */
+.dark-toast {
+  font-family: 'Poppins', sans-serif !important;
+}
+
+/* Customize toast container in dark mode */
+.dark-mode .Toastify__toast {
+  background-color: var(--toast-bg) !important;
+  color: var(--toast-text) !important;
+  border: 1px solid var(--toast-border);
+  box-shadow: 0 4px 8px var(--shadow-color);
+}
+
+.dark-mode .Toastify__close-button {
+  color: var(--toast-text);
+  opacity: 0.7;
+}
+
+.dark-mode .Toastify__close-button:hover {
+  opacity: 1;
+}
+
+/* Customize toast progress bar */
+.dark-mode .Toastify__progress-bar {
+  background: var(--accent-color);
+}
+
+/* Style different toast types */
+.dark-mode .Toastify__toast--success {
+  border-left: 4px solid var(--toast-success);
+}
+
+.dark-mode .Toastify__toast--error {
+  border-left: 4px solid var(--toast-error);
+}
+
+.dark-mode .Toastify__toast--info {
+  border-left: 4px solid var(--toast-info);
+}
+
+.dark-mode .Toastify__toast--warning {
+  border-left: 4px solid var(--toast-warning);
+}
+
+/* Toast icons */
+.dark-mode .Toastify__toast-icon {
+  color: var(--accent-color);
+}

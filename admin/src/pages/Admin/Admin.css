@@ -1,0 +1,39 @@
+.admin{
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+    position: relative;
+    background-color: #f8f9fa;
+    transition: background-color 0.3s ease;
+}
+
+/* Main content container styles */
+.admin-content {
+    flex: 1;
+    padding: 0; /* Changed from 15px */
+    margin-left: 250px; /* Match sidebar width */
+    width: calc(100% - 250px);
+    transition: margin-left 0.3s ease, width 0.3s ease;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Dark mode styling for admin container */
+.admin.dark-mode {
+    background-color: #000000; /* Changed from #121212 */
+    color: white;
+}
+
+@media(max-width:800px){
+    .admin{
+        flex-direction: column;
+    }
+    
+    .admin-content {
+        margin-left: 0;
+        width: 100%;
+        padding: 0; /* Changed from 10px */
+        margin-top: 0;
+    }
+}

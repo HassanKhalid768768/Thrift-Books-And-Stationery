@@ -1,0 +1,302 @@
+/* Dark mode variables */
+:root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f5f5f5;
+    --card-bg: #ffffff;
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --border-color: #e0e0e0;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+.dark-mode {
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #242424;
+    --card-bg: #2d2d2d;
+    --text-primary: #ffffff;
+    --text-secondary: #b3b3b3;
+    --border-color: #404040;
+    --shadow-color: rgba(0, 0, 0, 0.3);
+}
+
+.my-orders {
+    width: 80%;
+    margin: auto;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+}
+
+.my-orders .container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.my-orders-order {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    border-radius: 12px;
+    background: var(--card-bg);
+    box-shadow: 0 4px 6px var(--shadow-color);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease, color 0.3s ease;
+}
+
+.my-orders-order:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.order-images {
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    padding: 10px 0;
+    margin-bottom: 15px;
+    scrollbar-width: thin;
+    scrollbar-color: #ddd #f5f5f5;
+}
+
+.order-images::-webkit-scrollbar {
+    height: 6px;
+}
+
+.order-images::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+    border-radius: 10px;
+    transition: background 0.3s ease;
+}
+
+.order-images::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 10px;
+    transition: background 0.3s ease;
+}
+
+.order-image-container {
+    position: relative;
+    min-width: 80px;
+    max-width: 80px;
+}
+
+.order-product-image {
+    width: 100%;
+    height: 80px;
+    object-fit: cover;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid var(--card-bg);
+    box-shadow: 0 2px 4px var(--shadow-color);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.item-quantity {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #ff4757;
+    color: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    border: 2px solid white;
+}
+
+.order-details {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+    gap: 20px;
+    align-items: center;
+    padding-top: 15px;
+    border-top: 1px solid var(--border-color);
+}
+
+.order-items {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin: 0;
+    transition: color 0.3s ease;
+}
+
+.order-amount {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+    transition: color 0.3s ease;
+}
+
+.order-count {
+    color: var(--text-secondary);
+    margin: 0;
+    transition: color 0.3s ease;
+}
+
+.order-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+}
+
+.order-status span {
+    font-size: 20px;
+}
+
+.track-button {
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: none;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.track-button:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+/* Status-based styling */
+.status-processing {
+    background: linear-gradient(to right, #fff5f5 0%, #fff 100%);
+    border-left: 4px solid #ff4757;
+}
+
+.status-processing .track-button {
+    background-color: #ff4757;
+    color: white;
+}
+
+.status-shipped {
+    background: linear-gradient(to right, #f0f9ff 0%, #fff 100%);
+    border-left: 4px solid #2196f3;
+}
+
+.status-shipped .track-button {
+    background-color: #2196f3;
+    color: white;
+}
+
+.status-delivered {
+    background: linear-gradient(to right, #f0fff4 0%, #fff 100%);
+    border-left: 4px solid #00b894;
+}
+
+.status-delivered .track-button {
+    background-color: #00b894;
+    color: white;
+}
+
+/* Dark mode status styles */
+.dark-mode .status-processing {
+    background: linear-gradient(to right, rgba(255, 71, 87, 0.1) 0%, var(--card-bg) 100%);
+    border-left: 4px solid #ff4757;
+}
+
+.dark-mode .status-shipped {
+    background: linear-gradient(to right, rgba(33, 150, 243, 0.1) 0%, var(--card-bg) 100%);
+    border-left: 4px solid #2196f3;
+}
+
+.dark-mode .status-delivered {
+    background: linear-gradient(to right, rgba(0, 184, 148, 0.1) 0%, var(--card-bg) 100%);
+    border-left: 4px solid #00b894;
+}
+
+/* Status dots colors */
+.status-processing .order-status span {
+    color: #ff4757;
+}
+
+.status-shipped .order-status span {
+    color: #2196f3;
+}
+
+.status-delivered .order-status span {
+    color: #00b894;
+}
+
+/* Loading and error states */
+.loading-message,
+.error-message,
+.empty-orders {
+    text-align: center;
+    padding: 40px;
+    background: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: 0 4px 6px var(--shadow-color);
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+}
+
+.shop-now-btn {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 12px 24px;
+    background-color: #ff4757;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+}
+
+.shop-now-btn:hover {
+    background-color: #ff6b81;
+}
+
+/* Additional dark mode styles for buttons */
+.dark-mode .error-message button,
+.dark-mode .shop-now-btn {
+    background-color: #ff4757;
+    color: white;
+    border: none;
+}
+
+.dark-mode .error-message button:hover,
+.dark-mode .shop-now-btn:hover {
+    background-color: #ff6b81;
+}
+
+/* Responsive design */
+@media (max-width: 900px) {
+    .my-orders {
+        width: 95%;
+    }
+
+    .order-details {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        text-align: left;
+    }
+
+    .order-images {
+        gap: 10px;
+    }
+
+    .order-image-container {
+        min-width: 60px;
+        max-width: 60px;
+    }
+
+    .order-product-image {
+        height: 60px;
+    }
+
+    .track-button {
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    .my-orders-order {
+        padding: 15px;
+    }
+}

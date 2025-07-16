@@ -1,0 +1,42 @@
+/* Full viewport container */
+.main-carousel-container {
+    width: 100%;
+    height: 100vh; /* Full viewport height on desktop */
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Default image styling: use 'cover' on desktop */
+.carousel-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Dark mode styles for carousel */
+.dark-mode .main-carousel-container {
+    background-color: var(--bg-primary);
+}
+
+/* On mobile, show the whole image by using 'contain' */
+@media (max-width: 768px) {
+    .main-carousel-container {
+        height: 60vh; /* Adjust height for mobile */
+    }
+    
+    .carousel-image {
+        object-fit: contain;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-carousel-container {
+        height: 21vh; /* Further adjust for very small devices */
+    }
+    
+    .carousel-image {
+        object-fit: contain;
+    }
+}

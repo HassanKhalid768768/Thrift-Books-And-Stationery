@@ -1,0 +1,202 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+:root {
+  /* Light mode variables */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f9f9f9;
+  --text-primary: #171717;
+  --text-secondary: #626262;
+  --border-color: #e0e0e0;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  
+  /* Toast variables - light mode */
+  --toast-bg: #ffffff;
+  --toast-text: #171717;
+  --toast-border: #e0e0e0;
+  --toast-success: #12b76a;
+  --toast-error: #ff4444;
+  --toast-info: #0089d0;
+  --toast-warning: #ff9800;
+}
+
+.dark-mode {
+  /* Dark mode variables */
+  --bg-primary: #121212;
+  --bg-secondary: #1e1e1e;
+  --text-primary: #f5f5f5;
+  --text-secondary: #b3b3b3;
+  --border-color: #333333;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  
+  /* Toast variables - dark mode */
+  --toast-bg: #1e1e1e;
+  --toast-text: #f5f5f5;
+  --toast-border: #333333;
+  --toast-success: #2ecc71;
+  --toast-error: #ff6666;
+  --toast-info: #4db5ff;
+  --toast-warning: #ffa726;
+}
+
+body{
+    font-family: 'Poppins';
+    margin: 0;
+    background-color: #f6f6f6;
+    height: 100vh;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dark-mode body {
+    background-color: #121212;
+    color: #f5f5f5;
+}
+
+/* Toast Container Base Styles */
+.Toastify__toast-container {
+  font-family: 'Poppins', sans-serif;
+  z-index: 9999;
+  position: fixed;
+  padding: 4px;
+  width: 320px;
+  box-sizing: border-box;
+  color-scheme: light dark;
+}
+
+/* Base Toast Styles */
+.Toastify__toast {
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  padding: 12px 16px;
+  border-left: 4px solid transparent;
+  transition: all 0.3s ease;
+  font-family: 'Poppins', sans-serif;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/* Specific styles for light mode toast */
+.Toastify__toast--light {
+  background-color: var(--bg-primary, #ffffff);
+  color: var(--text-primary, #171717);
+  border: 1px solid var(--border-color, #e0e0e0);
+}
+
+/* Specific styles for dark mode toast */
+.Toastify__toast--dark {
+  background-color: var(--bg-secondary, #1e1e1e) !important;
+  color: var(--text-primary, #f5f5f5) !important;
+  border: 1px solid var(--border-color, #333333);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Dark mode toast styles - apply to both dark class on body and dark class on toast */
+.dark-mode .Toastify__toast,
+.Toastify__toast--dark {
+  background-color: var(--toast-bg) !important;
+  color: var(--toast-text) !important;
+  border: 1px solid var(--toast-border);
+  box-shadow: 0 4px 8px var(--shadow-color);
+}
+
+/* Close button styles */
+.Toastify__close-button {
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+.Toastify__close-button:hover {
+  opacity: 1;
+}
+
+.dark-mode .Toastify__close-button {
+  color: var(--toast-text);
+  opacity: 0.7;
+}
+
+.dark-mode .Toastify__close-button:hover {
+  opacity: 1;
+}
+
+/* Customize toast progress bar */
+.Toastify__progress-bar {
+  height: 4px;
+}
+
+.dark-mode .Toastify__progress-bar {
+  background: linear-gradient(to right, #5a9ee2, #4584bf) !important;
+  opacity: 0.9 !important;
+}
+
+/* Style different toast types */
+.dark-mode .Toastify__toast--success {
+  background-color: rgba(46, 204, 113, 0.15) !important;
+  border-left: 4px solid var(--toast-success);
+}
+
+.dark-mode .Toastify__toast--error {
+  background-color: rgba(231, 76, 60, 0.15) !important;
+  border-left: 4px solid var(--toast-error);
+}
+
+.dark-mode .Toastify__toast--info {
+  background-color: rgba(52, 152, 219, 0.15) !important;
+  border-left: 4px solid var(--toast-info);
+}
+
+.dark-mode .Toastify__toast--warning {
+  background-color: rgba(241, 196, 15, 0.15) !important;
+  border-left: 4px solid var(--toast-warning);
+}
+
+/* Toast body text */
+.dark-mode .Toastify__toast-body {
+  color: var(--toast-text) !important;
+}
+
+/* Toast icons */
+.dark-mode .Toastify__toast-icon {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Override Toastify default styles with higher specificity for dark mode */
+html body .dark-mode .Toastify__toast-container .Toastify__toast,
+html body .Toastify__toast--dark {
+  background-color: #242424 !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Adding transition for theme changes */
+.Toastify__toast-container,
+.Toastify__toast,
+.Toastify__toast-body,
+.Toastify__progress-bar,
+.Toastify__close-button {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+/* Ensure toast content is properly styled */
+.Toastify__toast-body {
+  font-family: 'Poppins', sans-serif;
+  padding: 0 6px;
+  margin: 6px 0;
+  flex: 1;
+}
+
+/* Z-index to ensure toasts are always visible */
+.Toastify__toast-container {
+  z-index: 9999 !important;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .Toastify__toast-container {
+    width: 90%;
+    padding: 0 10px;
+    left: 5%;
+  }
+  
+  .Toastify__toast {
+    margin-bottom: 0.75rem;
+    padding: 10px 14px;
+  }
+}

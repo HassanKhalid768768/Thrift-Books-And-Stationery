@@ -1,0 +1,680 @@
+/* ReviewManagement.css */
+/* CSS variables */
+:root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8f9fa;
+    --card-bg: #ffffff;
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --border-color: #e0e0e0;
+    --shadow-color: rgba(0, 0, 0, 0.05);
+    --input-bg: #f9f9f9;
+    --accent-color: #ff6b6b;
+    --bg-hover: #e2e2e2;
+}
+
+/* Dark mode variables */
+.dark-mode {
+    --bg-primary: #000000;
+    --bg-secondary: #1a1a1a;
+    --card-bg: #000000;
+    --text-primary: #ffffff;
+    --text-secondary: #e0e0e0;
+    --border-color: #333333;
+    --shadow-color: rgba(0, 0, 0, 0.2);
+    --input-bg: #1a1a1a;
+    --accent-color: #ff6b6b;
+    --bg-hover: #2d2d2d;
+}
+
+/* Main container */
+.review-management-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    margin: 0;
+    background-color: var(--bg-primary);
+    box-sizing: border-box;
+    position: relative;
+}
+
+.review-management h1 {
+    color: #333;
+    margin-bottom: 30px;
+    font-size: 28px;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 15px;
+}
+
+/* Header section with stats and search */
+.review-management-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 20px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: var(--bg-primary);
+    padding-bottom: 15px;
+}
+
+.review-stats {
+    display: flex;
+    gap: 20px;
+}
+
+.review-stats p {
+    background-color: var(--bg-secondary);
+    padding: 10px 15px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px var(--shadow-color);
+    font-size: 14px;
+}
+
+.review-search {
+    display: flex;
+    gap: 10px;
+    flex-grow: 1;
+    max-width: 600px;
+}
+
+.review-search input {
+    flex-grow: 1;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.review-search input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.filter-toggle {
+    background-color: #f0f0f0;
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 0 15px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+}
+
+.filter-toggle.active {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.filter-toggle:hover {
+    background-color: #e2e2e2;
+}
+
+.filter-toggle.active:hover {
+    background-color: #0069d9;
+}
+
+/* Products list */
+.products-list {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    overflow: visible;
+}
+
+.product-card {
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    box-shadow: 0 3px 10px var(--shadow-color);
+    overflow: hidden;
+}
+
+.product-header {
+    padding: 20px;
+    border-bottom: 1px solid #eaeaea;
+}
+
+.product-info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.product-info img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.product-info h2 {
+    margin: 0 0 5px 0;
+    font-size: 18px;
+    color: #333;
+}
+
+.product-category {
+    color: #666;
+    background-color: #f0f0f0;
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    margin: 5px 0;
+}
+
+.product-rating {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 5px;
+}
+
+.star {
+    font-size: 16px;
+    line-height: 1;
+    display: inline-block;
+}
+
+.star-filled {
+    color: #FFD700;
+}
+
+.star-empty {
+    color: #D3D3D3;
+}
+
+.product-rating span {
+    color: #666;
+    font-size: 14px;
+}
+
+/* Reviews container */
+.reviews-container {
+    padding: 0 20px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    overflow: visible;
+}
+
+.review-item {
+    border: 1px solid #eee;
+    border-radius: 6px;
+    padding: 15px;
+    background-color: #fafafa;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+}
+
+.negative-review {
+    background-color: #fff9f9;
+    border-color: #ffeded;
+    border-left: 4px solid #ff6b6b;
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.review-rating {
+    display: flex;
+    gap: 3px;
+}
+
+.review-date {
+    color: #888;
+    font-size: 12px;
+}
+
+.review-content {
+    padding: 5px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.review-content p {
+    margin: 0 0 10px 0;
+    line-height: 1.5;
+    color: #333;
+}
+
+.review-user {
+    font-size: 12px;
+    color: #888;
+}
+
+.review-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 5px;
+}
+
+.delete-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 12px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.delete-btn:hover {
+    background-color: #c82333;
+}
+
+.delete-btn:disabled {
+    background-color: #f1a3a9;
+    cursor: not-allowed;
+}
+
+/* Modal overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: white;
+    border-radius: 8px;
+    padding: 25px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    color: #333;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+}
+
+.modal-review-preview {
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    padding: 15px;
+    margin: 15px 0;
+    border-left: 4px solid #007bff;
+}
+
+.modal-review-preview p {
+    margin: 8px 0;
+    line-height: 1.4;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.cancel-btn {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.cancel-btn:hover {
+    background-color: #5a6268;
+}
+
+.cancel-btn:disabled {
+    background-color: #acb1b6;
+    cursor: not-allowed;
+}
+
+/* Loading container */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 50px;
+    gap: 20px;
+}
+
+.spinner {
+    width: 60px;
+    height: 60px;
+    border: 5px solid rgba(0, 123, 255, 0.2);
+    border-radius: 50%;
+    border-top-color: #007bff;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.loading-container p {
+    color: #666;
+}
+
+/* Error message */
+.error-message {
+    text-align: center;
+    padding: 40px;
+    background-color: #fff3f3;
+    border-radius: 8px;
+    margin: 30px 0;
+}
+
+.error-message p {
+    color: #d9534f;
+    margin-bottom: 20px;
+}
+
+.error-message button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.error-message button:hover {
+    background-color: #0069d9;
+}
+
+/* No reviews message */
+.no-reviews {
+    text-align: center;
+    padding: 40px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    margin: 30px 0;
+    color: #6c757d;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .review-management-container {
+        padding: 15px;
+    }
+    
+    .review-management-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .review-stats {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .review-search {
+        flex-direction: column;
+        max-width: 100%;
+    }
+    
+    .product-info {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .product-info img {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .review-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .review-management-container {
+        padding: 10px;
+    }
+    
+    .product-card {
+        border-radius: 5px;
+    }
+    
+    .product-header {
+        padding: 15px;
+    }
+    
+    .reviews-container {
+        padding: 0 15px 15px;
+    }
+    
+    .modal-content {
+        padding: 20px;
+        width: 95%;
+    }
+    
+    .review-item {
+        padding: 12px;
+    }
+    
+    .modal-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .modal-actions button {
+        width: 100%;
+    }
+}
+
+/* Add these dark mode styles at the end of ReviewManagement.css */
+
+/* Dark mode styles */
+.dark-mode.review-management-container,
+.dark-mode .review-management-container {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+.dark-mode .review-management h1 {
+    color: var(--text-primary);
+    border-bottom-color: var(--border-color);
+}
+
+/* Header section with stats and search */
+.dark-mode .review-stats p {
+    background-color: var(--card-bg);
+    color: var(--text-primary);
+    box-shadow: 0 2px 5px var(--shadow-color);
+}
+
+.dark-mode .review-search input {
+    background-color: var(--input-bg);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+    box-shadow: 0 2px 5px var(--shadow-color);
+}
+
+.dark-mode .review-search input::placeholder {
+    color: var(--text-secondary);
+}
+
+.dark-mode .review-search input:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px rgba(255, 99, 71, 0.2);
+}
+
+.dark-mode .filter-toggle {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+.dark-mode .filter-toggle.active {
+    background-color: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
+}
+
+.dark-mode .filter-toggle:hover {
+    background-color: var(--bg-hover);
+}
+
+.dark-mode .filter-toggle.active:hover {
+    background-color: #ff4431;
+}
+
+/* Products list */
+.dark-mode .product-card {
+    background-color: var(--card-bg);
+    box-shadow: 0 3px 10px var(--shadow-color);
+}
+
+.dark-mode .product-header {
+    border-bottom-color: var(--border-color);
+}
+
+.dark-mode .product-info h2 {
+    color: var(--text-primary);
+}
+
+.dark-mode .product-category {
+    color: var(--text-secondary);
+    background-color: var(--bg-secondary);
+}
+
+.dark-mode .star-empty {
+    color: #4a4a4a;
+}
+
+/* Reviews container */
+.dark-mode .review-item {
+    border-color: var(--border-color);
+    background-color: var(--bg-secondary);
+}
+
+.dark-mode .negative-review {
+    background-color: rgba(255, 107, 107, 0.1);
+    border-color: #ff6b6b;
+}
+
+.dark-mode .review-date {
+    color: var(--text-secondary);
+}
+
+.dark-mode .review-content {
+    border-bottom-color: var(--border-color);
+}
+
+.dark-mode .review-content p {
+    color: var(--text-primary);
+}
+
+.dark-mode .review-user {
+    color: var(--text-secondary);
+}
+
+/* Modal styles */
+.dark-mode .modal-overlay {
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.dark-mode .modal-content {
+    background-color: var(--bg-primary);
+    box-shadow: 0 5px 15px var(--shadow-color);
+}
+
+.dark-mode .modal-content h2 {
+    color: var(--text-primary);
+    border-bottom-color: var(--border-color);
+}
+
+.dark-mode .modal-review-preview {
+    background-color: var(--bg-secondary);
+    border-color: var(--accent-color);
+    color: var(--text-primary);
+}
+
+/* Loading and error states */
+.dark-mode .loading-container {
+    color: var(--text-primary);
+}
+
+.dark-mode .loading-container p {
+    color: var(--text-primary);
+}
+
+.dark-mode .spinner {
+    border-color: rgba(255, 99, 71, 0.2);
+    border-top-color: var(--accent-color);
+}
+
+.dark-mode .error-message {
+    background-color: rgba(255, 107, 107, 0.1);
+    color: var(--text-primary);
+}
+
+.dark-mode .error-message p {
+    color: #ff6b6b;
+}
+
+.dark-mode .no-reviews {
+    background-color: var(--bg-secondary);
+    color: var(--text-secondary);
+}
+
+/* Button styles */
+.dark-mode .delete-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+.dark-mode .delete-btn:hover {
+    background-color: #c82333;
+}
+
+.dark-mode .delete-btn:disabled {
+    background-color: #614344;
+    color: var(--text-secondary);
+}
+
+.dark-mode .cancel-btn {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.dark-mode .cancel-btn:hover {
+    background-color: var(--bg-hover);
+}
+
+.dark-mode .cancel-btn:disabled {
+    background-color: var(--bg-hover);
+    color: var(--text-secondary);
+}

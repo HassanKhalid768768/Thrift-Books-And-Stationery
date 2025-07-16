@@ -1,0 +1,362 @@
+.add-product {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 800px;
+    padding: 40px 50px;
+    margin: 20px auto;
+    border-radius: 12px;
+    background-color: #fff;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.add-product-title {
+    font-size: 26px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f5f5f5;
+    position: relative;
+}
+
+.add-product-title::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 80px;
+    height: 2px;
+    background: linear-gradient(to right, tomato, #ff7a66);
+}
+
+.addproduct-itemfield {
+    width: 100%;
+    color: #555;
+    margin-bottom: 24px;
+}
+
+.addproduct-itemfield p {
+    margin-bottom: 8px;
+    font-weight: 500;
+    font-size: 15px;
+    color: #444;
+}
+
+.addproduct-itemfield input, 
+.addproduct-itemfield textarea {
+    box-sizing: border-box;
+    width: 100%;
+    height: 50px;
+    border-radius: 8px;
+    padding: 0 15px;
+    border: 1px solid #e0e0e0;
+    outline: none;
+    color: #444;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    background-color: #f9f9f9;
+}
+
+.addproduct-itemfield input:focus, 
+.addproduct-itemfield textarea:focus,
+.add-product-selector:focus {
+    border-color: tomato;
+    box-shadow: 0 0 0 2px rgba(255, 99, 71, 0.1);
+    background-color: #fff;
+}
+
+.addproduct-description {
+    min-height: 100px !important;
+    padding: 15px !important;
+    resize: vertical;
+}
+
+.addproduct-price {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 20px;
+}
+
+.add-product-selector {
+    box-sizing: border-box;
+    width: 100%;
+    height: 50px;
+    padding: 0 15px;
+    font-size: 14px;
+    color: #444;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    cursor: pointer;
+    background-color: #f9f9f9;
+    transition: all 0.3s ease;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23555' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 16px;
+    padding-right: 40px;
+    outline: none;
+}
+
+.add-product-selector:hover {
+    border-color: #ccc;
+    background-color: #f5f5f5;
+}
+
+.upload-area-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 2px dashed #e0e0e0;
+    border-radius: 12px;
+    padding: 30px;
+    margin: 10px 0 20px;
+    background-color: #f9f9f9;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    min-height: 220px;
+}
+
+.upload-area-container:hover {
+    border-color: tomato;
+    background-color: #fff0ee;
+    transform: translateY(-2px);
+}
+
+.addproduct-thumbnail-img {
+    height: 140px;
+    width: 140px;
+    border-radius: 8px;
+    object-fit: contain;
+    margin: 10px 0;
+    transition: all 0.3s ease;
+}
+
+.upload-icon {
+    font-size: 46px;
+    color: #ccc;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+}
+
+.upload-area-container:hover .upload-icon {
+    color: tomato;
+    transform: scale(1.1);
+}
+
+.upload-text {
+    font-size: 14px;
+    color: #777;
+    text-align: center;
+    margin-top: 10px;
+    transition: all 0.3s ease;
+}
+
+.upload-area-container:hover .upload-text {
+    color: #555;
+}
+
+.addproduct-btn {
+    margin-top: 30px;
+    width: 180px;
+    height: 50px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #ff5945, #ff7a66);
+    border: none;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 10px rgba(255, 99, 71, 0.2);
+}
+
+.addproduct-btn:hover {
+    transform: translateY(-2px);
+    background: linear-gradient(135deg, #ff4431, #ff6652);
+    box-shadow: 0 6px 15px rgba(255, 99, 71, 0.3);
+}
+
+.addproduct-btn:active {
+    transform: translateY(1px);
+}
+
+.addproduct-btn:disabled {
+    background: linear-gradient(135deg, #ccc, #ddd);
+    color: #888;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+@media(max-width:800px) {
+    .add-product {
+        width: auto;
+        padding: 30px;
+        margin: 15px;
+    }
+    
+    .addproduct-price {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .upload-area-container {
+        padding: 20px;
+    }
+    
+    .addproduct-btn {
+        width: 100%;
+    }
+}
+
+@media(max-width:500px) {
+    .add-product {
+        padding: 20px;
+        margin: 10px;
+    }
+    
+    .add-product-title {
+        font-size: 22px;
+        margin-bottom: 20px;
+    }
+    
+    .addproduct-itemfield p {
+        font-size: 14px;
+    }
+    
+    .addproduct-thumbnail-img {
+        height: 100px;
+        width: 100px;
+    }
+}
+
+/* Dark Mode Styles */
+/* Main container text */
+.dark-mode .add-product,
+.dark-mode.add-product {
+    background-color: #000000; /* Changed from #1e1e1e to pure black */
+    box-shadow: none; /* Remove box shadow for consistent look */
+    color: #ffffff; /* Add explicit color */
+}
+
+/* Title */
+.dark-mode .add-product .add-product-title,
+.dark-mode.add-product .add-product-title,
+.dark-mode .add-product-title {
+    color: #ffffff !important;
+    border-bottom-color: #333;
+}
+
+.dark-mode .add-product-title::after {
+    background: linear-gradient(to right, #ff6b6b, #ff8c8c); /* Updated gradient to match dark theme */
+}
+
+/* Labels and text */
+.dark-mode .add-product .addproduct-itemfield,
+.dark-mode.add-product .addproduct-itemfield,
+.dark-mode .addproduct-itemfield {
+    color: #ffffff; /* Update the container text color */
+}
+
+/* Update paragraph text color */
+.dark-mode .add-product .addproduct-itemfield p,
+.dark-mode.add-product .addproduct-itemfield p,
+.dark-mode .addproduct-itemfield p {
+    color: #ffffff !important; /* Change from #444 to white for better visibility */
+    font-weight: 500;
+}
+/* Input fields */
+.dark-mode .add-product .addproduct-itemfield input,
+.dark-mode .add-product .addproduct-itemfield textarea,
+.dark-mode .add-product .add-product-selector,
+.dark-mode.add-product .addproduct-itemfield input,
+.dark-mode.add-product .addproduct-itemfield textarea,
+.dark-mode.add-product .add-product-selector,
+.dark-mode .addproduct-itemfield input,
+.dark-mode .addproduct-itemfield textarea,
+.dark-mode .add-product-selector {
+    background-color: #1a1a1a; /* Slightly lighter than black for contrast */
+    border-color: #333;
+    color: #ffffff !important;
+}
+
+.dark-mode .addproduct-itemfield input:focus,
+.dark-mode .addproduct-itemfield textarea:focus,
+.dark-mode .add-product-selector:focus {
+    border-color: #ff6b6b;
+    box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.2);
+    background-color: #1a1a1a;
+}
+
+.dark-mode .add-product-selector {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+}
+
+.dark-mode .add-product-selector:hover {
+    border-color: #ff6b6b;
+    background-color: #1a1a1a;
+}
+
+.dark-mode .upload-area-container {
+    border-color: #333;
+    background-color: #1a1a1a;
+}
+
+.dark-mode .upload-area-container:hover {
+    border-color: #ff6b6b;
+    background-color: rgba(255, 107, 107, 0.1);
+}
+
+.dark-mode .upload-icon {
+    color: #808080; /* Lighter gray for better visibility */
+}
+
+.dark-mode .upload-area-container:hover .upload-icon {
+    color: #ff6b6b;
+    transform: scale(1.1);
+}
+
+.dark-mode .add-product .upload-text,
+.dark-mode.add-product .upload-text,
+.dark-mode .upload-text {
+    color: #ffffff !important; /* Make fully white for better visibility */
+}
+
+.dark-mode .add-product .upload-area-container:hover .upload-text,
+.dark-mode.add-product .upload-area-container:hover .upload-text,
+.dark-mode .upload-area-container:hover .upload-text {
+    color: #ffffff !important; /* Full white on hover */
+}
+
+/* Add these selectors to target any remaining text */
+.dark-mode .add-product *,
+.dark-mode.add-product * {
+    color: #ffffff;
+}
+
+.dark-mode .addproduct-thumbnail-img {
+    background-color: #1a1a1a; /* Add background color for image container */
+    border: 1px solid #333; /* Add border for better visibility */
+}
+
+.dark-mode .addproduct-btn {
+    background: linear-gradient(135deg, #ff5945, #ff7a66);
+    box-shadow: 0 4px 10px rgba(255, 99, 71, 0.1);
+}
+
+.dark-mode .addproduct-btn:hover {
+    background: linear-gradient(135deg, #ff4431, #ff6652);
+    box-shadow: 0 6px 15px rgba(255, 99, 71, 0.2);
+}
+
+.dark-mode .addproduct-btn:disabled {
+    background: linear-gradient(135deg, #333, #444); /* Darker disabled state */
+    color: #666; /* More visible disabled text */
+    border: 1px solid #444; /* Add border for better visibility */
+}

@@ -1,0 +1,238 @@
+/* Add CSS variables at the top of the file */
+:root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8f9fa;
+    --card-bg: #ffffff;
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --border-color: #e0e0e0;
+    --shadow-color: rgba(0, 0, 0, 0.05);
+    --input-bg: #f9f9f9;
+    --accent-color: #ff6b6b;
+    --bg-hover: #e2e2e2;
+}
+
+/* Dark mode variables */
+.dark-mode {
+    --bg-primary: #000000;
+    --bg-secondary: #1a1a1a;
+    --card-bg: #000000;
+    --text-primary: #ffffff;
+    --text-secondary: #e0e0e0;
+    --border-color: #333333;
+    --shadow-color: rgba(0, 0, 0, 0.2);
+    --input-bg: #1a1a1a;
+    --accent-color: #ff6b6b;
+    --bg-hover: #2d2d2d;
+}
+
+/* Add specific h1 styles to fix spacing */
+.list-product h1 {
+    margin: 0;
+    padding: 0; /* Remove padding */
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.list-product{
+    display: flex;
+    flex-direction: column;
+    align-items: stretch; /* Changed from center */
+    width: 100%;
+    height: 100%;
+    padding: 20px;  /* Add padding around the container */
+    margin: 0;    /* Removed margin */
+    border-radius: 0; /* Remove border radius since it's using full width/height */
+    background: var(--bg-primary);
+    box-sizing: border-box; /* Ensure padding is included in width/height */
+    position: relative;
+}
+
+.listproduct-allproducts{
+    width: 100%;
+    overflow: visible; /* Ensure no nested scrollbar */
+    padding: 0; /* Ensure no padding */
+    margin: 0;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    background: inherit;
+}
+
+/* Style hr elements to minimize their impact */
+.listproduct-allproducts hr {
+    margin: 0;
+    border: none;
+    border-top: 1px solid #eee;
+}
+
+/* Dark mode hr */
+.dark-mode .listproduct-allproducts hr {
+    border-top: 1px solid #333;
+}
+
+.listproduct-format-main{
+    display: grid;
+    grid-template-columns: 1fr 3fr 1fr 1fr 1fr 0.5fr 0.5fr;
+    gap: 0; /* Remove gap */
+    width: 100%;
+    padding: 15px;  /* More consistent padding */
+    margin: 0; /* Add this to ensure no margin */
+    box-sizing: border-box;
+    color: #454545;
+    font-size: 15px;
+    font-weight: 600;
+    background: inherit;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.listproduct-format{
+    align-items: center;
+    font-weight: 500;
+    display: grid;
+    grid-template-columns: 1fr 3fr 1fr 1fr 1fr 0.5fr 0.5fr;
+    gap: 0; /* Remove gap */
+    width: 100%;
+    padding: 15px;  /* Match header padding */
+    margin: 0;
+    box-sizing: border-box;
+    background: inherit;
+}
+
+.listproduct-product-icon{
+    height: 80px;
+}
+
+.listproduct-remove-icon, .listproduct-edit-icon{
+    cursor: pointer;
+    margin: auto;
+    width: 20px;
+    height: 20px;
+}
+
+.listproduct-edit-icon {
+    filter: brightness(0.9);
+}
+
+.listproduct-edit-icon:hover {
+    filter: brightness(1.1);
+}
+
+@media(max-width:800px){
+    .list-product{
+        box-sizing: border-box;
+        width: 100%;  /* Changed from 95% to 100% */
+        height: auto; /* Changed from 100% */
+        padding: 10px;  /* Smaller padding on mobile */
+        margin: 0;    /* Removed margin */
+    }
+    .listproduct-format-main,
+    .listproduct-format {
+        padding: 10px;  /* Smaller padding on mobile */
+        color: #454545;
+        font-size: 12px;
+    }
+    .listproduct-product-icon{
+        height: 60px;
+    }
+}
+
+/* Dark Mode Styles */
+/* Update the dark mode container and text styles */
+.dark-mode.list-product, /* Target when dark-mode class is on the same element */
+.dark-mode .list-product { /* Target when dark-mode class is on a parent element */
+    background: #000000;
+    box-shadow: none;
+    color: #ffffff;
+    min-height: auto; /* Changed from 100vh */
+    padding: 20px;  /* Keep consistent padding in dark mode */
+}
+
+@media(max-width:800px) {
+    .dark-mode.list-product,
+    .dark-mode .list-product {
+        padding: 10px;  /* Keep consistent mobile padding in dark mode */
+    }
+}
+
+/* More specific selectors for headings */
+.dark-mode.list-product h1,
+.dark-mode .list-product h1 {
+    color: #ffffff !important; /* Use !important to ensure override */
+    background: #000000;
+    margin: 0;
+    padding: 0; /* Remove padding */
+}
+
+/* Specific fix for the title */
+.dark-mode.list-product h2,
+.dark-mode.list-product h3,
+.dark-mode.list-product p,
+.dark-mode .list-product h2,
+.dark-mode .list-product h3,
+.dark-mode .list-product p {
+    color: #ffffff;
+}
+
+/* Ensure all text content is visible */
+.dark-mode .list-product * {
+    color: #ffffff;
+}
+
+.dark-mode .listproduct-allproducts {
+    background-color: #000000;
+}
+
+.dark-mode .listproduct-format-main {
+    background: #000000;
+    color: #ffffff;
+    border-bottom-color: #333;
+}
+
+.dark-mode .listproduct-format {
+    background: #000000;
+    color: #ffffff;
+    border-bottom: 1px solid #333;
+}
+
+/* Remove any potential margin from the first and last items */
+.listproduct-format:first-child,
+.listproduct-format:last-child {
+    margin: 0;
+}
+
+.dark-mode .listproduct-remove-icon {
+    filter: invert(1) brightness(0.8);
+}
+
+.dark-mode .listproduct-remove-icon:hover {
+    filter: invert(1) brightness(1);
+}
+
+.dark-mode .listproduct-edit-icon {
+    filter: invert(1) brightness(0.8);
+}
+
+.dark-mode .listproduct-edit-icon:hover {
+    filter: invert(1) brightness(1);
+}
+
+/* Scrollbar customization for dark mode - now applied to the body */
+.dark-mode::-webkit-scrollbar {
+    width: 8px;
+}
+
+.dark-mode::-webkit-scrollbar-track {
+    background: #000000;
+}
+
+.dark-mode::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 4px;
+}
+
+.dark-mode::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}

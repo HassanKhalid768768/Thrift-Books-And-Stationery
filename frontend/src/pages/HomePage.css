@@ -1,0 +1,562 @@
+/* HomePage.css - Modern styling for the UrbanStyle home page */
+
+/* ---------- CSS Variables for consistent theming ---------- */
+:root {
+  /* Colors */
+  --primary-color: #171717;
+  --secondary-color: #252525;
+  --accent-color: #4a90e2;
+  --accent-light: rgba(74, 144, 226, 0.1);
+  --text-color: #333333;
+  --text-light: #888888;
+  --white: #ffffff;
+  --light-gray: #f9f9f9;
+  --medium-gray: #e0e0e0;
+  
+  /* Shadows */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.1);
+  
+  /* Border radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  
+  /* Spacing - follows a modular scale */
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 2rem;
+  --space-lg: 3rem;
+  --space-xl: 5rem;
+  
+  /* Transitions */
+  --transition-fast: 0.2s ease;
+  --transition-standard: 0.3s ease;
+  --transition-slow: 0.5s ease;
+  
+  /* Font sizes */
+  --font-xs: 0.75rem;
+  --font-sm: 0.875rem;
+  --font-md: 1rem;
+  --font-lg: 1.25rem;
+  --font-xl: 1.5rem;
+  --font-2xl: 2rem;
+  --font-3xl: 2.5rem;
+}
+
+/* ---------- Base styles for the home page ---------- */
+.home-page {
+  font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--text-color);
+  background-color: var(--bg-primary);
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Subtle background pattern for entire page */
+.home-page::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(var(--light-gray) 1px, transparent 1px),
+    radial-gradient(var(--light-gray) 1px, transparent 1px);
+  background-size: 50px 50px;
+  background-position: 0 0, 25px 25px;
+  opacity: 0.3;
+  z-index: -2;
+  pointer-events: none;
+}
+
+/* Dark mode styles for the home page background */
+.dark-mode .home-page {
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+}
+
+.dark-mode .home-page::before {
+  background-image: 
+    radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+    radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+}
+
+/* Coupon Banner Styles */
+.coupon-banner {
+  margin: var(--space-md) auto;
+  max-width: 1200px;
+  padding: 0 var(--space-md);
+}
+
+.coupon-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(45deg, #4a90e2, #357abf);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+  color: white;
+  transition: transform var(--transition-standard);
+}
+
+.coupon-content:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+.coupon-content::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 70%);
+  animation: rotate 10s linear infinite;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Dark mode styles for coupon banner */
+.dark-mode .coupon-content {
+  background: linear-gradient(45deg, #2a5380, #1e3a58);
+  box-shadow: var(--shadow-md);
+}
+
+.dark-mode .coupon-badge {
+  background-color: #ff6347;
+  box-shadow: 0 2px 10px rgba(255, 99, 71, 0.3);
+}
+
+.dark-mode .coupon-code {
+  background-color: var(--bg-secondary);
+  color: #4a90e2;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.dark-mode .coupon-action button,
+.dark-mode .coupon-action .coupon-button {
+  background-color: var(--bg-secondary);
+  color: #4a90e2;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.dark-mode .coupon-action button:hover,
+.dark-mode .coupon-action .coupon-button:hover {
+  background-color: #ff6347;
+  color: var(--text-primary);
+}
+
+.coupon-badge {
+  background-color: #ff3d1c;
+  color: white;
+  padding: 5px 15px;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: var(--font-sm);
+  letter-spacing: 1px;
+  position: relative;
+  z-index: 2;
+  box-shadow: 0 2px 10px rgba(255, 61, 28, 0.3);
+  animation: pulse 2s infinite;
+}
+
+.coupon-text {
+  flex-grow: 1;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+
+.coupon-text h3 {
+  font-size: var(--font-xl);
+  margin: 0 0 var(--space-xs);
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.coupon-text p {
+  font-size: var(--font-md);
+  margin: 0;
+  opacity: 0.9;
+}
+
+.coupon-code {
+  font-weight: 700;
+  background-color: white;
+  color: #4a90e2;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  margin: 0 5px;
+  letter-spacing: 1px;
+  display: inline-block;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.coupon-action {
+  position: relative;
+  z-index: 2;
+}
+
+.coupon-action button,
+.coupon-action .coupon-button {
+  background-color: white;
+  color: #4a90e2;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 50px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-standard);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+}
+
+.coupon-action button:hover,
+.coupon-action .coupon-button:hover {
+  background-color: #ff3d1c;
+  color: white;
+  transform: scale(1.05);
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Responsive Coupon Banner */
+@media (max-width: 1024px) {
+  .coupon-content {
+    padding: var(--space-sm);
+  }
+  
+  .coupon-text h3 {
+    font-size: var(--font-lg);
+  }
+  
+  .coupon-text p {
+    font-size: var(--font-sm);
+  }
+  
+  .coupon-action button,
+  .coupon-action .coupon-button {
+    padding: 8px 16px;
+  }
+}
+
+@media (max-width: 800px) {
+  .coupon-banner {
+    margin: var(--space-sm) auto;
+  }
+  
+  .coupon-content {
+    flex-direction: column;
+    gap: var(--space-sm);
+    padding: var(--space-sm);
+    text-align: center;
+  }
+  
+  .coupon-badge {
+    margin-bottom: var(--space-xs);
+  }
+  
+  .coupon-text {
+    margin: var(--space-xs) 0;
+  }
+  
+  .coupon-code {
+    margin: var(--space-xs) 0;
+    display: inline-block;
+  }
+}
+
+@media (max-width: 500px) {
+  .coupon-banner {
+    padding: 0 var(--space-xs);
+  }
+  
+  .coupon-content {
+    padding: var(--space-xs);
+  }
+  
+  .coupon-text h3 {
+    font-size: var(--font-md);
+  }
+  
+  .coupon-text p {
+    font-size: var(--font-xs);
+  }
+  
+  .coupon-action button,
+  .coupon-action .coupon-button {
+    padding: 6px 12px;
+    font-size: var(--font-xs);
+  }
+}
+
+/* Main container layout */
+.home-container {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 0 var(--space-md);
+  position: relative;
+}
+
+/* Vertical rhythm with consistent spacing */
+.home-section {
+  margin: var(--space-xl) 0;
+  position: relative;
+  border-radius: var(--radius-lg);
+  transition: transform var(--transition-standard), 
+              box-shadow var(--transition-standard);
+  overflow: hidden;
+}
+
+/* Popular section specific styles */
+.popular-section {
+  background-color: rgba(255, 255, 255, 0.7);
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  z-index: 1;
+}
+
+.dark-mode .popular-section {
+  background-color: var(--bg-secondary);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.popular-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, var(--accent-light) 0%, transparent 100%);
+  opacity: 0.5;
+  z-index: -1;
+}
+
+.dark-mode .popular-section::before {
+  background: linear-gradient(135deg, rgba(74, 144, 226, 0.05) 0%, transparent 100%);
+  opacity: 0.7;
+}
+
+/* Collections section specific styles */
+.collections-section {
+  background-color: rgba(255, 255, 255, 0.7);
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  z-index: 1;
+  margin-bottom: var(--space-xl);
+}
+
+.dark-mode .collections-section {
+  background-color: var(--bg-secondary);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.collections-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, transparent 0%, var(--accent-light) 100%);
+  opacity: 0.5;
+  z-index: -1;
+}
+
+.dark-mode .collections-section::before {
+  background: linear-gradient(45deg, transparent 0%, rgba(74, 144, 226, 0.05) 100%);
+  opacity: 0.7;
+}
+
+/* Section divider */
+.home-section::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--medium-gray), transparent);
+  opacity: 0;
+}
+
+.dark-mode .home-section::after {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+}
+
+/* Hover effects for sections */
+.home-section:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+}
+
+.dark-mode .home-section:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
+}
+
+/* Page scroll animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.home-section {
+  opacity: 0;
+  animation: fadeInUp 0.8s ease forwards;
+}
+
+.popular-section {
+  animation-delay: 0.1s;
+}
+
+.collections-section {
+  animation-delay: 0.3s;
+}
+
+/* Custom scrollbar for better UX */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--light-gray);
+}
+
+.dark-mode ::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--medium-gray);
+  border-radius: 5px;
+}
+
+.dark-mode ::-webkit-scrollbar-thumb {
+  background: #444;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-color);
+}
+
+/* ---------- Responsive Adjustments ---------- */
+@media (max-width: 1280px) {
+  .home-container {
+    max-width: 1100px;
+  }
+  
+  .home-section {
+    margin: var(--space-lg) 0;
+  }
+}
+
+@media (max-width: 1024px) {
+  .home-container {
+    max-width: 900px;
+    padding: 0 var(--space-sm);
+  }
+  
+  .home-section {
+    margin: var(--space-md) 0;
+    border-radius: var(--radius-md);
+  }
+  
+  .collections-section {
+    margin-bottom: var(--space-lg);
+  }
+  
+  .home-section:hover {
+    transform: translateY(-3px);
+  }
+}
+
+@media (max-width: 800px) {
+  .home-container {
+    padding: 0 var(--space-sm);
+  }
+  
+  .home-section {
+    margin: var(--space-sm) 0;
+    border-radius: var(--radius-sm);
+  }
+  
+  .collections-section {
+    margin-bottom: var(--space-md);
+  }
+  
+  .home-section:hover {
+    transform: none;
+    box-shadow: var(--shadow-sm);
+  }
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+@media (max-width: 500px) {
+  .home-container {
+    padding: 0 var(--space-xs);
+  }
+  
+  .home-section {
+    margin: var(--space-xs) 0;
+    box-shadow: none;
+  }
+  
+  .collections-section {
+    margin-bottom: var(--space-sm);
+  }
+  
+  /* Disable hover effects on mobile */
+  .home-section:hover {
+    transform: none;
+    box-shadow: none;
+  }
+  
+  /* Adjust animations for mobile */
+  .home-section {
+    animation-duration: 0.5s;
+  }
+}
+

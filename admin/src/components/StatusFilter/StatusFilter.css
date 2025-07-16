@@ -1,0 +1,156 @@
+/* StatusFilter.css - Clean and optimized version */
+
+/* Main container */
+.status-filter {
+    margin: 20px 0;
+    margin-bottom: 20px;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.status-filter h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #333;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+/* Tabs container */
+.status-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* Individual tab styling */
+.status-tab {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px;
+    background-color: #f5f5f5;
+    border-radius: 6px;
+    border-left: 4px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 140px;
+    color: #555;
+}
+
+.status-tab:hover {
+    background-color: #e0e0e0;
+}
+
+/* Active tab styling - consolidated */
+.status-tab.active {
+    color: #222;
+    font-weight: 700;
+    background-color: rgba(102, 102, 102, 0.1);  /* Similar opacity pattern as other tabs */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border-left: 4px solid #666;  /* Consistent border style */
+}
+/* Status count badge */
+.status-count {
+    display: inline-block;
+    padding: 2px 8px;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    font-size: 0.8rem;
+    margin-left: 10px;
+}
+
+/* Active tab status count - consistent for all tabs */
+.status-tab.active .status-count {
+    background-color: rgba(0, 0, 0, 0.15);
+    color: #333;
+    font-weight: 600;
+}
+
+/* Dark mode styles */
+.dark-mode .status-filter {
+    background-color: #2d2d2d;
+    border-color: #444;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .status-filter h3 {
+    color: #f0f0f0;
+}
+
+/* Basic dark mode styling for all tabs */
+.dark-mode .status-tab {
+    background-color: #444;
+    color: #ffffff; /* White text without !important */
+    border-left-color: transparent;
+}
+
+/* No special treatment for first child in dark mode */
+
+.dark-mode .status-tab:hover {
+    background-color: #555;
+    color: #ffffff; /* White text on hover */
+}
+
+/* Active tabs in dark mode - applying to ALL active tabs */
+.dark-mode .status-tab.active {
+    color: #ffffff; /* White text without !important */
+    font-weight: 700;
+    background-color: #3a3a3a; /* Darken background for better contrast */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* All tabs in dark mode active state - consistent styling */
+.dark-mode .status-tab.active {
+    background-color: rgba(102, 102, 102, 0.2);  /* Similar opacity pattern in dark mode */
+    color: #ffffff; /* White text */
+    border-left: 4px solid #666;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* All tabs in dark mode hover when active */
+.dark-mode .status-tab.active:hover {
+    background-color: #444444;
+}
+
+/* Status count in dark mode - consistent for all tabs */
+.dark-mode .status-count {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    font-weight: 500;
+}
+
+/* Active tab status count in dark mode - consistent for all */
+.dark-mode .status-tab.active .status-count {
+    background-color: rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+    font-weight: 600;
+}
+
+/* Media query for dark mode on small screens */
+@media (max-width: 768px) {
+    .dark-mode .status-tab {
+        width: 100%;
+        padding: 12px 16px; /* Larger touch targets */
+        color: #ffffff;
+    }
+    
+    .dark-mode .status-tab:first-child,
+    .dark-mode .status-tab.active {
+        color: #ffffff;
+    }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .status-tabs {
+        flex-direction: column;
+    }
+    
+    .status-tab {
+        width: 100%;
+    }
+}

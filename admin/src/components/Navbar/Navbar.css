@@ -1,0 +1,252 @@
+.navbar{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 60px;
+    box-shadow: 0 1px 3px -2px;
+    margin-bottom: 1px;
+    background-color: #fff;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+}
+
+/* Dark mode navbar styles */
+.navbar.dark-mode {
+    background-color: #121212;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    color: white;
+}
+
+.urbanstyle-logo {
+    color: #171717;
+    font-size: 38px;
+    font-weight: 800;
+    font-family: 'Poppins', sans-serif;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    background: linear-gradient(45deg, #1a1a1a, #404040, #1a1a1a);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition: all 0.3s ease;
+    position: relative;
+    animation: shine 8s linear infinite;  /* Slower animation */
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.15);  /* Softer shadow */
+    margin: 0;
+}
+
+/* Dark mode logo styles */
+.dark-mode .urbanstyle-logo {
+    background: linear-gradient(45deg, #f5f5f5, #b3b3b3, #f5f5f5);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.25);
+}
+
+.urbanstyle-logo:hover {
+    transform: scale(1.01);  /* More subtle scale */
+    letter-spacing: 2.2px;  /* Less dramatic spacing change */
+}
+
+.urbanstyle-logo span {
+    background: linear-gradient(45deg, #ff3d1c, #ff7a66, #ff3d1c);  /* More vibrant */
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-style: italic;
+    font-weight: 900;
+    animation: shine 8s linear infinite;
+    text-shadow: 2px 2px 4px rgba(255,61,28,0.2);  /* Matching shadow */
+}
+
+@keyframes shine {
+    to {
+        background-position: 200% center;
+    }
+}
+
+.navbar-brand {
+    text-decoration: none;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Dark mode toggle button styles */
+.dark-mode-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #f5f5f5;
+    transition: all 0.3s ease;
+    position: relative;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border: none;
+}
+
+.dark-mode-toggle:hover {
+    transform: scale(1.1);
+    background: #ebebeb;
+}
+
+.dark-mode-toggle svg {
+    color: #333;
+    transition: all 0.3s ease;
+}
+
+/* Dark mode specific toggle styles */
+.dark-mode .dark-mode-toggle {
+    background: #333;
+}
+
+.dark-mode .dark-mode-toggle svg {
+    color: #fff;
+}
+
+.login-condition{
+    font-size: 15px;
+    border: 1px solid tomato;
+    padding: 5px 25px;
+    color: rgb(61, 57, 57);
+    border-radius: 16px;
+    cursor:pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.login-condition:hover{
+    background-color: rgb(243, 229, 226);
+}
+
+/* Dark mode button styles */
+.dark-mode .login-condition {
+    background-color: #333;
+    color: white;
+    border-color: #ff6347;
+}
+
+.dark-mode .login-condition:hover {
+    background-color: rgba(255, 99, 71, 0.1);
+    color: white;
+}
+
+.admin-badge {
+    font-size: 14px;
+    color: #555;
+    padding: 3px 10px;
+    background-color: #f5f5f5;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+}
+
+.admin-panel-text {
+    font-size: 15px;
+    font-weight: 600;
+    color: #444;
+    padding: 5px 15px;
+    background-color: #fff0ee;
+    border-radius: 16px;
+    border: 1px solid tomato;
+    margin-right: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease, color 0.3s ease, background-color 0.3s ease;
+}
+
+/* Dark mode admin panel text */
+.dark-mode .admin-panel-text {
+    color: white;
+    background-color: rgba(255, 99, 71, 0.1);
+    border-color: #ff6347;
+}
+
+.admin-panel-text:hover {
+    background-color: rgb(243, 229, 226);
+    transform: translateY(-2px);
+    box-shadow: 0 2px 5px rgba(255, 99, 71, 0.2);
+}
+
+/* Dark mode admin panel text hover */
+.dark-mode .admin-panel-text:hover {
+    background-color: rgba(255, 99, 71, 0.2);
+    box-shadow: 0 2px 5px rgba(255, 99, 71, 0.3);
+}
+
+.logout-btn {
+    background-color: #fff0ee;
+}
+
+/* Dark mode logout button */
+.dark-mode .logout-btn {
+    background-color: rgba(255, 99, 71, 0.1);
+    color: white;
+}
+
+/* Fix for SVG and icon colors in dark mode */
+.dark-mode .navbar svg,
+.dark-mode .navbar svg *,
+.dark-mode .nav-right svg,
+.dark-mode .nav-right svg * {
+    color: white !important;
+    fill: white !important;
+    stroke: white !important;
+}
+
+.loading-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #f0f0f0;
+    position: relative;
+    overflow: hidden;
+}
+
+.loading-dot::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 300%;
+    height: 100%;
+    background: linear-gradient(90deg, #f0f0f0, #ddd, #f0f0f0);
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(100%); }
+}
+
+@media(max-width:1280px){
+    .navbar{
+        padding: 12px 50px;
+    }
+    .urbanstyle-logo {
+        font-size: 25px;
+    }
+}
+
+@media(max-width:800px){
+    .navbar{
+        padding: 15px 30px;
+    }
+    .urbanstyle-logo {
+        font-size: 20px;
+    }
+}
+
+@media(max-width:500px){
+    .navbar{
+        padding: 8px 20px;
+    }
+    .urbanstyle-logo {
+        transform: scale(0.8);
+    }
+}

@@ -1,0 +1,157 @@
+/* .loginsignup{
+    /* width: 100%;
+    height: 90vh;
+    background: #fce3fe;
+    padding-top: 80px;
+    margin-bottom: 75px; */
+/* } */
+
+.loginsignup-container{
+    width: 400px;
+    background: #fff;
+    margin: 80px auto;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.loginsignup-container h1{
+    margin: 20px 0;
+    text-align: center;
+    font-size: 30px;
+}
+
+.loginsignup-fields{
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    margin-top: 30px;
+}
+
+.loginsignup-fields input{
+    height:40px;
+    width: 100%;
+    padding-left: 20px;
+    border: 1px solid #c9c9c9;
+    outline-color: tomato;
+    color: #5c5c5c;
+    font-size: 16px;
+    border-radius: 4px;
+}
+
+.loginsignup-container button{
+    width: 100%;
+    height: 40px;
+    color: #fff;
+    background: tomato;
+    margin-top: 30px;
+    border: none;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.loginsignup-login{
+    margin-top: 20px;
+    color: #5c5c5c;
+    font-size: 16px;
+    font-weight: 500;
+    text-align: center;
+}
+
+.loginsignup-login span{
+    color: tomato;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+@media(max-width:800px){
+    .loginsignup-container{
+        width: 350px;
+    }
+    .loginsignup-container h1{
+        font-size: 25px;
+    }
+    .loginsignup-container button{
+        margin-top: 30px;
+        font-size: 18px;
+    }
+}
+
+@media(max-width:500px){
+
+    .loginsignup-container{
+        width: 270px;
+    }
+
+    .loginsignup-container h1{
+        font-size: 22px;
+    }
+    .loginsignup-container button{
+        height: 45px;
+        margin-top: 30px;
+        font-size: 16px;
+    }
+    .loginsignup-fields{
+        gap: 20px;
+    }
+    .loginsignup-fields input{
+        height: 45px;
+        font-size: 14px;
+    }
+    .loginsignup-login{
+        font-size: 14px;
+    }
+}
+
+/* Dark Mode Styles */
+.dark-mode .loginsignup-container {
+    background: #1e1e1e;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    border: 1px solid #333;
+}
+
+.dark-mode .loginsignup-container h1 {
+    color: #ffffff;
+}
+
+.dark-mode .loginsignup-fields input {
+    background-color: #2d2d2d;
+    border: 1px solid #404040;
+    color: #e0e0e0;
+    outline-color: tomato;
+}
+
+.dark-mode .loginsignup-fields input::placeholder {
+    color: #808080;
+}
+
+.dark-mode .loginsignup-fields input:focus {
+    border-color: tomato;
+    background-color: #333333;
+}
+
+.dark-mode .loginsignup-container button {
+    background: tomato;
+    color: #ffffff;
+}
+
+.dark-mode .loginsignup-container button:hover {
+    background: #ff6347;
+    opacity: 0.9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .loginsignup-login {
+    color: #b0b0b0;
+}
+
+.dark-mode .loginsignup-login span {
+    color: tomato;
+}
+
+.dark-mode .loginsignup-login span:hover {
+    color: #ff6347;
+    text-decoration: underline;
+}

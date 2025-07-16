@@ -1,0 +1,1006 @@
+/* Header wrapper for fixed positioning */
+.header-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 1000;
+    background-color: var(--bg-primary);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dark-mode.header-wrapper {
+    background-color: #121212;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* CSS variables for header height */
+:root {
+    --header-height: 120px; /* Default header height (navbar + shipping banner) */
+}
+
+/* Apply padding to body for fixed header with transition */
+body {
+    padding-top: var(--header-height); /* Use CSS variable */
+    transition: padding-top 0.3s ease;
+}
+
+/*shipping banner*/
+.shipping-banner {
+    width: 100%;
+    background-color: tomato;
+    color: white;
+    text-align: center;
+    padding: 8px 0;
+    font-size: 16px;
+    font-weight: 500;
+    font-family: 'Poppins', sans-serif;
+    letter-spacing: 0.5px;
+    z-index: 1001;
+}
+.shipping-banner p {
+    margin: 0;
+}
+
+.dark-mode .shipping-banner {
+    background-color: #ff6347;
+    color: white;
+}
+
+/*navbar*/
+
+.navbar{
+    display: flex;
+    justify-content: space-around;
+    padding: 16px;
+    align-items: center;
+    background-color: var(--bg-primary);
+    width: 100%;
+    z-index: 999; /* Slightly lower than header-wrapper */
+    transition: background-color 0.3s ease;
+    position: relative;
+}
+
+.navbar .active{
+    padding-bottom: 2px !important;
+    border-bottom: 2px solid tomato !important;
+    color: tomato !important;
+    font-weight: 600;
+}
+
+.dark-mode .navbar .active {
+    border-bottom: 2px solid #ff6347 !important;
+    color: #ff6347 !important;
+}
+
+.nav-logo{
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.nav-logo img {
+    display: none;
+}
+
+.nav-logo p{
+    color: #171717;
+    font-size: 38px;
+    font-weight: 800;
+    font-family: 'Poppins', sans-serif;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    background: linear-gradient(45deg, #1a1a1a, #404040, #1a1a1a);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition: all 0.3s ease;
+    position: relative;
+    animation: shine 8s linear infinite;  /* Slower animation */
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.15);  /* Softer shadow */
+}
+
+.dark-mode .nav-logo p {
+    background: linear-gradient(45deg, #f5f5f5, #b3b3b3, #f5f5f5);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.25);
+}
+
+@keyframes shine {
+    to {
+        background-position: 200% center;
+    }
+}
+
+.nav-logo p:hover {
+    transform: scale(1.01);  /* More subtle scale */
+    letter-spacing: 2.2px;  /* Less dramatic spacing change */
+}
+
+.nav-logo p span {
+    background: linear-gradient(45deg, #ff3d1c, #ff7a66, #ff3d1c);  /* More vibrant */
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-style: italic;
+    font-weight: 900;
+    animation: shine 8s linear infinite;
+    text-shadow: 2px 2px 4px rgba(255,61,28,0.2);  /* Matching shadow */
+}
+
+.nav-menu{
+    display: flex;
+    gap: 50px;
+    align-items: center;
+    list-style: none;
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.nav-menu li{
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+/* Apply specific styling to the actual links in nav-menu */
+.nav-menu li a {
+    color: #171717 !important; /* Black color for light mode */
+    transition: color 0.3s ease, border-bottom 0.3s ease;
+    text-decoration: none !important;
+    padding-bottom: 2px;
+}
+
+.nav-menu li a:hover {
+    color: tomato !important;
+}
+
+/* Dark mode specific styling for nav-menu */
+.dark-mode .nav-menu {
+    color: white;
+}
+
+.dark-mode .nav-menu li {
+    color: white;
+}
+
+.dark-mode .nav-menu li a {
+    color: white !important;
+}
+
+.dark-mode .nav-menu li a:hover {
+    color: #ff6347 !important;
+}
+
+.nav-menu hr{
+    border: none;
+    width: 80%;
+    height: 3px;
+    border-radius: 10px;
+    background-color: tomato;
+}
+
+.dark-mode .nav-menu hr {
+    background-color: #ff6347;
+}
+
+.nav-login-cart{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Dark mode toggle button styles */
+.dark-mode-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #f5f5f5;
+    transition: all 0.3s ease;
+    position: relative;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.dark-mode-toggle:hover {
+    transform: scale(1.1);
+    background: #ebebeb;
+}
+
+.dark-mode-toggle svg {
+    color: #333;
+    transition: all 0.3s ease;
+}
+
+/* Dark mode specific styles */
+.dark-mode .dark-mode-toggle {
+    background: #333;
+}
+
+.dark-mode .dark-mode-toggle svg {
+    color: #fff;
+}
+
+.nav-login-cart button{
+    padding: 10px 40px;
+    outline: none;
+    border: 1px solid tomato;
+    border-radius: 75px;
+    color: #515151;
+    font-size: 20px;
+    font-weight: 500;
+    cursor: pointer;
+    background: #fff;
+}
+
+.nav-login-cart button:hover{
+    background: #f5e0e0;
+    color: #000;
+}
+
+.dark-mode .nav-login-cart button {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border-color: var(--accent-color);
+}
+
+.dark-mode .nav-login-cart button:hover {
+    background-color: rgba(255, 99, 71, 0.1);
+    color: var(--text-primary);
+}
+
+.nav-cart-count{
+    width: 22px;
+    height: 22px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: -35px;
+    margin-left: -55px;
+    border-radius: 50%;
+    font-size: 14px;
+    background-color: tomato;
+    color: #fff;
+}
+
+/* Fix for dark mode user icon - consolidated */
+.dark-mode .navbar-profile svg, 
+.dark-mode .nav-login-cart svg,
+.dark-mode .nav-hamburger svg,
+.dark-mode .nav-hamburger img,
+.dark-mode .navbar svg *,
+.dark-mode .nav-login-cart svg *,
+.dark-mode .navbar-profile svg * {
+    color: white !important;
+    fill: white !important;
+    stroke: white !important;
+}
+
+/* Icon color fixes for dark mode - consolidated and prioritized */
+.dark-mode img[src*="cart_icon"],
+.dark-mode img[src*="profile_icon"],
+.dark-mode .nav-login-cart a img,
+.dark-mode .navbar-profile img {
+    filter: invert(1) brightness(100) !important;
+    opacity: 1 !important;
+}
+
+/* Hamburger icon treated separately */
+.dark-mode img[src*="hamburger"] {
+    filter: brightness(0) invert(1) !important;
+    opacity: 1 !important;
+}
+
+/* SVG element specific targeting */
+.dark-mode .navbar svg,
+.dark-mode .navbar svg *,
+.dark-mode .nav-login-cart svg,
+.dark-mode .nav-login-cart svg *,
+.dark-mode .navbar-profile svg,
+.dark-mode .navbar-profile svg * {
+    color: white !important;
+    fill: white !important;
+    stroke: white !important;
+}
+
+/* Super-specific SVG element targeting */
+.dark-mode .navbar path,
+.dark-mode .navbar rect,
+.dark-mode .navbar circle,
+.dark-mode .navbar line,
+.dark-mode .navbar polyline,
+.dark-mode .navbar polygon {
+    stroke: white !important;
+    fill: white !important;
+}
+
+/* Ensure even background images and icons are visible */
+.dark-mode .navbar i,
+.dark-mode .navbar .icon,
+.dark-mode .navbar-profile i,
+.dark-mode .nav-login-cart i {
+    color: white !important;
+}
+
+/* For icons that might be using background images */
+.dark-mode .nav-login-cart [style*="background"],
+.dark-mode .navbar-profile [style*="background"] {
+    filter: brightness(10) !important;
+}
+
+.nav-hamburger{
+    display: none;
+}
+
+.navbar-profile{
+    position: relative;
+    cursor: pointer;
+}
+
+.nav-profile-dropdown{
+   position: absolute;
+   display: none;
+   top: 100%;
+   right: 0;
+   z-index: 1005; /* Increased z-index to appear above fixed header */
+   gap: 10px;
+   background-color: #fff;
+   padding: 12px 25px;
+   border-radius: 4px;
+   border: 1px solid tomato;
+   list-style: none;
+   outline: none;
+   cursor: pointer;
+   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+   min-width: 150px;
+}
+
+/* Show dropdown on hover */
+.navbar-profile:hover .nav-profile-dropdown {
+   display: block;
+}
+
+.nav-profile-dropdown li{
+    cursor: pointer;
+}
+
+.dark-mode .navbar-profile:hover .nav-profile-dropdown {
+    background-color: #121212 !important;
+    border-color: var(--accent-color) !important;
+}
+
+.dark-mode .nav-profile-dropdown li,
+.dark-mode .navbar-profile:hover .nav-profile-dropdown li {
+    color: white !important;
+    padding: 5px 0;
+}
+
+.dark-mode .nav-profile-dropdown hr,
+.dark-mode .navbar-profile:hover .nav-profile-dropdown hr {
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.2) !important;
+    opacity: 1;
+    margin: 5px 0;
+}
+
+.dark-mode .nav-profile-dropdown li:hover,
+.dark-mode .navbar-profile:hover .nav-profile-dropdown li:hover {
+    color: #ff6347 !important;
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Fix for dark mode navbar hover states */
+.dark-mode .navbar .active {
+    border-bottom: 2px solid #ff6347 !important;
+    color: #ff6347 !important;
+}
+
+/* Search styling */
+.nav-search {
+    position: relative;
+    width: 250px;
+}
+
+.search-input-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.nav-search input {
+    width: 100%;
+    padding: 8px 35px 8px 12px;
+    border: 1px solid tomato;
+    border-radius: 75px;
+    outline: none;
+    font-size: 14px;
+    color: #515151;
+}
+
+.dark-mode .nav-search input {
+    background-color: var(--input-bg);
+    color: var(--text-primary);
+    border-color: var(--accent-color);
+}
+
+.search-icon {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    right: 12px;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+.search-icon::before {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 10px;
+    height: 10px;
+    border: 2px solid tomato;
+    border-radius: 50%;
+    box-sizing: border-box;
+}
+
+.search-icon::after {
+    content: "";
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    width: 6px;
+    height: 2px;
+    background-color: tomato;
+    transform: rotate(45deg);
+    transform-origin: 0 0;
+}
+
+.dark-mode .search-icon::before {
+    border-color: var(--accent-color);
+}
+
+.dark-mode .search-icon::after {
+    background-color: var(--accent-color);
+}
+
+.search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    margin-top: 5px;
+    background-color: #fff;
+    border: 1px solid tomato;
+    border-radius: 4px;
+    z-index: 1005; /* Increased z-index to appear above fixed header */
+    padding: 0;
+    list-style: none;
+    max-height: 300px;
+    overflow-y: auto;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    min-width: 200px;
+}
+
+.dark-mode .search-results {
+    background-color: var(--card-bg);
+    border-color: var(--accent-color);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.search-results li {
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.search-results li:hover {
+    background-color: #f5e0e0;
+    color: #666;
+}
+
+.dark-mode .search-result-item {
+    color: var(--text-primary);
+}
+
+.dark-mode .search-results li:hover {
+    background-color: rgba(255, 99, 71, 0.1);
+}
+
+.search-result-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.search-result-image {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid #e0e0e0;
+}
+
+.dark-mode .search-result-image {
+    border-color: var(--border-color);
+}
+
+.search-result-name {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 500;
+}
+
+
+@media(max-width:1280px){
+    :root {
+        --header-height: 100px; /* Reduced for smaller screens */
+    }
+    body {
+        padding-top: var(--header-height);
+    }
+    .shipping-banner {
+        padding: 7px 0;
+        font-size: 15px;
+    }
+    .navbar{
+        padding: 12px 50px;
+    }
+    .nav-search {
+        width: 200px;
+    }
+    .nav-logo img{
+        width: 25px;
+        height: 25px;
+    }
+    .nav-logo p{
+        font-size: 25px;
+    }
+    .nav-menu{
+        gap: 30px;
+        font-size: 16px;
+    }
+    .nav-login-cart{
+        gap: 30px;
+    }
+    .nav-login-cart button{
+        padding: 8px 32px;
+        font-size: 16px;
+    }
+    .nav-cart-count{
+        margin-left: -40px;
+        font-size: 12px;
+    }
+}
+
+@media(max-width:1024px){
+    :root {
+        --header-height: 90px; /* Adjusted for smaller screens */
+    }
+    body {
+        padding-top: var(--header-height);
+    }
+    .navbar{
+        padding: 12px 30px;
+    }
+    .nav-search {
+        width: 150px;
+    }
+    .nav-menu{
+        gap: 25px;
+        font-size: 14px;
+    }
+    .nav-login-cart button{
+        padding: 6px 24px;
+        font-size: 14px;
+    }
+    .nav-login-cart img{
+        width: 30px;
+    }
+    .nav-cart-count{
+        width: 18px;
+        height: 18px;
+    }
+}
+
+@media(max-width:800px){
+    :root {
+        --header-height: 85px; /* Adjusted for smaller screens */
+    }
+    body {
+        padding-top: var(--header-height);
+    }
+    .navbar {
+        display: grid;
+        grid-template-areas: 
+            "logo hamburger search cart";
+        grid-template-columns: auto auto auto auto;
+        align-items: center;
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .nav-logo {
+        grid-area: logo;
+    }
+
+    .nav-hamburger {
+        grid-area: hamburger;
+        justify-self: center;
+    }
+
+    .nav-login-cart {
+        grid-area: cart;
+        justify-self: end;
+    }
+    .search-result-image {
+        width: 30px;
+        height: 30px;
+    }
+    .nav-search {
+        grid-area: search;
+        position: relative;
+        width: auto;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center; /* Center the search icon */
+    }
+    
+    /* Hide default search on mobile */
+    .search-input-container {
+        display: none;
+    }
+    
+    /* Background overlay when search is active */
+    .search-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 998; /* Below the header but above the content */
+    }
+    
+    .search-overlay.show {
+        display: block;
+    }
+    
+    /* Dark mode overlay */
+    .dark-mode .search-overlay {
+        background: rgba(0, 0, 0, 0.7);
+    }
+    
+    /* Show search when toggled */
+    .search-input-container.show-mobile {
+        display: flex;
+        position: fixed; /* Change to fixed for better mobile experience */
+        top: var(--header-height); /* Match header height */
+        left: 0;
+        width: 100%;
+        padding: 15px;
+        background: var(--bg-primary);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        z-index: 1000;
+        animation: slideDown 0.3s ease-out;
+        transform-origin: top center;
+    }
+    
+    .dark-mode .search-input-container.show-mobile {
+        background: var(--bg-secondary);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    }
+    
+    /* Mobile search icon styles */
+    .mobile-search-icon {
+        display: block;
+        width: 20px;
+        height: 20px;
+        position: relative;
+        cursor: pointer;
+        margin: 0 auto; /* Center in its grid area */
+        padding: 10px;
+    }
+    
+    .mobile-search-icon::before {
+        content: "";
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 12px;
+        height: 12px;
+        border: 2px solid tomato;
+        border-radius: 50%;
+        box-sizing: border-box;
+    }
+    
+    .mobile-search-icon::after {
+        content: "";
+        position: absolute;
+        top: 14px;
+        left: 14px;
+        width: 6px;
+        height: 2px;
+        background-color: tomato;
+        transform: rotate(45deg);
+        transform-origin: 0 0;
+    }
+    
+    /* Dark mode mobile search icon */
+    .dark-mode .mobile-search-icon::before {
+        border-color: var(--accent-color);
+    }
+    
+    .dark-mode .mobile-search-icon::after {
+        background-color: var(--accent-color);
+    }
+    .nav-search input {
+        width: 100%;
+        padding: 8px 35px 8px 12px;
+        font-size: 14px;
+    }
+    
+    /* Ensure search icon is visible */
+    .search-icon {
+        display: block;
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 16px;
+        height: 16px;
+        opacity: 1;
+        cursor: pointer;
+    }
+    
+    /* Adjust search icon styles */
+    .search-icon::before {
+        width: 10px;
+        height: 10px;
+        border: 2px solid tomato;
+    }
+    
+    .search-icon::after {
+        width: 6px;
+        height: 2px;
+        background-color: tomato;
+    }
+    
+    /* Dark mode search icon */
+    .dark-mode .search-icon::before {
+        border-color: var(--accent-color);
+    }
+    
+    .dark-mode .search-icon::after {
+        background-color: var(--accent-color);
+    }
+    .nav-hamburger{
+        display: block;
+        width: 30px;
+        height: 30px;
+        transition: 0.5s;
+        margin-top: 5px;
+        cursor: pointer;
+    }
+    
+    /* Simplified dark mode hamburger icon styling */
+    .dark-mode .nav-hamburger img {
+        filter: invert(1) !important;
+        opacity: 1 !important;
+    }
+    
+    .nav-menu{
+        display: none; /* Initial state */
+        height: auto;
+        width: 100%;
+        position: absolute; /* Relative to header-wrapper */
+        top: 100%; /* Position right below the header */
+        left: 0;
+        z-index: 998; /* Lower than header-wrapper but higher than content */
+        background: var(--bg-primary);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        padding: 0;
+        margin: 0;
+        margin-top: 10px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .nav-menu-visible{
+        display: flex;
+        flex-direction: column;
+        animation: slideDown 0.3s ease-out;
+    }
+    
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .nav-menu li {
+        width: 100%;
+        text-align: center;
+        padding: 15px 0;
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .nav-menu li:last-child {
+        border-bottom: none;
+    }
+    
+    /* Add padding when menu is visible */
+    .nav-menu-visible ~ .nav-search {
+        margin-top: 5px;
+    }
+    
+    /* Ensure search results appear correctly */
+    .search-input-container.show-mobile .search-results {
+        position: fixed;
+        top: calc(var(--header-height) + 60px); /* Position below search input */
+        left: 0;
+        width: 100%;
+        margin: 0;
+        max-height: calc(100vh - var(--header-height) - 60px);
+        border-radius: 0;
+        box-shadow: none;
+        z-index: 1001; /* Ensure it appears above the header */
+        background: var(--bg-primary);
+    }
+    
+    /* Add dark mode styles for search results */
+    .dark-mode .search-input-container.show-mobile .search-results {
+        background: var(--bg-secondary);
+    }
+    
+    .search-results {
+        position: absolute;
+        width: calc(100% - 30px);
+        left: 15px;
+        top: calc(100% + 5px);
+    }
+    
+    /* Improve mobile profile dropdown */
+    .nav-profile-dropdown {
+        right: -15px;
+        width: 200px;
+    }
+    
+    .dark-mode .nav-menu-visible {
+        background-color: var(--bg-secondary);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    }
+    
+    .dark-mode .nav-menu {
+        background-color: var(--bg-secondary);
+    }
+}
+@media(max-width:500px){
+    :root {
+        --header-height: 75px; /* Adjusted for smaller screens */
+    }
+    body {
+        padding-top: var(--header-height);
+    }
+    .navbar {
+        padding: 8px;
+        gap: 5px;
+    }
+    .nav-search {
+        padding: 5px;
+    }
+    .nav-search input {
+        font-size: 11px;
+        padding: 6px 26px 6px 8px;
+    }
+    .search-icon {
+        width: 14px;
+        height: 14px;
+    }
+    .search-icon::before {
+        width: 8px;
+        height: 8px;
+    }
+    .search-icon::after {
+        top: 10px;
+        left: 10px;
+        width: 5px;
+        height: 2px;
+    }
+    .search-result-item {
+        gap: 6px;
+    }
+    .search-result-image {
+        width: 25px;
+        height: 25px;
+    }
+    .search-result-name {
+        font-size: 10px;
+    }
+    .nav-logo{
+        transform: scale(0.8);
+        transform-origin: left;
+    }
+    .nav-hamburger{
+        transform: scale(0.8);
+    }
+    .nav-login-cart{
+        transform: scale(0.8);
+        transform-origin: right;
+        gap: 10px;
+    }
+    .nav-login-cart button {
+        padding: 6px 15px;
+        font-size: 14px;
+    }
+    .dark-mode-toggle {
+        width: 32px;
+        height: 32px;
+    }
+    .mobile-search-icon {
+        transform: scale(0.9);
+    }
+    .search-input-container.show-mobile input {
+        font-size: 16px; /* Better size for mobile */
+        height: 40px; /* Ensure consistent height */
+        padding: 8px 40px 8px 15px;
+        width: 100%;
+        border-radius: 20px;
+    }
+    .shipping-banner {
+        font-size: 12px;
+        padding: 6px 0;
+    }
+    .nav-logo p {
+        font-size: 24px;
+    }
+}
+
+/* Touch support for mobile devices */
+@media (hover: none) {
+    .navbar-profile .nav-profile-dropdown {
+        display: none;
+    }
+
+    .navbar-profile:active .nav-profile-dropdown {
+        display: block;
+    }
+
+    .nav-menu li {
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .nav-menu li:active {
+        background-color: rgba(255, 99, 71, 0.1);
+    }
+}
+
+/* Override all previous hamburger icon styles with a single, highly specific rule */
+.dark-mode .navbar .nav-hamburger img {
+    filter: invert(1) !important;
+    opacity: 1 !important;
+}
+.dark-mode img.nav-hamburger,
+.dark-mode .navbar img.nav-hamburger {
+    filter: invert(1) !important;
+    opacity: 1 !important;
+}

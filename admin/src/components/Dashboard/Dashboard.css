@@ -1,0 +1,211 @@
+.dashboard {
+    padding: 20px;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.dashboard h1 {
+    margin-bottom: 30px;
+    color: #333;
+}
+
+.dashboard-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.stats-card {
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    transition: transform 0.2s;
+}
+
+.stats-card:hover {
+    transform: translateY(-5px);
+}
+
+.stats-card h2 {
+    font-size: 18px;
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #555;
+}
+
+.stat-value {
+    font-size: 36px;
+    font-weight: bold;
+    color: #333;
+}
+
+.stat-percent {
+    margin-top: 5px;
+    font-size: 14px;
+    color: #666;
+}
+
+.stats-card.total {
+    background-color: #f8f9fa;
+    border-left: 4px solid #343a40;
+}
+
+.stats-card.polo {
+    background-color: #e3f2fd;
+    border-left: 4px solid #1976d2;
+}
+
+.stats-card.tshirts {
+    background-color: #f1f8e9;
+    border-left: 4px solid #43a047;
+}
+
+.stats-card.formalshirts {
+    background-color: #fff3e0;
+    border-left: 4px solid #ff9800;
+}
+
+.latest-products {
+    background-color: white;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.latest-products h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.product-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.product-item {
+    display: flex;
+    background-color: #f9f9f9;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.product-item img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+}
+
+.product-details {
+    padding: 12px;
+    flex: 1;
+}
+
+.product-details h3 {
+    margin: 0 0 5px 0;
+    font-size: 16px;
+    color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.product-details .category {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #666;
+}
+
+.product-details .price {
+    margin: 5px 0 0 0;
+    font-weight: bold;
+    color: #ff4141;
+}
+
+@media (max-width: 768px) {
+    .dashboard-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .product-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Dark Mode Styles */
+.dark-mode .dashboard h1 {
+    color: #ffffff;
+}
+
+.dark-mode .stats-card {
+    background-color: #2d2d2d;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.dark-mode .stats-card h2 {
+    color: #e0e0e0;
+}
+
+.dark-mode .stat-value {
+    color: #ffffff;
+}
+
+.dark-mode .stat-percent {
+    color: #b0b0b0;
+}
+
+/* Dark mode stat cards with specific backgrounds */
+.dark-mode .stats-card.total {
+    background-color: #1a1a1a;
+    border-left: 4px solid #4a4a4a;
+}
+
+.dark-mode .stats-card.polo {
+    background-color: #1a2635;
+    border-left: 4px solid #1976d2;
+}
+
+.dark-mode .stats-card.tshirts {
+    background-color: #1a2820;
+    border-left: 4px solid #43a047;
+}
+
+.dark-mode .stats-card.formalshirts {
+    background-color: #2b2317;
+    border-left: 4px solid #ff9800;
+}
+
+.dark-mode .latest-products {
+    background-color: #2d2d2d;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.dark-mode .latest-products h2 {
+    color: #ffffff;
+}
+
+.dark-mode .product-item {
+    background-color: #1e1e1e;
+}
+
+.dark-mode .product-details h3 {
+    color: #ffffff;
+}
+
+.dark-mode .product-details .category {
+    color: #b0b0b0;
+}
+
+.dark-mode .product-details .price {
+    color: #ff6b6b;
+}
+
+/* Dark mode hover effects */
+.dark-mode .stats-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}

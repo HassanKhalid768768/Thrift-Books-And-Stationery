@@ -1,0 +1,483 @@
+/* AdminMessages Component Styles */
+.admin-content {
+    transition: all 0.3s ease;
+}
+
+/* Use global CSS variables for dark mode styling */
+:root {
+    --dark-bg-primary: #000000;
+    --dark-bg-paper: #000000;
+    --dark-bg-dialog: #000000;
+    --dark-bg-secondary: #1a1a1a;
+    --dark-text-primary: #ffffff;
+    --dark-text-secondary: #e0e0e0;
+    --dark-border-color: #333333;
+    --dark-header-text: #ffffff;
+    --dark-divider: #333333;
+    --dark-unread-bg: rgba(255, 107, 107, 0.1);
+    --dark-input-bg: #1a1a1a;
+    --dark-chip-bg: #2d2d2d;
+    --dark-hover: #2d2d2d;
+    --accent-color: #ff6b6b;
+}
+
+/* Paper Container */
+.admin-content .MuiPaper-root {
+    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+body.dark-mode .admin-content {
+    background-color: var(--dark-bg-primary);
+    color: var(--dark-text-primary);
+}
+
+body.dark-mode .admin-content .MuiPaper-root {
+    background-color: var(--dark-bg-paper) !important;
+    color: var(--dark-text-primary) !important;
+    box-shadow: none !important;
+}
+
+/* Typography */
+body.dark-mode .admin-content .MuiTypography-root {
+    color: var(--text-primary);
+}
+
+body.dark-mode .admin-content .MuiTypography-colorTextSecondary {
+    color: var(--text-secondary);
+}
+
+/* Table Components */
+body.dark-mode .admin-content .MuiTableCell-root {
+    color: var(--text-primary);
+    border-bottom-color: var(--border-color);
+}
+
+body.dark-mode .admin-content .MuiTableHead-root .MuiTableCell-root {
+    color: var(--dark-text-primary) !important;
+    background-color: var(--dark-bg-secondary) !important;
+    font-weight: 600;
+    border-bottom: 2px solid var(--dark-border-color) !important;
+}
+
+body.dark-mode .admin-content .MuiTableRow-root:hover {
+    background-color: var(--dark-hover) !important;
+}
+
+body.dark-mode .admin-content .MuiTableRow-root {
+    transition: background-color 0.2s ease;
+}
+
+body.dark-mode .admin-content .MuiTableRow-root[data-status="unread"],
+body.dark-mode .unread-message {
+    background-color: var(--dark-unread-bg) !important;
+}
+
+body.dark-mode .admin-content .MuiTablePagination-root {
+    color: var(--text-primary);
+}
+
+body.dark-mode .admin-content .MuiTablePagination-selectIcon,
+body.dark-mode .admin-content .MuiTablePagination-actions .MuiIconButton-root {
+    color: var(--text-secondary);
+}
+
+/* Form Controls */
+body.dark-mode .admin-content .MuiInputBase-root {
+    color: var(--dark-text-primary);
+    background-color: var(--dark-input-bg);
+}
+
+body.dark-mode .admin-content .MuiOutlinedInput-notchedOutline {
+    border-color: var(--dark-border-color);
+}
+
+body.dark-mode .admin-content .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+    border-color: var(--dark-text-secondary);
+}
+
+body.dark-mode .admin-content .MuiInputLabel-root {
+    color: var(--dark-text-secondary);
+}
+
+body.dark-mode .admin-content .MuiSelect-icon {
+    color: var(--dark-text-secondary);
+}
+
+body.dark-mode .admin-content .MuiMenuItem-root {
+    color: var(--dark-text-primary);
+}
+
+body.dark-mode .admin-content .MuiMenu-paper,
+body.dark-mode .admin-content .MuiPopover-paper {
+    background-color: var(--dark-bg-paper);
+}
+
+/* Buttons and Icons */
+body.dark-mode .admin-content .MuiIconButton-root {
+    color: var(--dark-text-secondary);
+}
+
+body.dark-mode .admin-content .MuiIconButton-colorPrimary {
+    color: #90caf9;
+}
+
+body.dark-mode .admin-content .MuiIconButton-colorError {
+    color: #f48fb1;
+}
+
+body.dark-mode .admin-content .MuiButton-outlined {
+    border-color: var(--dark-border-color);
+    color: var(--dark-text-primary);
+}
+
+body.dark-mode .admin-content .MuiButton-outlined:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+body.dark-mode .admin-content .MuiButton-containedError {
+    background-color: #d32f2f;
+}
+
+/* Chips */
+body.dark-mode .admin-content .MuiChip-root {
+    background-color: var(--dark-chip-bg) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .admin-content .MuiChip-colorPrimary {
+    background-color: var(--accent-color) !important;
+    color: #ffffff !important;
+}
+
+/* Dialog Components */
+body.dark-mode .MuiDialog-paper {
+    background-color: var(--dark-bg-dialog) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .MuiDialogTitle-root {
+    color: var(--dark-text-primary) !important;
+    background-color: var(--dark-bg-secondary) !important;
+    border-bottom: 1px solid var(--dark-border-color) !important;
+}
+
+body.dark-mode .MuiDialogContentText-root {
+    color: var(--dark-text-secondary);
+}
+
+body.dark-mode .MuiDialogContent-root {
+    border-color: var(--dark-border-color);
+}
+
+body.dark-mode .MuiDialogActions-root {
+    border-color: var(--dark-border-color) !important;
+    background-color: var(--dark-bg-secondary) !important;
+    border-top: 1px solid var(--dark-border-color) !important;
+}
+
+body.dark-mode .MuiDivider-root {
+    background-color: var(--dark-divider);
+}
+
+/* Message Detail Dialog Specific Styles */
+body.dark-mode .MuiDialog-paper .MuiTypography-subtitle2[color="textSecondary"] {
+    color: #90caf9 !important;
+    font-weight: 500;
+}
+
+body.dark-mode .MuiDialog-paper .MuiTypography-body1 {
+    color: var(--dark-text-primary);
+}
+
+body.dark-mode .MuiDialog-paper .MuiTypography-body2[color="textSecondary"] {
+    color: var(--dark-text-secondary) !important;
+}
+
+body.dark-mode .MuiDialogContent-dividers {
+    border-top: 1px solid var(--dark-border-color);
+    border-bottom: 1px solid var(--dark-border-color);
+}
+
+/* Alert Components */
+body.dark-mode .admin-content .MuiAlert-root {
+    background-color: var(--dark-bg-paper);
+}
+
+body.dark-mode .admin-content .MuiAlert-standardError {
+    color: #f48fb1;
+}
+
+body.dark-mode .admin-content .MuiAlert-standardInfo {
+    color: #90caf9;
+}
+
+/* Paper for message content */
+body.dark-mode .MuiDialog-paper .MuiPaper-outlined {
+    border-color: var(--dark-border-color);
+    background-color: #3d3d3d;
+    color: var(--dark-text-primary);
+}
+
+.admin-content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  height: calc(100vh - 70px); /* Account for navbar height */
+}
+
+/* Table styling */
+.MuiTableContainer-root {
+  margin-bottom: 20px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.MuiTable-root {
+  min-width: 650px;
+}
+
+.MuiTableHead-root {
+  background-color: #f9f9f9;
+}
+
+.MuiTableHead-root .MuiTableCell-root {
+  font-weight: 600;
+  color: #333;
+}
+
+body.dark-mode .MuiTableHead-root {
+  background-color: #383838;
+}
+
+body.dark-mode .MuiTableHead-root .MuiTableCell-root {
+  color: var(--dark-header-text);
+  letter-spacing: 0.5px;
+}
+
+.MuiTableRow-root:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+  transition: background-color 0.2s ease;
+}
+
+/* Custom styling for unread messages */
+.unread-message {
+  background-color: rgba(25, 118, 210, 0.08);
+  font-weight: 600;
+}
+
+/* Status chips */
+.MuiChip-root.MuiChip-colorPrimary {
+  background-color: #1976d2;
+  color: white;
+}
+
+.MuiChip-root.MuiChip-colorDefault {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+/* Dialog styling */
+.MuiDialog-paper {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.MuiDialogTitle-root {
+  background-color: #f5f5f5;
+  padding: 16px 24px;
+}
+
+.MuiDialogContent-root.MuiDialogContent-dividers {
+  padding: 20px 24px;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.MuiDialogActions-root {
+  padding: 16px 24px;
+  justify-content: flex-end;
+}
+
+/* Message detail styles */
+.message-content-paper {
+  padding: 16px;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+  min-height: 150px;
+}
+
+body.dark-mode .message-content-paper {
+  background-color: var(--dark-bg-secondary) !important;
+  color: var(--dark-text-primary) !important;
+}
+
+/* Dark mode message detail dialog enhancements */
+body.dark-mode .dialog-title-content {
+  color: var(--dark-text-primary);
+}
+
+body.dark-mode .MuiDialog-paper .MuiChip-root {
+  background-color: #444;
+  color: var(--dark-text-primary);
+}
+
+body.dark-mode .MuiDialog-paper .MuiChip-colorPrimary {
+  background-color: rgba(25, 118, 210, 0.7);
+  color: white;
+}
+
+body.dark-mode .MuiDialogTitle-root h2,
+body.dark-mode .MuiDialogTitle-root h6,
+body.dark-mode .MuiDialog-paper .MuiTypography-h6 {
+  color: var(--dark-text-primary) !important;
+  font-weight: 500;
+}
+
+body.dark-mode .MuiDialog-paper .message-detail-label {
+  color: #90caf9;
+  font-weight: 500;
+}
+
+body.dark-mode .MuiDialog-paper .message-detail-value {
+  color: var(--dark-text-primary);
+}
+
+/* Email subject/heading in dialog */
+body.dark-mode .MuiDialog-paper .MuiTypography-h5,
+body.dark-mode .MuiDialog-paper .MuiTypography-h4 {
+  color: var(--dark-text-primary) !important;
+  font-weight: 500;
+}
+
+/* Email message details */
+body.dark-mode .MuiDialog-paper .message-header {
+  color: var(--dark-text-primary) !important;
+}
+
+body.dark-mode .MuiDialog-paper .message-subject {
+  color: var(--dark-text-primary) !important;
+  font-weight: 600;
+}
+
+/* Ensure all text in dialog is visible */
+body.dark-mode .MuiDialog-paper .MuiDialogContent-root {
+  color: var(--dark-text-primary);
+}
+
+/* Update any secondary text colors */
+body.dark-mode .MuiDialog-paper .MuiTypography-colorTextSecondary {
+  color: var(--dark-text-secondary) !important;
+}
+
+/* Message view dialog specific styles */
+body.dark-mode .MuiDialog-paper {
+    background-color: var(--dark-bg-dialog) !important;
+}
+
+/* Message subject and main text */
+body.dark-mode .MuiDialog-paper .MuiDialogTitle-root {
+    background-color: var(--dark-bg-secondary) !important;
+}
+
+body.dark-mode .MuiDialog-paper .MuiDialogTitle-root * {
+    color: var(--dark-text-primary) !important;
+}
+
+/* Message details text */
+body.dark-mode .MuiDialog-paper .MuiDialogContent-root .MuiTypography-root {
+    color: var(--dark-text-primary) !important;
+}
+
+/* Message metadata */
+body.dark-mode .MuiDialog-paper .message-metadata {
+    color: var(--dark-text-secondary) !important;
+}
+
+/* Message content */
+body.dark-mode .MuiDialog-paper .message-content {
+    background-color: var(--dark-bg-secondary) !important;
+    color: var(--dark-text-primary) !important;
+    border: 1px solid var(--dark-border-color);
+}
+
+/* Labels and headers */
+body.dark-mode .MuiDialog-paper .detail-label {
+    color: var(--accent-color) !important;
+    font-weight: 500;
+}
+
+/* All text elements in dialog */
+body.dark-mode .MuiDialog-paper .MuiTypography-root {
+    color: var(--dark-text-primary) !important;
+}
+
+/* Secondary text */
+body.dark-mode .MuiDialog-paper .MuiTypography-colorTextSecondary {
+    color: var(--dark-text-secondary) !important;
+}
+
+/* Ensure dialog title is visible */
+body.dark-mode .MuiDialogTitle-root .MuiTypography-root {
+    color: var(--dark-text-primary) !important;
+    font-weight: 600;
+}
+
+/* Action buttons */
+.MuiIconButton-root {
+  margin: 0 4px;
+}
+
+.MuiIconButton-root:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+/* Filter controls */
+.filter-controls {
+  margin-bottom: 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 960px) {
+  .admin-content {
+    padding: 16px;
+  }
+  
+  .MuiTableContainer-root {
+    overflow-x: auto;
+  }
+  
+  .MuiTable-root {
+    min-width: 500px;
+  }
+}
+
+@media (max-width: 600px) {
+  .admin-content {
+    padding: 12px;
+  }
+  
+  .MuiTableCell-root {
+    padding: 8px;
+  }
+  
+  .MuiIconButton-root {
+    padding: 6px;
+  }
+  
+  .MuiDialogContent-root {
+    padding: 16px;
+  }
+}
+
+/* Loading state */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+}
+
+body.dark-mode .loading-container {
+  color: var(--dark-text-primary);
+}
