@@ -7,7 +7,7 @@ import { DarkModeContext } from "../../context/DarkModeContext";
 
 const EditProduct = ({ isOpen, onClose, product, onProductUpdated }) => {
     // Move all hooks to the top level
-    const backend_url = process.env.REACT_APP_API_URL;
+    const backend_url = process.env.REACT_APP_BACKEND_URL;
     const { token, isAuthenticated } = useAuth();
     const { darkMode } = useContext(DarkModeContext);
     
@@ -69,7 +69,7 @@ const EditProduct = ({ isOpen, onClose, product, onProductUpdated }) => {
         }
 
         try {
-            const response = await fetch(`${backend_url}/api/products/${product.id}`, {
+            const response = await fetch(`${backend_url}api/products/${product.id}`, {
                 method: "PATCH",
                 headers: {
                     "Authorization": `Bearer ${token}`

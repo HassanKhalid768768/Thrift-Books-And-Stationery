@@ -7,7 +7,7 @@ import { FiUploadCloud } from 'react-icons/fi';
 
 const AddProduct = () => {
 
-    const backend_url = process.env.REACT_APP_API_URL;
+    const backend_url = process.env.REACT_APP_BACKEND_URL;
     const { token, isAuthenticated } = useAuth();
     const { darkMode } = useContext(DarkModeContext);
     const [image,setImage] = useState(false);
@@ -64,7 +64,7 @@ const AddProduct = () => {
         formData.append("new_price", productDetails.new_price);
         formData.append("old_price", productDetails.old_price);
       
-        const response = await fetch(`${backend_url}/api/products`,{
+        const response = await fetch(`${backend_url}api/products`,{
             method:"POST",
             headers:{
                 "Authorization": `Bearer ${token}`

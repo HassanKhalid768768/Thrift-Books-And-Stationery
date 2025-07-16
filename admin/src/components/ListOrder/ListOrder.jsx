@@ -15,7 +15,7 @@ const statusColors = {
 };
 
 const ListOrder = () => {
-    const backend_url = process.env.REACT_APP_API_URL;
+    const backend_url = process.env.REACT_APP_BACKEND_URL;
     const [orders, setOrders] = useState([]);
     const [filteredOrders, setFilteredOrders] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -27,7 +27,7 @@ const ListOrder = () => {
     const fetchOrders = async() => {
         setLoading(true);
         try {
-            const response = await fetch(`${backend_url}/api/orders`);
+            const response = await fetch(`${backend_url}api/orders`);
             const json = await response.json();
             if(response.ok){
                 // Sort orders by date (newest first)
@@ -57,7 +57,7 @@ const ListOrder = () => {
         try {
             const newStatus = event.target.value;
             
-            const response = await fetch(`${backend_url}/api/orders/status`, {
+            const response = await fetch(`${backend_url}api/orders/status`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

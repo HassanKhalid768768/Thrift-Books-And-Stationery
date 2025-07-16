@@ -7,7 +7,7 @@ import { DarkModeContext } from "../../context/DarkModeContext";
 const ReviewManagement = () => {
     const { token, isAuthenticated } = useAuth();
     const { darkMode } = useContext(DarkModeContext);
-    const backend_url = process.env.REACT_APP_API_URL;
+    const backend_url = process.env.REACT_APP_BACKEND_URL;
     
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -23,7 +23,7 @@ const ReviewManagement = () => {
         const fetchProducts = async () => {
             setLoading(true);
             try {
-                const response = await fetch(`${backend_url}/api/products`);
+                const response = await fetch(`${backend_url}api/products`);
                 
                 if (!response.ok) {
                     throw new Error(`Failed to fetch products: ${response.status}`);
@@ -63,7 +63,7 @@ const ReviewManagement = () => {
         setDeleteLoading(true);
         try {
             const response = await fetch(
-                `${backend_url}/api/products/${selectedReview.productId}/reviews/${selectedReview.reviewId}`, 
+                `${backend_url}api/products/${selectedReview.productId}/reviews/${selectedReview.reviewId}`,
                 {
                     method: 'DELETE',
                     headers: {

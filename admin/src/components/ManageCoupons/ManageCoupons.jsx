@@ -8,7 +8,7 @@ import { DarkModeContext } from "../../context/DarkModeContext";
 const ManageCoupons = () => {
     const { token, isAuthenticated } = useAuth();
     const { darkMode } = useContext(DarkModeContext);
-    const backend_url = process.env.REACT_APP_API_URL;
+    const backend_url = process.env.REACT_APP_BACKEND_URL;
     const [coupons, setCoupons] = useState([]);
     const [couponDetails, setCouponDetails] = useState({
         code: "",
@@ -21,7 +21,7 @@ const ManageCoupons = () => {
             if (!isAuthenticated || !token) return;
             
             try {
-                const response = await fetch(`${backend_url}/api/coupons`, {
+                const response = await fetch(`${backend_url}api/coupons`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -52,7 +52,7 @@ const ManageCoupons = () => {
                 return toast.error("Coupon code and value are required");
             }
 
-            const response = await fetch(`${backend_url}/api/coupons`, {
+            const response = await fetch(`${backend_url}api/coupons`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ const ManageCoupons = () => {
                     expiryDate: ""
                 });
                 // Refetch coupons after adding a new one
-                const response = await fetch(`${backend_url}/api/coupons`, {
+                const response = await fetch(`${backend_url}api/coupons`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -90,7 +90,7 @@ const ManageCoupons = () => {
 
     const deleteCoupon = async (id) => {
         try {
-            const response = await fetch(`${backend_url}/api/coupons/${id}`, {
+            const response = await fetch(`${backend_url}api/coupons/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -102,7 +102,7 @@ const ManageCoupons = () => {
             if (response.ok) {
                 toast.success("Coupon deleted successfully");
                 // Refetch coupons after deletion
-                const response = await fetch(`${backend_url}/api/coupons`, {
+                const response = await fetch(`${backend_url}api/coupons`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }

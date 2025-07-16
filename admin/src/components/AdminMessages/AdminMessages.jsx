@@ -58,7 +58,7 @@ const AdminMessages = () => {
   const [sortBy, setSortBy] = useState('date');
   const [sortOrder, setSortOrder] = useState('desc');
   
-  const backend_url = process.env.REACT_APP_API_URL;
+  const backend_url = process.env.REACT_APP_BACKEND_URL;
 
   // Fetch messages from API
   const fetchMessages = async () => {
@@ -66,7 +66,7 @@ const AdminMessages = () => {
     setError(null);
     
     try {
-      const response = await fetch(`${backend_url}/api/messages`, {
+      const response = await fetch(`${backend_url}api/messages`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -95,7 +95,7 @@ const AdminMessages = () => {
   // Handle changing message status (read/unread)
   const handleChangeStatus = async (id, newStatus) => {
     try {
-      const response = await fetch(`${backend_url}/api/messages/${id}`, {
+      const response = await fetch(`${backend_url}api/messages/${id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -127,7 +127,7 @@ const AdminMessages = () => {
     if (!messageToDelete) return;
     
     try {
-      const response = await fetch(`${backend_url}/api/messages/${messageToDelete}`, {
+      const response = await fetch(`${backend_url}api/messages/${messageToDelete}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
