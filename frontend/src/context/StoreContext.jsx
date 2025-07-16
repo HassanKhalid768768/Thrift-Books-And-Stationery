@@ -214,6 +214,53 @@ const response = await api.validateCoupon(code);
         }
         return totalItem;
     };
+    
+    // Clean up any abandoned orders when user returns to cart
+    const cleanupAbandonedOrders = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+            
+            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/orders/cleanup`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Cleanup completed:', data.message);
+            }
+        } catch (error) {
+            console.error('Error during cleanup:', error);
+        }
+    };
+    
+    // Instantly clean up user's pending orders
+    const cleanupUserPendingOrders = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+            
+            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/orders/cleanup-user`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'authorization': `Bearer ${token}`
+                }
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Instant cleanup completed:', data.message);
+                return data.deletedCount;
+            }
+        } catch (error) {
+            console.error('Error during instant cleanup:', error);
+        }
+        return 0;
+    };
 
     const contextValue = {
         all_product,
@@ -227,7 +274,9 @@ const response = await api.validateCoupon(code);
         clearCoupon,
         coupon,
         getCouponDiscount,
-        getTotalWithDiscount
+        getTotalWithDiscount,
+        cleanupAbandonedOrders,
+        cleanupUserPendingOrders
     };
 
     return (

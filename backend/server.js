@@ -12,6 +12,7 @@ const couponRoutes = require("./routes/couponRoutes");
 const messageRoutes = require("./routes/messageRoutes");
 
 const connectDB = require("./db");
+const { scheduleCleanup } = require('./utils/cleanupScheduler');
 
 // app config
 const app = express();
@@ -99,7 +100,11 @@ app.use((err, req, res, next) => {
 const startServer = async () => {
   try {
     await connectDB();
-    app.listen(port, () => console.log(`Server running on port ${port}`));
+    app.listen(port, () => {
+      console.log(`Server running on port ${port}`);
+      // Start the cleanup scheduler after server is running
+      scheduleCleanup();
+    });
   } catch (error) {
     console.error(`Error starting server: ${error.message}`);
     process.exit(1);

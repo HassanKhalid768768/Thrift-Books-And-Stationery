@@ -16,14 +16,12 @@ exports.placeOrder = async (req, res, next) => {
 
   const { items, amount, address, appliedCoupon } = req.body;
   try {
-    // Clean up old pending orders (older than 1 hour) for this user
-    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+    // Clean up ALL pending orders for this user instantly when placing new order
     await Order.deleteMany({
       userId: _id,
-      payment: false,
-      createdAt: { $lt: oneHourAgo }
+      payment: false
     });
-    console.log('Cleaned up old pending orders for user', _id);
+    console.log('Cleaned up ALL pending orders for user', _id);
     // Normalize categories in items before saving
     const normalizedItems = items.map(item => {
       if (item.category) {
@@ -239,6 +237,85 @@ exports.updateStatus = async (req, res, next) => {
       { new: true }
     );
     res.status(200).json(order);
+  } catch (err) {
+    next(err);
+  }
+};
+
+// Clean up abandoned pending orders
+exports.cleanupAbandonedOrders = async (req, res, next) => {
+  try {
+    // Clean up orders older than 15 minutes that are still pending payment
+    const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000);
+    const result = await Order.deleteMany({
+      payment: false,
+      date: { $lt: fifteenMinutesAgo }
+    });
+    
+    console.log(`Cleaned up ${result.deletedCount} abandoned pending orders`);
+    
+    if (res) {
+      res.status(200).json({ 
+        success: true, 
+        message: `Cleaned up ${result.deletedCount} abandoned orders`,
+        deletedCount: result.deletedCount
+      });
+    }
+    
+    return result.deletedCount;
+  } catch (err) {
+    console.error('Error cleaning up abandoned orders:', err);
+    if (next) next(err);
+  }
+};
+
+// Instantly clean up user's pending orders
+exports.cleanupUserPendingOrders = async (req, res, next) => {
+  try {
+    const { userId } = req.body;
+    
+    // If no userId provided, try to get from auth middleware
+    const userIdToClean = userId || (req.user ? req.user._id : null);
+    
+    if (!userIdToClean) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'User ID is required' 
+      });
+    }
+    
+    // Delete all pending orders for this user instantly
+    const result = await Order.deleteMany({
+      userId: userIdToClean,
+      payment: false
+    });
+    
+    console.log(`Instantly cleaned up ${result.deletedCount} pending orders for user ${userIdToClean}`);
+    
+    if (res) {
+      res.status(200).json({ 
+        success: true, 
+        message: `Instantly cleaned up ${result.deletedCount} pending orders`,
+        deletedCount: result.deletedCount
+      });
+    }
+    
+    return result.deletedCount;
+  } catch (err) {
+    console.error('Error cleaning up user pending orders:', err);
+    if (next) next(err);
+  }
+};
+
+// Get pending orders (admin - for debugging)
+exports.getPendingOrders = async (req, res, next) => {
+  try {
+    const pendingOrders = await Order.find({ payment: false }).sort({ date: -1 });
+    res.status(200).json({
+      success: true,
+      count: pendingOrders.length,
+      orders: pendingOrders
+    });
   } catch (err) {
     next(err);
   }

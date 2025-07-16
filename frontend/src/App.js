@@ -18,9 +18,13 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useContext } from 'react';
 import { DarkModeContext } from './context/DarkModeContext';
+import { usePaymentReturn } from './hooks/usePaymentReturn';
 
 function App() {
   const { darkMode } = useContext(DarkModeContext);
+  
+  // Add global payment return detection
+  usePaymentReturn();
   
   return (
     <div>
