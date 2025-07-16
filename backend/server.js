@@ -20,10 +20,12 @@ const port = process.env.PORT || 4000;
 // middleware
 app.use(express.json());
 
-// ✅ Allow both frontend and admin panel origins
+// ✅ Allow frontend & admin (Render + localhost)
 const allowedOrigins = [
   'https://thrift-books-and-stationery-frontend.onrender.com',
-  'https://thrift-books-and-stationery-admin.onrender.com'
+  'https://thrift-books-and-stationery-admin.onrender.com',
+  'http://localhost:3000', // frontend local
+  'http://localhost:3001'  // admin local
 ];
 
 app.use(cors({
@@ -31,13 +33,13 @@ app.use(cors({
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error("Not allowed by CORS"));
+      callback(new Error("Not allowed by CORS: " + origin));
     }
   },
   credentials: true
 }));
 
-// Optional: log incoming origins (for debugging CORS)
+// Optional: log incoming origins
 app.use((req, res, next) => {
   console.log("Request origin:", req.headers.origin);
   next();
@@ -53,12 +55,12 @@ app.use("/api/subscribers", subscriberRoutes);
 app.use("/api/coupons", couponRoutes);
 app.use("/api/messages", messageRoutes);
 
-// Root test route
+// Root route
 app.get('/', (req, res) => {
   res.send('Backend is up and running');
 });
 
-// Error handling middleware
+// Error handling
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
   const message = err.message || "Internal Server Error";
@@ -68,7 +70,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Server listener
+// Start server
 const startServer = async () => {
   try {
     await connectDB();
