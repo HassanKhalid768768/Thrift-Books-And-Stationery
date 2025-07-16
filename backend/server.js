@@ -75,6 +75,16 @@ app.get('/test-cors', (req, res) => {
   });
 });
 
+// Test API endpoint for frontend connectivity
+app.get('/api/test', (req, res) => {
+  res.json({
+    success: true,
+    message: 'API is accessible from frontend',
+    timestamp: new Date().toISOString(),
+    origin: req.headers.origin || 'No origin header'
+  });
+});
+
 // Error handling
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;

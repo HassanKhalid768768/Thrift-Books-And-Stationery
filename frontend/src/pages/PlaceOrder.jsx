@@ -41,6 +41,45 @@ const PlaceOrder = () => {
 
     const placeOrder = async (e) => {
         e.preventDefault();
+        
+        // Debug logging
+        console.log('PlaceOrder - Starting order placement');
+        console.log('PlaceOrder - Backend URL:', backend_url);
+        console.log('PlaceOrder - Token:', token ? 'Present' : 'Missing');
+        console.log('PlaceOrder - Form data:', data);
+        console.log('PlaceOrder - Cart items:', cartItems);
+        console.log('PlaceOrder - Total cart amount:', getTotalCartAmount());
+        
+        // Test backend connectivity first
+        try {
+            console.log('PlaceOrder - Testing backend connectivity...');
+            const testResponse = await fetch(`${backend_url}/api/test`);
+            const testData = await testResponse.json();
+            console.log('PlaceOrder - Backend connectivity test:', testData);
+        } catch (error) {
+            console.error('PlaceOrder - Backend connectivity test failed:', error);
+            toast.error('Cannot connect to server. Please check if the backend is running.');
+            return;
+        }
+        
+        // Validate required fields
+        if (!data.firstName || !data.lastName || !data.email || !data.street || !data.city || !data.state || !data.zipcode || !data.country || !data.phone) {
+            toast.error('Please fill in all required fields');
+            return;
+        }
+        
+        // Check if cart has items
+        if (getTotalCartAmount() === 0) {
+            toast.error('Your cart is empty');
+            return;
+        }
+        
+        // Check if user is logged in
+        if (!token) {
+            toast.error('Please log in to place an order');
+            return;
+        }
+        
         let orderItems = [];
         
         all_product.forEach((item) => {
@@ -50,6 +89,8 @@ const PlaceOrder = () => {
                 orderItems.push(itemInfo);
             }
         });
+        
+        console.log('PlaceOrder - Order items:', orderItems);
         
         let orderData = {
             address: data,
@@ -61,7 +102,11 @@ const PlaceOrder = () => {
             } : null
         };
         
+        console.log('PlaceOrder - Order data:', orderData);
+        
         try {
+            console.log('PlaceOrder - Sending request to:', `${backend_url}/api/orders/place`);
+            
             let response = await fetch(`${backend_url}/api/orders/place`, {
                 method: 'POST',
                 headers: {
@@ -70,17 +115,23 @@ const PlaceOrder = () => {
                 },
                 body: JSON.stringify(orderData),
             });
-
+            
+            console.log('PlaceOrder - Response status:', response.status);
+            
             const json = await response.json();
+            console.log('PlaceOrder - Response data:', json);
             
             if (response.ok) {
                 const { session_url } = json;
+                console.log('PlaceOrder - Redirecting to:', session_url);
                 // Don't clear the coupon here - it should persist until payment is complete
                 window.location.replace(session_url);
             } else {
+                console.error('PlaceOrder - Error response:', json);
                 toast.error(json.error || "Failed to place order");
             }
         } catch (error) {
+            console.error('PlaceOrder - Network error:', error);
             toast.error("Error connecting to server");
         }
     };
