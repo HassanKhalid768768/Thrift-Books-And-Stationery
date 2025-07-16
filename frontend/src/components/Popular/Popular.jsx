@@ -4,7 +4,7 @@ import Item from './../Item/Item'
 
 const Popular = ({ onQuickView }) => {
     const [popularTShirts,setPopularTShirts] = useState([]);
-    const backend_url = process.env.REACT_APP_API_URL;
+    const backend_url = process.env.REACT_APP_BACKEND_URL;
     useEffect(()=>{
         const fetchData = async()=>{
             const response = await fetch(`${backend_url}/api/products/popularTShirts`);

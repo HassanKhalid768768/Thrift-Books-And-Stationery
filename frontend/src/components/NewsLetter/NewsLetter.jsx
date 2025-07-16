@@ -4,7 +4,7 @@ import {toast} from 'react-toastify'
 
 const NewsLetter = () => {
     const [email, setEmail] = useState('');
-    const backend_url = process.env.REACT_APP_API_URL;
+    const backend_url = process.env.REACT_APP_BACKEND_URL;
     const changeHandler = (e)=>{
         setEmail(e.target.value);
     };

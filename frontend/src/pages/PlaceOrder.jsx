@@ -20,7 +20,7 @@ const PlaceOrder = () => {
     const { darkMode } = useContext(DarkModeContext);
     
     const token = localStorage.getItem('token');
-    const backend_url = process.env.REACT_APP_API_URL;
+    const backend_url = process.env.REACT_APP_BACKEND_URL;
     const navigate = useNavigate();
     
     const [data, setData] = useState({

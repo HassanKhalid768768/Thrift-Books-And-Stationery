@@ -8,7 +8,7 @@ const StoreContextProvider = (props) => {
     const [all_product, setAll_product] = useState([]);
     const [cartItems, setCartItems] = useState({});
     const [coupon, setCoupon] = useState({ code: "", value: 0, isValid: false });
-    const backend_url = process.env.REACT_APP_API_URL;
+    const backend_url = process.env.REACT_APP_BACKEND_URL;
 
     useEffect(() => {
         let isMounted = true;

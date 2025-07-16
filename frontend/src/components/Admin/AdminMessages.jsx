@@ -60,7 +60,7 @@ const AdminMessages = () => {
     
     try {
       const token = localStorage.getItem('token');
-      const backend_url = process.env.REACT_APP_API_URL;
+    const backend_url = process.env.REACT_APP_BACKEND_URL;
       
       const response = await fetch(`${backend_url}/api/messages`, {
         headers: {
@@ -92,7 +92,7 @@ const AdminMessages = () => {
   const handleChangeStatus = async (id, newStatus) => {
     try {
       const token = localStorage.getItem('token');
-      const backend_url = process.env.REACT_APP_API_URL;
+      const backend_url = process.env.REACT_APP_BACKEND_URL;
       
       const response = await fetch(`${backend_url}/api/messages/${id}`, {
         method: 'PATCH',
@@ -127,7 +127,7 @@ const AdminMessages = () => {
     
     try {
       const token = localStorage.getItem('token');
-      const backend_url = process.env.REACT_APP_API_URL;
+      const backend_url = process.env.REACT_APP_BACKEND_URL;
       
       const response = await fetch(`${backend_url}/api/messages/${messageToDelete}`, {
         method: 'DELETE',

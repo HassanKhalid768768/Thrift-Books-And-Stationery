@@ -36,7 +36,7 @@ const ProductDisplay = (props) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [productData, setProductData] = useState(product || defaultProduct);
     
-    const backend_url = process.env.REACT_APP_API_URL;
+    const backend_url = process.env.REACT_APP_BACKEND_URL;
 
     // Check if user is authenticated and can review the product
     useEffect(() => {

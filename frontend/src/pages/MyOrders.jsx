@@ -10,7 +10,7 @@ const MyOrders = () => {
     const [error, setError] = useState(null);
     const token = localStorage.getItem('token');
 
-    const backend_url = process.env.REACT_APP_API_URL;
+    const backend_url = process.env.REACT_APP_BACKEND_URL;
     
     const fetchOrders = async () => {
         setIsLoading(true);

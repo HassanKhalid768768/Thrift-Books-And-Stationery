@@ -4,7 +4,7 @@ import Item from '../Item/Item'
 
 const NewCollections = ({ onQuickView }) => {
     const [new_collection,setNew_collection] = useState([]);
-    const backend_url = process.env.REACT_APP_API_URL;
+    const backend_url = process.env.REACT_APP_BACKEND_URL;
     useEffect(()=>{
         const fetchData = async()=>{
             const response = await fetch(`${backend_url}/api/products/newCollections`);
