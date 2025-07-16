@@ -6,6 +6,7 @@ import NewCollections from "../components/NewCollections/NewCollections";
 import FeaturedCategories from "../components/FeaturedCategories/FeaturedCategories";
 import TrendsBanner from "../components/TrendsBanner/TrendsBanner";
 import NewsletterSubscribe from "../components/NewsletterSubscribe/NewsletterSubscribe";
+import WhatsAppBanner from "../components/WhatsAppBanner/WhatsAppBanner";
 import QuickView from "../components/QuickView/QuickView";
 import "./HomePage.css";
 
@@ -36,6 +37,9 @@ const Home = () => {
                 <section className="home-section featured-section">
                     <FeaturedCategories />
                 </section>
+                
+                {/* WhatsApp Banner - Beautiful interactive banner */}
+                <WhatsAppBanner />
                 
                 {/* Coupon Banner */}
                 <div className="coupon-banner">

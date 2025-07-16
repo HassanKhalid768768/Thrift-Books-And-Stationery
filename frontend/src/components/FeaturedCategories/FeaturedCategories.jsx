@@ -9,7 +9,7 @@ const FeaturedCategories = () => {
             id: 1,
             title: "Books",
             subtitle: "Knowledge & Learning",
-            image: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+            image: "https://static.scientificamerican.com/sciam/cache/file/1DDFE633-2B85-468D-B28D05ADAE7D1AD8_source.jpg?w=1200",
             color: "#3498db",
             link: "/books"
         },
@@ -17,15 +17,15 @@ const FeaturedCategories = () => {
             id: 2,
             title: "Stationary",
             subtitle: "Office & School Supplies",
-            image: "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+            image: "https://profit.pakistantoday.com.pk/wp-content/uploads/2018/07/k%C4%B1rtasiye1.jpg",
             color: "#e74c3c",
             link: "/stationary"
         },
         {
             id: 3,
             title: "Gadgets",
-            subtitle: "Tech & Electronics",
-            image: "https://images.unsplash.com/photo-1498049794561-7780e7231661?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+            subtitle: "Kitchen & Household Items",
+            image: "https://scontent.flhe42-1.fna.fbcdn.net/v/t39.30808-6/502673051_122229597104191732_3774908406470497486_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=833d8c&_nc_ohc=IPAA76KP6q8Q7kNvwG4x_pv&_nc_oc=AdlVoeHsqe7H8mjfWhuV8bLi-xBYsDhuRIPJ2Z3xj-HmA6DKiIT0X5EVSkijHsJdT58&_nc_zt=23&_nc_ht=scontent.flhe42-1.fna&_nc_gid=JzAvL9XouUSkT6ZqZKokFQ&oh=00_AfR8Cy_6Er2xOmpynug78fGRZp7r3m5ABj6UCQk0g4AgGw&oe=687D77B8",
             color: "#647687",
             link: "/gadgets"
         }

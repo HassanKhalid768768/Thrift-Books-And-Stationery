@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Grid, Typography, Button, TextField, Box, IconButton } from "@mui/material";
-import { Facebook, Instagram, Twitter } from "@mui/icons-material";
+import { Facebook } from "@mui/icons-material";
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import { toast } from "react-toastify";
 import { api } from '../../utils/api';
@@ -118,21 +118,6 @@ const Footer = () => {
           {/* SOCIAL MEDIA LINKS */}
           <Box sx={{ mt: 3, display: "flex", justifyContent: "center", gap: 2 }}>
             <IconButton 
-              href="https://www.instagram.com/thriftbooksandstationery" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              color="inherit"
-              sx={{ 
-                transition: 'transform 0.2s, color 0.2s',
-                '&:hover': { 
-                  transform: 'scale(1.1)',
-                  color: '#E1306C' // Instagram brand color
-                } 
-              }}
-            >
-              <Instagram fontSize="large" />
-            </IconButton>
-            <IconButton 
               href="https://www.facebook.com/profile.php?id=61555751977927&rdid=J9JSnfwTEO74QzSk&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1AzjR1Zc2M%2F#"
               target="_blank" 
               rel="noopener noreferrer" 
@@ -161,21 +146,6 @@ const Footer = () => {
               }}
             >
               <WhatsAppIcon fontSize="large" />
-            </IconButton>
-            <IconButton 
-              href="https://twitter.com/thriftbooksandstationery" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              color="inherit"
-              sx={{ 
-                transition: 'transform 0.2s, color 0.2s',
-                '&:hover': { 
-                  transform: 'scale(1.1)',
-                  color: '#1DA1F2' // Twitter brand color
-                } 
-              }}
-            >
-              <Twitter fontSize="large" />
             </IconButton>
           </Box>
         </Grid>
