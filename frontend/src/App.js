@@ -56,6 +56,10 @@ function App() {
             path="/gadgets"
             element={<ShopCategory category="gadgets" />}
           />
+          <Route
+            path="/water-bottles-and-lunch-boxes"
+            element={<ShopCategory category="water-bottles-and-lunch-boxes" />}
+          />
           <Route path="/product" element={<Product />}>
             <Route path=":productId" element={<Product/>}/>
           </Route>

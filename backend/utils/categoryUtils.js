@@ -18,7 +18,13 @@ const validCategories = {
   'electronics': 'gadgets',
   'electronic': 'gadgets',
   'tech': 'gadgets',
-  'technology': 'gadgets'
+  'technology': 'gadgets',
+  'water-bottles-and-lunch-boxes': 'water-bottles-and-lunch-boxes',
+  'water-bottles': 'water-bottles-and-lunch-boxes',
+  'lunch-boxes': 'water-bottles-and-lunch-boxes',
+  'bottles': 'water-bottles-and-lunch-boxes',
+  'lunchboxes': 'water-bottles-and-lunch-boxes',
+  'waterbottles': 'water-bottles-and-lunch-boxes'
 };
 
 /**

@@ -53,7 +53,7 @@ body {
 
 .navbar{
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     padding: 16px;
     align-items: center;
     background-color: var(--bg-primary);
@@ -61,6 +61,7 @@ body {
     z-index: 999; /* Slightly lower than header-wrapper */
     transition: background-color 0.3s ease;
     position: relative;
+    flex-wrap: nowrap;
 }
 
 .navbar .active{
@@ -136,11 +137,12 @@ body {
 
 .nav-menu{
     display: flex;
-    gap: 50px;
+    gap: 25px;
     align-items: center;
     list-style: none;
-    font-size: 20px;
+    font-size: 15px;
     font-weight: 500;
+    flex-shrink: 0;
 }
 
 .nav-menu li{
@@ -230,15 +232,17 @@ body {
 }
 
 .nav-login-cart button{
-    padding: 10px 40px;
+    padding: 8px 25px;
     outline: none;
     border: 1px solid tomato;
     border-radius: 75px;
     color: #515151;
-    font-size: 20px;
+    font-size: 16px;
     font-weight: 500;
     cursor: pointer;
     background: #fff;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .nav-login-cart button:hover{
@@ -406,7 +410,8 @@ body {
 /* Search styling */
 .nav-search {
     position: relative;
-    width: 250px;
+    width: 200px;
+    flex-shrink: 0;
 }
 
 .search-input-container {

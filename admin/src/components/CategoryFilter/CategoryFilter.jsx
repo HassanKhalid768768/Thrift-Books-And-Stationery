@@ -4,7 +4,7 @@ import { DarkModeContext } from '../../context/DarkModeContext';
 
 const CategoryFilter = ({ products, onFilterChange }) => {
     const [activeTab, setActiveTab] = useState("All");
-    const tabs = ["All", "Books", "Stationary", "Gadgets"];
+    const tabs = ["All", "Books", "Stationary", "Gadgets", "Water Bottles and Lunch Boxes"];
     const { darkMode } = useContext(DarkModeContext);
 
     const getCategoryCount = (category) => {
@@ -13,7 +13,8 @@ const CategoryFilter = ({ products, onFilterChange }) => {
         const categoryMap = {
             "Books": "books",
             "Stationary": "stationary",
-            "Gadgets": "gadgets"
+            "Gadgets": "gadgets",
+            "Water Bottles and Lunch Boxes": "water-bottles-and-lunch-boxes"
         };
         
         return products.filter(item => item.category === categoryMap[category]).length;
@@ -30,7 +31,8 @@ const CategoryFilter = ({ products, onFilterChange }) => {
         const categoryMap = {
             "Books": "books",
             "Stationary": "stationary",
-            "Gadgets": "gadgets"
+            "Gadgets": "gadgets",
+            "Water Bottles and Lunch Boxes": "water-bottles-and-lunch-boxes"
         };
         
         const filteredProducts = products.filter(item => 

@@ -25,9 +25,17 @@ const FeaturedCategories = () => {
             id: 3,
             title: "Gadgets",
             subtitle: "Kitchen & Household Items",
-            image: "https://scontent.flhe42-1.fna.fbcdn.net/v/t39.30808-6/502673051_122229597104191732_3774908406470497486_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=833d8c&_nc_ohc=IPAA76KP6q8Q7kNvwG4x_pv&_nc_oc=AdlVoeHsqe7H8mjfWhuV8bLi-xBYsDhuRIPJ2Z3xj-HmA6DKiIT0X5EVSkijHsJdT58&_nc_zt=23&_nc_ht=scontent.flhe42-1.fna&_nc_gid=JzAvL9XouUSkT6ZqZKokFQ&oh=00_AfR8Cy_6Er2xOmpynug78fGRZp7r3m5ABj6UCQk0g4AgGw&oe=687D77B8",
+            image: "https://people.com/thmb/gYvWUOjf3e83HhXcJc-AfEBsJLY=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc():focal(2999x0:3001x2)/week-5-amazon-tk-kitchen-gadgets-tout-13b03a8e015047b18042b6ebf172c36a.jpg",
             color: "#647687",
             link: "/gadgets"
+        },
+        {
+            id: 4,
+            title: "Water Bottles and Lunch Boxes",
+            subtitle: "Hydration & Food Storage",
+            image: "https://blingspot.pk/cdn/shop/files/africalittle2.png?v=1702285991",
+            color: "#27ae60",
+            link: "/water-bottles-and-lunch-boxes"
         }
     ];
 

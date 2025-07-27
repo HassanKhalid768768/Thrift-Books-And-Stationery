@@ -180,9 +180,6 @@ const Navbar = () => {
                 <img className="nav-hamburger" onClick={hamburger_toggle} src={darkMode ? hamburgerWhite : hamburger} alt="menu" />
                 
                 <ul ref={menuRef} className="nav-menu">
-                    <li onClick={() => handleMenuClick("home")}>
-                        <Link style={{textDecoration: 'none'}} to="/" className={menu==="home"?"active":""}>Home</Link>
-                    </li>
                     <li onClick={() => handleMenuClick("books")}>
                         <Link style={{textDecoration: 'none'}} to="/books" className={menu==="books"?"active":""}>Books</Link>
                     </li>
@@ -191,6 +188,9 @@ const Navbar = () => {
                     </li>
                     <li onClick={() => handleMenuClick("gadgets")}>
                         <Link style={{textDecoration: 'none'}} to="/gadgets" className={menu==="gadgets"?"active":""}>Gadgets</Link>
+                    </li>
+                    <li onClick={() => handleMenuClick("water-bottles-and-lunch-boxes")}>
+                        <Link style={{textDecoration: 'none'}} to="/water-bottles-and-lunch-boxes" className={menu==="water-bottles-and-lunch-boxes"?"active":""}>Water Bottles & Lunch Boxes</Link>
                     </li>
                 </ul>
                 <div className="nav-search" ref={searchRef}>
