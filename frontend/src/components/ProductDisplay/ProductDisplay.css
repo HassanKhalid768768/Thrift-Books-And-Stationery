@@ -25,6 +25,39 @@
     border: 1px solid var(--border-color);
 }
 
+/* Image zoom functionality */
+.productdisplay-img {
+    position: relative;
+}
+
+.zoomable-image {
+    cursor: crosshair;
+    transition: opacity 0.2s ease;
+}
+
+.zoomable-image:hover {
+    opacity: 0.8;
+}
+
+.zoom-lens {
+    position: fixed;
+    width: 300px;
+    height: 400px;
+    border: 2px solid var(--accent-color);
+    border-radius: 8px;
+    pointer-events: none;
+    z-index: 1000;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    background-color: white;
+    overflow: hidden;
+}
+
+.dark-mode .zoom-lens {
+    border-color: var(--accent-color);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    background-color: var(--bg-secondary);
+}
+
 .productdisplay-right{
     margin: 0 70px;
     display: flex;

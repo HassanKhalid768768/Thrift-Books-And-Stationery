@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import "./ProductDisplay.css"
 import star_icon from "../../assets/star_icon.png"
 import star_dull_icon from "../../assets/star_dull_icon.png"
@@ -23,6 +23,53 @@ const ProductDisplay = (props) => {
         reviews: [],
         averageRating: 0,
         numReviews: 0
+    };
+
+    // Image zoom functionality
+    const imageRef = useRef(null);
+    const zoomRef = useRef(null);
+    const [isZooming, setIsZooming] = useState(false);
+    const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
+
+    const handleMouseMove = (e) => {
+        if (!imageRef.current || !zoomRef.current) return;
+        
+        const rect = imageRef.current.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        // Calculate percentage positions
+        const xPercent = (x / rect.width) * 100;
+        const yPercent = (y / rect.height) * 100;
+        
+        setZoomPosition({ x: xPercent, y: yPercent });
+        
+        // Position the zoom view near the cursor
+        const zoomSize = 200;
+        let zoomX = e.clientX + 20;
+        let zoomY = e.clientY - zoomSize / 2;
+        
+        // Keep zoom view within viewport
+        if (zoomX + zoomSize > window.innerWidth) {
+            zoomX = e.clientX - zoomSize - 20;
+        }
+        if (zoomY < 0) {
+            zoomY = 10;
+        }
+        if (zoomY + zoomSize > window.innerHeight) {
+            zoomY = window.innerHeight - zoomSize - 10;
+        }
+        
+        zoomRef.current.style.left = `${zoomX}px`;
+        zoomRef.current.style.top = `${zoomY}px`;
+    };
+
+    const handleMouseEnter = () => {
+        setIsZooming(true);
+    };
+
+    const handleMouseLeave = () => {
+        setIsZooming(false);
     };
 
     const [isLoading, setIsLoading] = useState(!product);
@@ -209,7 +256,28 @@ const ProductDisplay = (props) => {
         <div className={`productdisplay ${darkMode ? 'dark-mode' : ''}`}>
             <div className="productdisplay-left">
                 <div className="productdisplay-img">
-                    <img className="productdisplay-main-img" src={product.image || ''} alt="" />
+                    <img 
+                        ref={imageRef}
+                        className="productdisplay-main-img zoomable-image" 
+                        src={product.image || ''} 
+                        alt={product.name || 'Product'}
+                        onMouseMove={handleMouseMove}
+                        onMouseEnter={handleMouseEnter}
+                        onMouseLeave={handleMouseLeave}
+                    />
+                    {/* Zoom lens - follows mouse cursor */}
+                    {isZooming && (
+                        <div 
+                            ref={zoomRef}
+                            className="zoom-lens"
+                            style={{
+                                backgroundImage: `url(${product.image})`,
+                                backgroundPosition: `${zoomPosition.x}% ${zoomPosition.y}%`,
+                                backgroundSize: '300%',
+                                backgroundRepeat: 'no-repeat'
+                            }}
+                        />
+                    )}
                 </div>
             </div>
             <div className="productdisplay-right">
