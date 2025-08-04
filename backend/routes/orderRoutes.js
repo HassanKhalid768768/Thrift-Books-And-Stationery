@@ -6,7 +6,9 @@ const router = express.Router();
 
 //endpoints
 router.post("/place", authMiddleware, orderController.placeOrder);
+router.post("/place-direct", authMiddleware, orderController.placeOrderDirect);
 router.post("/verify", orderController.verifyOrder);
+router.post("/verify-bank-transfer", orderController.verifyBankTransfer);
 router.post("/userorders", authMiddleware, orderController.userOrders);
 router.get("/", orderController.getAllOrders);
 router.post("/status", authMiddleware,orderController.updateStatus);

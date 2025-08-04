@@ -9,19 +9,99 @@ require("dotenv").config({ path: "./config.env" });
 //configure stripe
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-// Place order and create payment session
+// Place order directly without Stripe (for COD and Bank Transfer)
+exports.placeOrderDirect = async (req, res, next) => {
+  const { _id } = req.user;
+  const { items, amount, address, appliedCoupon, paymentMethod } = req.body;
+  
+  try {
+    // Clean up only Stripe pending orders, keep bank transfer orders for longer
+    await Order.deleteMany({
+      userId: _id,
+      payment: false,
+      $or: [
+        { paymentMethod: { $exists: false } }, // Old orders without paymentMethod (Stripe)
+        { paymentMethod: 'stripe' },
+        { paymentMethod: { $ne: 'bankTransfer' } } // Not bank transfer
+      ]
+    });
+    console.log('Cleaned up non-bank-transfer pending orders for user', _id);
+    
+    // Normalize categories in items before saving
+    const normalizedItems = items.map(item => {
+      if (item.category) {
+        return {
+          ...item,
+          category: normalizeCategory(item.category)
+        };
+      }
+      return item;
+    });
+    
+    console.log('Normalizing item categories for order');
+    console.log('Before:', items.map(item => item.category));
+    console.log('After:', normalizedItems.map(item => item.category));
+
+    // Determine order status based on payment method
+    let orderStatus = 'Order Confirmed';
+    let paymentStatus = true;
+    
+    if (paymentMethod === 'cod') {
+      orderStatus = 'Order Confirmed - COD';
+    } else if (paymentMethod === 'bankTransfer') {
+      orderStatus = 'Pending Payment Verification';
+      paymentStatus = false; // Will be updated when payment proof is verified
+    }
+
+    // Create the order
+    const order = await Order.create({
+      userId: _id,
+      items: normalizedItems,
+      amount,
+      address,
+      appliedCoupon,
+      payment: paymentStatus,
+      status: orderStatus,
+      paymentMethod: paymentMethod
+    });
+
+    // Clear user's cart for COD orders, keep for bank transfer until payment verified
+    if (paymentMethod === 'cod') {
+      await User.findByIdAndUpdate(_id, { cartData: {} });
+      console.log(`COD order placed successfully, cart cleared for user ${_id}`);
+    } else {
+      console.log(`Bank transfer order placed, awaiting payment verification for user ${_id}`);
+    }
+
+    res.status(200).json({ 
+      success: true, 
+      message: 'Order placed successfully',
+      order: order,
+      orderId: order._id
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// Place order and create payment session (kept for backward compatibility)
 exports.placeOrder = async (req, res, next) => {
   const { _id } = req.user;
   const frontend_url = process.env.FRONTEND_URL;
 
   const { items, amount, address, appliedCoupon } = req.body;
   try {
-    // Clean up ALL pending orders for this user instantly when placing new order
+    // Clean up only Stripe pending orders, keep bank transfer orders for longer
     await Order.deleteMany({
       userId: _id,
-      payment: false
+      payment: false,
+      $or: [
+        { paymentMethod: { $exists: false } }, // Old orders without paymentMethod (Stripe)
+        { paymentMethod: 'stripe' },
+        { paymentMethod: { $ne: 'bankTransfer' } } // Not bank transfer
+      ]
     });
-    console.log('Cleaned up ALL pending orders for user', _id);
+    console.log('Cleaned up non-bank-transfer pending orders for user', _id);
     // Normalize categories in items before saving
     const normalizedItems = items.map(item => {
       if (item.category) {
@@ -159,10 +239,10 @@ exports.userOrders = async (req, res, next) => {
   try {
     console.log(`Finding orders for user ${_id} with productId: ${productId}, category: ${productCategory}`);
     
-    // Start with basic query for user's orders - only return paid orders
+    // Start with basic query for user's orders - show all orders (paid and pending)
     let query = { 
-      userId: _id.toString(),
-      payment: true // Only show successfully paid orders
+      userId: _id.toString()
+      // Show all orders regardless of payment status
     };
     
     // We'll fetch all user orders and then filter for product matches
@@ -245,34 +325,50 @@ exports.updateStatus = async (req, res, next) => {
 // Clean up abandoned pending orders
 exports.cleanupAbandonedOrders = async (req, res, next) => {
   try {
-    // Clean up orders older than 15 minutes that are still pending payment
+    // Clean up Stripe orders older than 15 minutes that are still pending payment
     const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000);
-    const result = await Order.deleteMany({
+    const stripeResult = await Order.deleteMany({
       payment: false,
-      date: { $lt: fifteenMinutesAgo }
+      date: { $lt: fifteenMinutesAgo },
+      $or: [
+        { paymentMethod: { $exists: false } }, // Old orders without paymentMethod (Stripe)
+        { paymentMethod: 'stripe' },
+        { paymentMethod: { $ne: 'bankTransfer' } } // Not bank transfer
+      ]
     });
     
-    console.log(`Cleaned up ${result.deletedCount} abandoned pending orders`);
+    // Clean up bank transfer orders older than 24 hours that are still pending payment
+    const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const bankTransferResult = await Order.deleteMany({
+      payment: false,
+      paymentMethod: 'bankTransfer',
+      date: { $lt: twentyFourHoursAgo }
+    });
+    
+    const totalDeleted = stripeResult.deletedCount + bankTransferResult.deletedCount;
+    console.log(`Cleaned up ${stripeResult.deletedCount} abandoned Stripe orders and ${bankTransferResult.deletedCount} old bank transfer orders`);
     
     if (res) {
       res.status(200).json({ 
         success: true, 
-        message: `Cleaned up ${result.deletedCount} abandoned orders`,
-        deletedCount: result.deletedCount
+        message: `Cleaned up ${totalDeleted} abandoned orders (${stripeResult.deletedCount} Stripe, ${bankTransferResult.deletedCount} bank transfer)`,
+        deletedCount: totalDeleted,
+        stripeDeleted: stripeResult.deletedCount,
+        bankTransferDeleted: bankTransferResult.deletedCount
       });
     }
     
-    return result.deletedCount;
+    return totalDeleted;
   } catch (err) {
     console.error('Error cleaning up abandoned orders:', err);
     if (next) next(err);
   }
 };
 
-// Instantly clean up user's pending orders
+// Instantly clean up user's pending orders (excluding bank transfers)
 exports.cleanupUserPendingOrders = async (req, res, next) => {
   try {
-    const { userId } = req.body;
+    const { userId, includeBankTransfer = false } = req.body;
     
     // If no userId provided, try to get from auth middleware
     const userIdToClean = userId || (req.user ? req.user._id : null);
@@ -284,18 +380,30 @@ exports.cleanupUserPendingOrders = async (req, res, next) => {
       });
     }
     
-    // Delete all pending orders for this user instantly
-    const result = await Order.deleteMany({
+    let query = {
       userId: userIdToClean,
       payment: false
-    });
+    };
     
-    console.log(`Instantly cleaned up ${result.deletedCount} pending orders for user ${userIdToClean}`);
+    // By default, don't delete bank transfer orders unless explicitly requested
+    if (!includeBankTransfer) {
+      query.$or = [
+        { paymentMethod: { $exists: false } }, // Old orders without paymentMethod (Stripe)
+        { paymentMethod: 'stripe' },
+        { paymentMethod: { $ne: 'bankTransfer' } } // Not bank transfer
+      ];
+    }
+    
+    // Delete pending orders for this user based on criteria
+    const result = await Order.deleteMany(query);
+    
+    const orderType = includeBankTransfer ? 'all pending' : 'non-bank-transfer pending';
+    console.log(`Instantly cleaned up ${result.deletedCount} ${orderType} orders for user ${userIdToClean}`);
     
     if (res) {
       res.status(200).json({ 
         success: true, 
-        message: `Instantly cleaned up ${result.deletedCount} pending orders`,
+        message: `Instantly cleaned up ${result.deletedCount} ${orderType} orders`,
         deletedCount: result.deletedCount
       });
     }
@@ -315,6 +423,48 @@ exports.getPendingOrders = async (req, res, next) => {
       success: true,
       count: pendingOrders.length,
       orders: pendingOrders
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// Verify bank transfer payment (admin)
+exports.verifyBankTransfer = async (req, res, next) => {
+  const { orderId } = req.body;
+  try {
+    // Find the order first to get user details
+    const order = await Order.findById(orderId);
+    if (!order) {
+      return res.status(404).json({ success: false, error: "Order not found" });
+    }
+    
+    // Check if it's a bank transfer order
+    if (order.paymentMethod !== 'bankTransfer') {
+      return res.status(400).json({ 
+        success: false, 
+        error: "This order is not a bank transfer order" 
+      });
+    }
+    
+    // Update order status to paid and confirmed
+    const updatedOrder = await Order.findByIdAndUpdate(
+      orderId,
+      { 
+        payment: true,
+        status: 'Order Confirmed - Payment Verified'
+      },
+      { new: true }
+    );
+    
+    // Clear user's cart after successful payment verification
+    await User.findByIdAndUpdate(order.userId, { cartData: {} });
+    
+    console.log(`Bank transfer payment verified for order ${orderId}, cart cleared for user ${order.userId}`);
+    res.status(200).json({
+      success: true,
+      message: 'Bank transfer payment verified successfully',
+      order: updatedOrder
     });
   } catch (err) {
     next(err);

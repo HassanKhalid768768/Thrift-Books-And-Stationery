@@ -44,6 +44,11 @@ const orderSchema = new mongoose.Schema({
       message: 'Applied coupon must have a code (string) and value (number)'
     }
   },
+  paymentMethod: {
+    type: String,
+    enum: ['cod', 'bankTransfer', 'stripe'],
+    default: 'stripe'
+  },
 });
 
 const orderModel = mongoose.model("Order",orderSchema);

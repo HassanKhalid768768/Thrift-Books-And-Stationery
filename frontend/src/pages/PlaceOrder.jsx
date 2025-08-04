@@ -14,7 +14,8 @@ const PlaceOrder = () => {
         cartItems, 
         coupon, 
         getCouponDiscount,
-        clearCoupon
+        clearCoupon,
+        clearCart
     } = useContext(StoreContext);
     
     const { darkMode } = useContext(DarkModeContext);
@@ -32,6 +33,8 @@ const PlaceOrder = () => {
         country: "",
         Phone: ""
     });
+    
+    const [paymentMethod, setPaymentMethod] = useState("");
     
     const changeHandler = (e) => {
         setData({ ...data, [e.target.name]: e.target.value });
@@ -66,6 +69,12 @@ const PlaceOrder = () => {
             return;
         }
         
+        // Validate payment method selection
+        if (!paymentMethod) {
+            toast.error('Please select a payment method');
+            return;
+        }
+        
         // Check if cart has items
         if (getTotalCartAmount() === 0) {
             toast.error('Your cart is empty');
@@ -94,6 +103,7 @@ const PlaceOrder = () => {
             address: data,
             items: orderItems,
             amount: getTotalWithDiscount() + 1,
+            paymentMethod: paymentMethod,
             appliedCoupon: coupon.isValid ? {
                 code: coupon.code,
                 value: coupon.value
@@ -103,9 +113,9 @@ const PlaceOrder = () => {
         console.log('PlaceOrder - Order data:', orderData);
         
         try {
-            console.log('PlaceOrder - Sending request to:', `${backend_url}/api/orders/place`);
+            console.log('PlaceOrder - Sending request to:', `${backend_url}/api/orders/place-direct`);
             
-            let response = await fetch(`${backend_url}/api/orders/place`, {
+            let response = await fetch(`${backend_url}/api/orders/place-direct`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -120,10 +130,24 @@ const PlaceOrder = () => {
             console.log('PlaceOrder - Response data:', json);
             
             if (response.ok) {
-                const { session_url } = json;
-                console.log('PlaceOrder - Redirecting to:', session_url);
-                // Don't clear the coupon here - it should persist until payment is complete
-                window.location.replace(session_url);
+                console.log('PlaceOrder - Order placed successfully:', json);
+                
+                // Clear coupon after successful order placement
+                clearCoupon();
+                
+                // Clear cart for COD orders (backend already clears it, but update frontend too)
+                if (paymentMethod === 'cod') {
+                    clearCart();
+                    toast.success('Order placed successfully! Cash on Delivery confirmed.');
+                } else if (paymentMethod === 'bankTransfer') {
+                    toast.success('Order placed successfully! Please send payment proof via WhatsApp.');
+                }
+                
+                // Navigate to orders page or home after a short delay
+                setTimeout(() => {
+                    navigate('/myorders');
+                }, 2000);
+                
             } else {
                 console.error('PlaceOrder - Error response:', json);
                 toast.error(json.error || "Failed to place order");
@@ -189,9 +213,43 @@ const PlaceOrder = () => {
                             <h3>Total </h3>
                             <h3>PKR {(getTotalCartAmount() === 0 ? 0 : getTotalWithDiscount() + 1).toLocaleString('en-PK')}</h3>
                         </div>
+</div>
+
+                    <div className="payment-methods">
+                        <h2>Payment Options</h2>
+                        <div className="payment-option">
+                            <input 
+                                type="radio" 
+                                id="cod" 
+                                name="paymentOption" 
+                                value="cod" 
+                                checked={paymentMethod === "cod"}
+                                onChange={(e) => setPaymentMethod(e.target.value)}
+                                required 
+                            />
+                            <label htmlFor="cod">Cash on Delivery (Karachi residents only, additional charges apply)</label>
+                        </div>
+                        <div className="payment-option">
+                            <input 
+                                type="radio" 
+                                id="bankTransfer" 
+                                name="paymentOption" 
+                                value="bankTransfer" 
+                                checked={paymentMethod === "bankTransfer"}
+                                onChange={(e) => setPaymentMethod(e.target.value)}
+                                required 
+                            />
+                            <label htmlFor="bankTransfer">Bank Transfer via EasyPaisa or JazzCash: 03003383851 (Account Title: NASRA TANVEER)</label>
+                            {paymentMethod === "bankTransfer" && (
+                                <div className="bank-transfer-details">
+                                    <p>Please send payment proof to WhatsApp.</p>
+                                    <a href="https://api.whatsapp.com/send?phone=%2B923003383851&context=AfepripkwO52YOtyqBBXmRt-LrMnIucbELBLylQcrKlgU-j-f6Fea8PMKAKPOOqYTa98CwMwkS14vdMR9z30pXBTlj7KjHzNNDPF4xV9djlTG2KbEpD1NvjZev8s8JGvzUVKGFSyXmRuuvljVJbZB2wVTw&source=FB_Page&app=facebook&entry_point=page_cta&fbclid=IwY2xjawLkoOJleHRuA2FlbQIxMABicmlkETF2cjdPbEZuSGs4WHBlMEtrAR63RLZkCAbMXqXvBrotjsPDf9whlscHDWbaVWA3yK2ojFcAO8qAbw9xUtSIMQ_aem_TMnobXT3-k8sQr9epELmvg" className="whatsapp-button" target="_blank" rel="noopener noreferrer">Send via WhatsApp</a>
+                                </div>
+                            )}
+                        </div>
                     </div>
-                    
-                    <button type="submit">PROCEED TO PAYMENT</button>
+
+                    <button type="submit" disabled={!paymentMethod} className={!paymentMethod ? 'disabled' : ''}>PLACE ORDER</button>
                 </div>
             </div>
         </form>

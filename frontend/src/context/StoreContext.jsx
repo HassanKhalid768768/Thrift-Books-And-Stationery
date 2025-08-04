@@ -86,7 +86,7 @@ const cartResponse = await api.getCart();
             // Make API calls for each item in the quantity
             for (let i = 0; i < quantity; i++) {
                 try {
-const response = await api.addToCart(itemId);
+                    const response = await api.addToCart(itemId);
                     const json = await response.json();
                     if(!response.ok){
                         toast.error(json.error);
@@ -98,6 +98,10 @@ const response = await api.addToCart(itemId);
             }
         }
     }
+
+    const clearCart = () => {
+        setCartItems({});
+    };
 
     const removeFromCart = async (itemId) =>{
         // Get current quantity and product info before updating
@@ -268,6 +272,7 @@ const response = await api.validateCoupon(code);
         addToCart,
         removeFromCart,
         removeItemCompletely,
+        clearCart,
         getTotalCartAmount,
         getTotalCartItems,
         validateCoupon,
