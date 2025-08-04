@@ -4,6 +4,18 @@ import { toast } from 'react-toastify';
 import { DarkModeContext } from '../context/DarkModeContext';
 import { api } from '../utils/api';
 
+// Utility function to format order number for display
+const formatOrderNumber = (orderNumber) => {
+    if (!orderNumber) return 'N/A';
+    // Show last 8 characters for better display
+    return orderNumber.length >= 8 ? orderNumber.slice(-8) : orderNumber;
+};
+
+// Utility function to calculate total quantity
+const calculateTotalQuantity = (items) => {
+    return items?.reduce((total, item) => total + (item.quantity || 0), 0) || 0;
+};
+
 const MyOrders = () => {
     const { darkMode } = useContext(DarkModeContext);
     const [orders, setOrders] = useState([]);
@@ -98,6 +110,16 @@ const MyOrders = () => {
                         const statusClass = getStatusColor(order.status);
                         return (
                             <div key={order._id || index} className={`my-orders-order card ${statusClass} ${darkMode ? 'dark' : ''}`}>
+                                <div className="order-header">
+                                    <div className="order-number">
+                                        <span className="order-number-label">Order #</span>
+                                        <span className="order-number-value">{formatOrderNumber(order.orderNumber) || order._id?.substring(order._id.length - 6) || index}</span>
+                                    </div>
+                                    <div className="order-info">
+                                        <span className="order-date">{new Date(order.date).toLocaleDateString('en-PK')}</span>
+                                        <span className="total-quantity">{calculateTotalQuantity(order.items)} items</span>
+                                    </div>
+                                </div>
                                 <div className="order-images">
                                     {order.items && Array.isArray(order.items) && 
                                         order.items.map((item, itemIndex) => (

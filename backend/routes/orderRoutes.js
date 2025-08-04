@@ -12,6 +12,7 @@ router.post("/verify-bank-transfer", orderController.verifyBankTransfer);
 router.post("/userorders", authMiddleware, orderController.userOrders);
 router.get("/", orderController.getAllOrders);
 router.post("/status", authMiddleware,orderController.updateStatus);
+router.delete("/:orderId", authMiddleware, orderController.deleteOrder);
 router.post("/cleanup", orderController.cleanupAbandonedOrders);
 router.post("/cleanup-user", authMiddleware, orderController.cleanupUserPendingOrders);
 router.get("/pending", orderController.getPendingOrders);

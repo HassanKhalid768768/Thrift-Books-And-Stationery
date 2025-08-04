@@ -66,6 +66,10 @@ export const api = {
     body: JSON.stringify({ orderId, status })
   }),
 
+  deleteOrder: (orderId) => apiCall(`/api/orders/${orderId}`, {
+    method: 'DELETE'
+  }),
+
   // Coupons management
   getCoupons: () => apiCall('/api/coupons'),
   

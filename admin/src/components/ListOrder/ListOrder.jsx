@@ -7,6 +7,18 @@ import { DarkModeContext } from "../../context/DarkModeContext";
 import StatusFilter from "../StatusFilter/StatusFilter";
 import { api } from '../../utils/api';
 
+// Utility function to format order number for display
+const formatOrderNumber = (orderNumber) => {
+    if (!orderNumber) return 'N/A';
+    // Show last 8 characters for better display
+    return orderNumber.length >= 8 ? orderNumber.slice(-8) : orderNumber;
+};
+
+// Utility function to calculate total quantity
+const calculateTotalQuantity = (items) => {
+    return items?.reduce((total, item) => total + (item.quantity || 0), 0) || 0;
+};
+
 // Status color mapping
 const statusColors = {
   "Ordered": "#f0ad4e",      // Orange
@@ -101,6 +113,41 @@ const ListOrder = () => {
         }
     };
 
+    const handleDeleteOrder = async (orderId, orderNumber) => {
+        // Show confirmation dialog
+        const isConfirmed = window.confirm(
+            `Are you sure you want to delete Order #${formatOrderNumber(orderNumber) || orderId?.substring(orderId.length - 6)}?\n\nThis action cannot be undone.`
+        );
+        
+        if (!isConfirmed) {
+            return;
+        }
+        
+        try {
+            const response = await api.deleteOrder(orderId);
+            const json = await response.json();
+            
+            if (response.ok) {
+                toast.success('Order deleted successfully');
+                
+                // Update local state by removing the deleted order
+                const updatedOrders = orders.filter(order => order._id !== orderId);
+                setOrders(updatedOrders);
+                
+                // Update filtered orders based on active status
+                if (activeStatus === "All") {
+                    setFilteredOrders(updatedOrders);
+                } else {
+                    setFilteredOrders(updatedOrders.filter(order => order.status === activeStatus));
+                }
+            } else {
+                toast.error(json.error || "Failed to delete order");
+            }
+        } catch (err) {
+            toast.error("Error deleting order");
+        }
+    };
+
     return (
         <div className={`list-order-container ${darkMode ? 'dark-mode' : ''}`}>
             <div className="list-order-content">
@@ -152,7 +199,14 @@ const ListOrder = () => {
                         <div key={order._id || index} className='order-card'>
                             <div className="order-header">
                                 <div className="order-info">
-                                    <span className="order-id">Order #{order._id?.substring(order._id.length - 6) || index}</span>
+                                    <div className="order-number">
+                                        <span className="order-number-label">Order #</span>
+                                        <span className="order-number-value">{formatOrderNumber(order.orderNumber) || order._id?.substring(order._id.length - 6) || index}</span>
+                                    </div>
+                                    <div className="order-details-summary">
+                                        <span className="total-quantity">{calculateTotalQuantity(order.items)} items</span>
+                                        <span className="order-date">{new Date(order.date).toLocaleDateString('en-PK')}</span>
+                                    </div>
                                 </div>
                                 <div className="order-amount">PKR {order.amount?.toLocaleString('en-PK')}</div>
                             </div>
@@ -214,8 +268,17 @@ const ListOrder = () => {
                                     </div>
                                 </div>
                                 
-                                <div className="status-badge" style={{ backgroundColor: statusColors[order.status] }}>
-                                    {order.status}
+                                <div className="order-actions">
+                                    <div className="status-badge" style={{ backgroundColor: statusColors[order.status] }}>
+                                        {order.status}
+                                    </div>
+                                    <button 
+                                        className="delete-order-btn" 
+                                        onClick={() => handleDeleteOrder(order._id, order.orderNumber)}
+                                        title="Delete Order"
+                                    >
+                                        Delete
+                                    </button>
                                 </div>
                             </div>
                         </div>

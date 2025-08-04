@@ -4,6 +4,7 @@ const errorHandler = require("./../utils/errorHandler");
 const jwt = require("jsonwebtoken");
 const Stripe = require("stripe");
 const { normalizeCategory, categoriesMatch } = require('../utils/categoryUtils');
+const { generateOrderNumber } = require('../utils/orderUtils');
 require("dotenv").config({ path: "./config.env" });
 
 //configure stripe
@@ -53,8 +54,12 @@ exports.placeOrderDirect = async (req, res, next) => {
       paymentStatus = false; // Will be updated when payment proof is verified
     }
 
+    // Generate unique order number
+    const orderNumber = await generateOrderNumber();
+
     // Create the order
     const order = await Order.create({
+      orderNumber,
       userId: _id,
       items: normalizedItems,
       amount,
@@ -117,9 +122,13 @@ exports.placeOrder = async (req, res, next) => {
     console.log('Before:', items.map(item => item.category));
     console.log('After:', normalizedItems.map(item => item.category));
 
+    // Generate unique order number
+    const orderNumber = await generateOrderNumber();
+
     // Create the order with coupon information if applied and normalized categories
     // Mark as pending payment initially - cart will be cleared only after successful payment
     const order = await Order.create({
+      orderNumber,
       userId: _id,
       items: normalizedItems,
       amount,
@@ -423,6 +432,33 @@ exports.getPendingOrders = async (req, res, next) => {
       success: true,
       count: pendingOrders.length,
       orders: pendingOrders
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// Delete order (admin)
+exports.deleteOrder = async (req, res, next) => {
+  const { orderId } = req.params;
+  try {
+    // Find the order first to check if it exists
+    const order = await Order.findById(orderId);
+    if (!order) {
+      return res.status(404).json({ 
+        success: false, 
+        error: "Order not found" 
+      });
+    }
+    
+    // Delete the order
+    await Order.findByIdAndDelete(orderId);
+    
+    console.log(`Order ${orderId} deleted by admin`);
+    res.status(200).json({
+      success: true,
+      message: 'Order deleted successfully',
+      deletedOrderId: orderId
     });
   } catch (err) {
     next(err);
