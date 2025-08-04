@@ -236,3 +236,36 @@
 .dark-mode::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
+
+/* Search states */
+.search-loading,
+.no-products {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 16px;
+    background: var(--bg-primary);
+}
+
+.search-loading p,
+.no-products p {
+    margin: 0;
+    font-weight: 500;
+}
+
+.dark-mode .search-loading,
+.dark-mode .no-products {
+    color: #ffffff;
+    background: #000000;
+}
+
+.search-loading {
+    color: #007bff;
+}
+
+.dark-mode .search-loading {
+    color: #74b9ff;
+}

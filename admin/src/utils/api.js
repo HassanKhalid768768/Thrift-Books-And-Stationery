@@ -44,6 +44,13 @@ export const api = {
   // Products management
   getProducts: () => apiCall('/api/products'),
   
+  searchProducts: (searchQuery, category) => {
+    const params = new URLSearchParams();
+    if (searchQuery) params.append('query', searchQuery);
+    if (category) params.append('category', category);
+    return apiCall(`/api/products/search?${params.toString()}`);
+  },
+  
   addProduct: (formData) => apiCall('/api/products', {
     method: 'POST',
     body: formData
@@ -109,6 +116,17 @@ export const api = {
   deleteReview: (id) => apiCall(`/api/reviews/${id}`, {
     method: 'DELETE'
   }),
+
+  // Subscribers management
+  getSubscribers: () => apiCall('/api/subscribers'),
+  
+  deleteSubscriber: (id) => apiCall(`/api/subscribers/${id}`, {
+    method: 'DELETE'
+  }),
+
+  // Debug functions
+  testAuth: () => apiCall('/api/subscribers/test-auth'),
+  testAdmin: () => apiCall('/api/subscribers/test-admin'),
 
   // Dashboard stats
   getDashboardStats: () => apiCall('/api/dashboard/stats')

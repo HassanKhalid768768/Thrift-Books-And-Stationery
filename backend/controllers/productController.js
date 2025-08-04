@@ -16,6 +16,45 @@ exports.getAllProducts = async (req, res, next) => {
   }
 };
 
+exports.searchProducts = async (req, res, next) => {
+  try {
+    const { query, category } = req.query;
+    
+    // Build search criteria
+    let searchCriteria = {};
+    
+    // Add text search if query is provided
+    if (query && query.trim()) {
+      const searchRegex = new RegExp(query.trim(), 'i'); // Case-insensitive search
+      searchCriteria.$or = [
+        { name: searchRegex },
+        { description: searchRegex },
+        { category: searchRegex }
+      ];
+    }
+    
+    // Add category filter if provided
+    if (category && category.trim() && category !== 'all') {
+      const normalizedCategory = normalizeCategory(category);
+      const categoryRegex = new RegExp(`^${normalizedCategory}$`, 'i');
+      searchCriteria.category = categoryRegex;
+    }
+    
+    // If no search criteria provided, return all products
+    if (Object.keys(searchCriteria).length === 0) {
+      const products = await Product.find({});
+      return res.status(200).json(products);
+    }
+    
+    // Execute search
+    const products = await Product.find(searchCriteria);
+    
+    res.status(200).json(products);
+  } catch (err) {
+    next(err);
+  }
+};
+
 exports.createProduct = async (req, res, next) => {
   const products = await Product.find({});
   const length = products.length;

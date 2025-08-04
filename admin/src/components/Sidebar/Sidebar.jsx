@@ -7,6 +7,7 @@ import { MdInventory2, MdAddBox, MdRateReview } from 'react-icons/md';
 import { FaShoppingBag } from 'react-icons/fa';
 import { RiCoupon3Fill } from 'react-icons/ri';
 import { IoMdChatboxes } from 'react-icons/io';
+import { MdEmail } from 'react-icons/md';
 
 const Sidebar = () => {
     const location = useLocation();
@@ -60,6 +61,12 @@ const Sidebar = () => {
                 <div className={`sidebar-item ${isActive('/messages') ? 'active' : ''}`}>
                     <IoMdChatboxes style={{ color: '#009688', fontSize: '24px' }} />
                     <p>Messages</p>
+                </div>
+            </Link>
+            <Link to={'/subscribers'} style={{textDecoration:'none'}}>
+                <div className={`sidebar-item ${isActive('/subscribers') ? 'active' : ''}`}>
+                    <MdEmail style={{ color: '#E91E63', fontSize: '24px' }} />
+                    <p>Subscribers</p>
                 </div>
             </Link>
         </div>

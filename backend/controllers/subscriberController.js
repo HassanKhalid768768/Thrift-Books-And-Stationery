@@ -29,3 +29,34 @@ exports.subscribe = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.getAllSubscribers = async (req, res, next) => {
+  try {
+    const subscribers = await Subscriber.find({}).sort({ date: -1 });
+    res.status(200).json({
+      success: true,
+      count: subscribers.length,
+      data: subscribers
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.deleteSubscriber = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    
+    const subscriber = await Subscriber.findByIdAndDelete(id);
+    if (!subscriber) {
+      return next(errorHandler(404, "Subscriber not found"));
+    }
+    
+    res.status(200).json({
+      success: true,
+      message: "Subscriber deleted successfully"
+    });
+  } catch (err) {
+    next(err);
+  }
+};
