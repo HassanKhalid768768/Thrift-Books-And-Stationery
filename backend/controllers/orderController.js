@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const Stripe = require("stripe");
 const { normalizeCategory, categoriesMatch } = require('../utils/categoryUtils');
 const { generateOrderNumber } = require('../utils/orderUtils');
-require("dotenv").config({ path: "./config.env" });
+require("dotenv").config();
 
 //configure stripe
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
@@ -84,8 +84,101 @@ exports.placeOrderDirect = async (req, res, next) => {
       order: order,
       orderId: order._id
     });
+
+    // Send order summary email
+    await sendOrderSummaryEmail(order);
   } catch (err) {
     next(err);
+  }
+};
+
+// Function to send email using nodemailer
+const nodemailer = require('nodemailer');
+
+async function sendOrderSummaryEmail(order) {
+  try {
+    // Check if email credentials are configured
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+      console.error('Email credentials not configured. Please set EMAIL_USER and EMAIL_PASS in .env file');
+      return;
+    }
+
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+      secure: true,
+      port: 465,
+    });
+
+    // Verify the transporter configuration
+    try {
+      await transporter.verify();
+      console.log('Email transporter verified successfully');
+    } catch (verifyError) {
+      console.error('Email transporter verification failed:', verifyError);
+      return;
+    }
+
+    // Create detailed order summary
+    const itemsList = order.items.map(item => 
+      `- ${item.name} (Qty: ${item.quantity}) - PKR ${item.new_price} each`
+    ).join('\n');
+    
+    const couponInfo = order.appliedCoupon ? 
+      `\nCoupon Applied: ${order.appliedCoupon.code} (-PKR ${order.appliedCoupon.value})` : '';
+    
+    // Handle address fields correctly based on frontend naming
+    const firstName = order.address.firstName;
+    const lastName = order.address.lastName;
+    const email = order.address.email;
+    const phone = order.address.Phone;
+    const address = order.address.Address;
+    const city = order.address.city;
+    const country = order.address.country;
+
+    const emailText = `
+New Order Received!
+==================
+
+Order Details:
+- Order Number: ${order.orderNumber}
+- Order ID: ${order._id}
+- Status: ${order.status}
+- Payment Method: ${order.paymentMethod || 'Stripe'}
+- Payment Status: ${order.payment ? 'Paid' : 'Pending'}
+- Order Date: ${new Date(order.date).toLocaleString()}
+
+Customer Information:
+- Name: ${firstName} ${lastName}
+- Email: ${email}
+- Phone: ${phone}
+- Address: ${address}, ${city}, ${country}
+
+Items Ordered:
+${itemsList}
+${couponInfo}
+
+Total Amount: PKR ${order.amount}
+
+==================
+Thrift Books and Stationery
+    `;
+
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: 'hassanjack01@gmail.com',
+      subject: `New Order #${order.orderNumber} - PKR ${order.amount}`,
+      text: emailText,
+    };
+
+    await transporter.sendMail(mailOptions);
+    console.log(`Order summary email sent successfully for order ${order.orderNumber}`);
+  } catch (error) {
+    console.error('Error sending order summary email:', error);
+    // Don't throw error to avoid disrupting order placement
   }
 };
 
@@ -228,6 +321,10 @@ exports.verifyOrder = async (req, res, next) => {
       await User.findByIdAndUpdate(order.userId, { cartData: {} });
       
       console.log(`Payment successful for order ${orderId}, cart cleared for user ${order.userId}`);
+      
+      // Send order summary email
+      await sendOrderSummaryEmail(updatedOrder);
+      
       res.status(200).json(updatedOrder);
     } else {
       // Payment cancelled or failed - delete the pending order
@@ -497,6 +594,10 @@ exports.verifyBankTransfer = async (req, res, next) => {
     await User.findByIdAndUpdate(order.userId, { cartData: {} });
     
     console.log(`Bank transfer payment verified for order ${orderId}, cart cleared for user ${order.userId}`);
+    
+    // Send order summary email
+    await sendOrderSummaryEmail(updatedOrder);
+    
     res.status(200).json({
       success: true,
       message: 'Bank transfer payment verified successfully',
