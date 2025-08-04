@@ -195,8 +195,16 @@
 .customer-name {
     font-size: 18px;
     font-weight: 600;
-    margin: 0 0 10px 0;
+    margin: 0 0 5px 0;
     color: #333;
+}
+
+.customer-email {
+    font-size: 14px;
+    color: #666;
+    font-weight: 500;
+    margin: 0 0 10px 0;
+    font-style: italic;
 }
 
 .address-details {
@@ -577,6 +585,10 @@
 
 .dark-mode .customer-name {
     color: #e0e0e0;
+}
+
+.dark-mode .customer-email {
+    color: #999;
 }
 
 .dark-mode .address-details {

@@ -217,6 +217,7 @@ const ListOrder = () => {
                                 </div>
                                 <div className="customer-details">
                                     <h3 className='customer-name'>{order.address?.firstName + " " + order.address?.lastName}</h3>
+                                    <p className="customer-email">{order.address?.email}</p>
                                     <div className="address-details">
                                         <p>{order.address?.Address || order.address?.street}</p>
                                         <p>{order.address?.city}{order.address?.state ? `, ${order.address.state}` : ''}{order.address?.zipcode ? `, ${order.address.zipcode}` : ''}</p>
