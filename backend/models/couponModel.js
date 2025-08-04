@@ -21,6 +21,10 @@ const couponSchema = new mongoose.Schema({
   expiryDate: {
     type: Date,
   },
+  minimumOrderValue: {
+    type: Number,
+    default: 0,
+  },
 });
 
 const couponModel = mongoose.model("Coupon", couponSchema);

@@ -13,7 +13,8 @@ const ManageCoupons = () => {
     const [couponDetails, setCouponDetails] = useState({
         code: "",
         value: "",
-        expiryDate: ""
+        expiryDate: "",
+        minimumOrderValue: ""
     });
 
     useEffect(() => {
@@ -57,7 +58,8 @@ const ManageCoupons = () => {
                 setCouponDetails({
                     code: "",
                     value: "",
-                    expiryDate: ""
+                    expiryDate: "",
+                    minimumOrderValue: ""
                 });
                 // Refetch coupons after adding a new one
                 const response = await api.getCoupons();
@@ -136,6 +138,17 @@ const ManageCoupons = () => {
                             onChange={changeHandler}
                         />
                     </div>
+                    <div className="coupon-form-field">
+                        <p>Minimum Order Value (PKR) - Optional</p>
+                        <input 
+                            type="number" 
+                            name="minimumOrderValue" 
+                            placeholder="Enter minimum order value (0 for no minimum)" 
+                            value={couponDetails.minimumOrderValue}
+                            onChange={changeHandler}
+                            min="0"
+                        />
+                    </div>
                     <button className="add-coupon-btn" onClick={addCoupon}>ADD COUPON</button>
                 </div>
             </div>
@@ -145,6 +158,7 @@ const ManageCoupons = () => {
                 <div className="coupon-list-format-main">
                     <p>Code</p>
                     <p>Value</p>
+                    <p>Min Order</p>
                     <p>Expiry Date</p>
                     <p>Status</p>
                     <p>Remove</p>
@@ -161,6 +175,7 @@ const ManageCoupons = () => {
                                 <div className="coupon-list-format-main coupon-list-item">
                                     <p>{coupon.code}</p>
                                     <p>PKR {coupon.value.toLocaleString('en-PK')}</p>
+                                    <p>{coupon.minimumOrderValue > 0 ? `PKR ${coupon.minimumOrderValue.toLocaleString('en-PK')}` : "No minimum"}</p>
                                     <p>{coupon.expiryDate ? new Date(coupon.expiryDate).toLocaleDateString() : "No expiry"}</p>
                                     <p className={isExpired(coupon.expiryDate) ? "expired" : "active"}>
                                         {isExpired(coupon.expiryDate) ? "Expired" : "Active"}

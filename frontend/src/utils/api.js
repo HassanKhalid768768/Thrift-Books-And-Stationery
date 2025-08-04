@@ -77,9 +77,9 @@ export const api = {
   }),
 
   // Coupons
-  validateCoupon: (code) => apiCall('/api/coupons/validate', {
+  validateCoupon: (code, orderAmount) => apiCall('/api/coupons/validate', {
     method: 'POST',
-    body: JSON.stringify({ code })
+    body: JSON.stringify({ code, orderAmount })
   }),
 
   // Messages/Contact

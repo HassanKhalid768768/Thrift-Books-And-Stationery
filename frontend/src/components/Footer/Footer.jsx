@@ -55,6 +55,9 @@ const Footer = () => {
           <Button component="a" href="/gadgets" color="inherit" sx={{ display: "block", textAlign: "left" }}>
             Gadgets
           </Button>
+          <Button component="a" href="/water-bottles-and-lunch-boxes" color="inherit" sx={{ display: "block", textAlign: "left" }}>
+            Water Bottles & Lunch Boxes
+          </Button>
         </Grid>
 
         {/* CUSTOMER SERVICE */}

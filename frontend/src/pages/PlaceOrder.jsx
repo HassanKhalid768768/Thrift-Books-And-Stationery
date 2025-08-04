@@ -87,6 +87,36 @@ const PlaceOrder = () => {
             return;
         }
         
+        // Revalidate coupon if applied (check minimum order value)
+        if (coupon.isValid) {
+            try {
+                const currentOrderAmount = getTotalCartAmount();
+                const response = await fetch(`${backend_url}/api/coupons/validate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        code: coupon.code, 
+                        orderAmount: currentOrderAmount 
+                    }),
+                });
+                
+                const couponData = await response.json();
+                
+                if (!response.ok || !couponData.valid) {
+                    // Coupon is no longer valid, remove it
+                    clearCoupon();
+                    toast.error(couponData.error || 'Coupon is no longer valid for current order amount');
+                    return;
+                }
+            } catch (error) {
+                console.error('Error revalidating coupon:', error);
+                toast.error('Error validating coupon. Please try again.');
+                return;
+            }
+        }
+        
         let orderItems = [];
         
         all_product.forEach((item) => {

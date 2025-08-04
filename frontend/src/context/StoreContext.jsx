@@ -8,7 +8,7 @@ const StoreContextProvider = (props) => {
 
     const [all_product, setAll_product] = useState([]);
     const [cartItems, setCartItems] = useState({});
-    const [coupon, setCoupon] = useState({ code: "", value: 0, isValid: false });
+    const [coupon, setCoupon] = useState({ code: "", value: 0, isValid: false, minimumOrderValue: 0 });
 useEffect(() => {
         let isMounted = true;
         
@@ -163,7 +163,8 @@ await api.removeFromCart(itemId);
 
     const validateCoupon = async (code) => {
         try {
-const response = await api.validateCoupon(code);
+            const orderAmount = getTotalCartAmount();
+const response = await api.validateCoupon(code, orderAmount);
             
             const data = await response.json();
             
@@ -171,12 +172,13 @@ const response = await api.validateCoupon(code);
                 setCoupon({
                     code: data.code,
                     value: data.value,
-                    isValid: true
+                    isValid: true,
+                    minimumOrderValue: data.minimumOrderValue || 0
                 });
-                toast.success(`Coupon applied: $${data.value} discount`);
+                toast.success(`Coupon applied: PKR ${data.value} discount`);
                 return true;
             } else {
-                setCoupon({ code: "", value: 0, isValid: false });
+                setCoupon({ code: "", value: 0, isValid: false, minimumOrderValue: 0 });
                 toast.error(data.error || "Invalid coupon code");
                 return false;
             }
@@ -187,8 +189,34 @@ const response = await api.validateCoupon(code);
     };
     
     const clearCoupon = () => {
-        setCoupon({ code: "", value: 0, isValid: false });
+        setCoupon({ code: "", value: 0, isValid: false, minimumOrderValue: 0 });
     };
+    
+    // Auto-validate coupon when cart amount changes
+    useEffect(() => {
+        const validateCouponOnCartChange = async () => {
+            if (coupon.isValid && coupon.code) {
+                try {
+                    const currentOrderAmount = getTotalCartAmount();
+                    const response = await api.validateCoupon(coupon.code, currentOrderAmount);
+                    const data = await response.json();
+                    
+                    if (!response.ok || !data.valid) {
+                        // Coupon is no longer valid, remove it
+                        clearCoupon();
+                        toast.warning(`Coupon '${coupon.code}' removed - ${data.error || 'no longer valid for current cart amount'}`);
+                    }
+                } catch (error) {
+                    console.error('Error auto-validating coupon:', error);
+                    // Don't show error toast for auto-validation to avoid spamming user
+                }
+            }
+        };
+        
+        // Debounce the validation to avoid too many API calls
+        const timeoutId = setTimeout(validateCouponOnCartChange, 500);
+        return () => clearTimeout(timeoutId);
+    }, [cartItems, coupon.isValid, coupon.code]); // Re-run when cart items or coupon changes
 
     const getTotalCartAmount = () => {
         let totalAmount = 0;

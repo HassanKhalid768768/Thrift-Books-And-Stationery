@@ -3,7 +3,7 @@ require("dotenv").config({ path: "./config.env" });
 
 // Create a new coupon (admin only)
 exports.createCoupon = async (req, res, next) => {
-  const { code, value, expiryDate } = req.body;
+  const { code, value, expiryDate, minimumOrderValue } = req.body;
   try {
     // Check if coupon with same code already exists
     const existingCoupon = await Coupon.findOne({ code });
@@ -17,6 +17,7 @@ exports.createCoupon = async (req, res, next) => {
       value,
       active: true,
       expiryDate: expiryDate || null,
+      minimumOrderValue: minimumOrderValue || 0,
     });
     
     res.status(200).json(coupon);
@@ -72,12 +73,18 @@ exports.validateCoupon = async (req, res, next) => {
     if (coupon.expiryDate && new Date() > new Date(coupon.expiryDate)) {
       return res.status(400).json({ error: "Coupon has expired" });
     }
+
+    // Check minimum order value
+    if (coupon.minimumOrderValue && req.body.orderAmount < coupon.minimumOrderValue) {
+      return res.status(400).json({ error: `Order must be at least PKR ${coupon.minimumOrderValue}` });
+    }
     
     // Return the coupon if valid
     res.status(200).json({
       valid: true,
       code: coupon.code,
-      value: coupon.value
+      value: coupon.value,
+      minimumOrderValue: coupon.minimumOrderValue || 0
     });
   } catch (err) {
     next(err);
