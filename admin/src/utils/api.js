@@ -51,6 +51,14 @@ export const api = {
     return apiCall(`/api/products/search?${params.toString()}`);
   },
   
+  getProductSuggestions: (searchQuery, category, limit = 10) => {
+    const params = new URLSearchParams();
+    if (searchQuery) params.append('query', searchQuery);
+    if (category && category !== 'all') params.append('category', category);
+    params.append('limit', limit);
+    return apiCall(`/api/products/suggestions?${params.toString()}`);
+  },
+  
   addProduct: (formData) => apiCall('/api/products', {
     method: 'POST',
     body: formData

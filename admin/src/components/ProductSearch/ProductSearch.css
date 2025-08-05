@@ -27,6 +27,7 @@
 .search-input-group {
     flex: 2;
     min-width: 300px;
+    position: relative;
 }
 
 .search-select-group {

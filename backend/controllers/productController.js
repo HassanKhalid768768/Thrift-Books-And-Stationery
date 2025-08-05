@@ -55,6 +55,44 @@ exports.searchProducts = async (req, res, next) => {
   }
 };
 
+exports.getProductSuggestions = async (req, res, next) => {
+  try {
+    const { query, category, limit = 10 } = req.query;
+    
+    // Require at least 2 characters for suggestions to avoid too many results
+    if (!query || query.trim().length < 2) {
+      return res.status(200).json([]);
+    }
+    
+    // Build search criteria
+    let searchCriteria = {};
+    
+    const searchRegex = new RegExp(query.trim(), 'i'); // Case-insensitive search
+    searchCriteria.$or = [
+      { name: searchRegex },
+      { description: searchRegex },
+      { category: searchRegex }
+    ];
+    
+    // Add category filter if provided
+    if (category && category.trim() && category !== 'all') {
+      const normalizedCategory = normalizeCategory(category);
+      const categoryRegex = new RegExp(`^${normalizedCategory}$`, 'i');
+      searchCriteria.category = categoryRegex;
+    }
+    
+    // Execute search with limit and only return essential fields for suggestions
+    const products = await Product.find(searchCriteria)
+      .select('id name category image new_price old_price')
+      .limit(parseInt(limit))
+      .sort({ name: 1 }); // Sort alphabetically
+    
+    res.status(200).json(products);
+  } catch (err) {
+    next(err);
+  }
+};
+
 exports.createProduct = async (req, res, next) => {
   const products = await Product.find({});
   const length = products.length;
