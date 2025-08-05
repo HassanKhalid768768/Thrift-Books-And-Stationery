@@ -297,7 +297,20 @@ const ProductDisplay = (props) => {
                 <div className="productdisplay-right-description">
                     {product?.description || "No description available"}
                 </div>
-                <button onClick={()=>{addToCart(product?.id)}}>ADD TO CART</button>
+                {product?.available === false ? (
+                    <div className="out-of-stock-section">
+                        <button className="out-of-stock-btn" disabled>
+                            OUT OF STOCK
+                        </button>
+                        <p className="out-of-stock-message">
+                            This product is currently out of stock. Please check back later.
+                        </p>
+                    </div>
+                ) : (
+                    <button onClick={()=>{addToCart(product?.id)}} className="add-to-cart-btn">
+                        ADD TO CART
+                    </button>
+                )}
 
                 {/* Reviews Section */}
                 <div className="productdisplay-reviews">

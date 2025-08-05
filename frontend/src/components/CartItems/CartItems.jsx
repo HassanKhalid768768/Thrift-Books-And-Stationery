@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import './CartItems.css';
 import { StoreContext } from "../../context/StoreContext";
@@ -22,8 +22,94 @@ const CartItems = () => {
     } = useContext(StoreContext);
     const [couponCode, setCouponCode] = useState("");
     const [isApplying, setIsApplying] = useState(false);
+    const [cartValidation, setCartValidation] = useState(null);
+    const [isValidating, setIsValidating] = useState(false);
     const { darkMode } = useContext(DarkModeContext);
     const navigate = useNavigate();
+    
+    const backend_url = process.env.REACT_APP_BACKEND_URL;
+    
+    // Validate cart items when component mounts or cart changes
+    useEffect(() => {
+        validateCartItems();
+    }, [cartItems]);
+    
+    const validateCartItems = async () => {
+        const token = localStorage.getItem('token');
+        if (!token || getTotalCartAmount() === 0) {
+            setCartValidation(null);
+            return;
+        }
+        
+        setIsValidating(true);
+        try {
+            const response = await fetch(`${backend_url}/api/cart/validate`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            
+            if (response.ok) {
+                const validation = await response.json();
+                setCartValidation(validation);
+                
+                // Show warning if there are unavailable items
+                if (!validation.valid && validation.unavailableItems.length > 0) {
+                    const itemNames = validation.unavailableItems.map(item => item.name).join(', ');
+                    toast.warning(`Some items in your cart are no longer available: ${itemNames}`);
+                }
+            } else {
+                console.error('Failed to validate cart');
+            }
+        } catch (error) {
+            console.error('Error validating cart:', error);
+        }
+        setIsValidating(false);
+    };
+    
+    const removeUnavailableItems = async () => {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+        
+        try {
+            const response = await fetch(`${backend_url}/api/cart/removeUnavailable`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            
+            if (response.ok) {
+                const result = await response.json();
+                toast.success(result.message);
+                
+                // Refresh the page to update the cart display
+                window.location.reload();
+            } else {
+                const error = await response.json();
+                toast.error(error.error);
+            }
+        } catch (error) {
+            console.error('Error removing unavailable items:', error);
+            toast.error('Failed to remove unavailable items');
+        }
+    };
+    
+    const handleCheckout = () => {
+        // Check if cart has unavailable items
+        if (cartValidation && !cartValidation.valid) {
+            toast.error('Please remove out-of-stock items from your cart before proceeding to checkout.');
+            return;
+        }
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        const token = localStorage.getItem('token');
+        if (token) {
+            navigate('/order');
+        } else {
+            toast.warning("Please login first to proceed to checkout");
+        }
+    };
     
     return ( 
         <div className={`cartitems ${darkMode ? 'dark-mode' : ''}`}>
@@ -38,17 +124,24 @@ const CartItems = () => {
             <hr />
             {all_product.map((e)=>{
                 if(cartItems[e.id]>0) {
+                    const isOutOfStock = e.available === false;
                     return (
                         <div key={e.id}>
-                            <div className="cartitems-format cartitems-format-main">
+                            <div className={`cartitems-format cartitems-format-main ${isOutOfStock ? 'out-of-stock-item' : ''}`}>
                                 <img src={e.image} alt="" className="carticon-product-icon"/>
-                                <p>{e.name}</p>
+                                <div className="product-info">
+                                    <p>{e.name}</p>
+                                    {isOutOfStock && (
+                                        <span className="out-of-stock-badge">Out of Stock</span>
+                                    )}
+                                </div>
                                 <p>PKR {e.new_price.toLocaleString('en-PK')}</p>
                                 <div className="cartitems-quantity-control">
                                     <button 
                                         className="quantity-btn minus-btn"
                                         onClick={() => removeFromCart(e.id)}
                                         aria-label="Decrease quantity"
+                                        disabled={isOutOfStock}
                                     >
                                         -
                                     </button>
@@ -57,6 +150,7 @@ const CartItems = () => {
                                         className="quantity-btn plus-btn"
                                         onClick={() => addToCart(e.id)}
                                         aria-label="Increase quantity"
+                                        disabled={isOutOfStock}
                                     >
                                         +
                                     </button>
@@ -148,15 +242,37 @@ const CartItems = () => {
                         </div>
                     </div>
                     
-                    <button onClick={() => {
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                        const token = localStorage.getItem('token');
-                        if (token) {
-                            navigate('/order');
-                        } else {
-                            toast.warning("Please login first to proceed to checkout");
-                        }
-                    }}>PROCEED TO CHECKOUT</button>
+                    {/* Out of Stock Warning */}
+                    {cartValidation && !cartValidation.valid && (
+                        <div className="out-of-stock-warning">
+                            <div className="warning-header">
+                                <h3>⚠️ Some items are out of stock</h3>
+                                <p>The following items in your cart are no longer available:</p>
+                            </div>
+                            <div className="unavailable-items-list">
+                                {cartValidation.unavailableItems.map((item, index) => (
+                                    <div key={index} className="unavailable-item">
+                                        <span className="item-name">{item.name}</span>
+                                        <span className="item-reason">({item.reason})</span>
+                                    </div>
+                                ))}
+                            </div>
+                            <button 
+                                className="remove-unavailable-btn"
+                                onClick={removeUnavailableItems}
+                            >
+                                Remove Unavailable Items
+                            </button>
+                        </div>
+                    )}
+                    
+                    <button 
+                        onClick={handleCheckout}
+                        className={cartValidation && !cartValidation.valid ? 'disabled' : ''}
+                        disabled={cartValidation && !cartValidation.valid}
+                    >
+                        {cartValidation && !cartValidation.valid ? 'REMOVE OUT-OF-STOCK ITEMS FIRST' : 'PROCEED TO CHECKOUT'}
+                    </button>
                 </div>
             </div>
         </div>

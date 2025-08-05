@@ -487,7 +487,7 @@ exports.updateProduct = async (req, res, next) => {
     }
     
     // Get updated fields from request body
-    const { name, category, new_price, old_price, description } = req.body;
+    const { name, category, new_price, old_price, description, available } = req.body;
     
     // Create updated product object
     const updatedFields = {
@@ -497,6 +497,11 @@ exports.updateProduct = async (req, res, next) => {
       old_price: old_price || product.old_price,
       description: description || product.description
     };
+    
+    // Handle availability field (allow boolean values)
+    if (available !== undefined) {
+      updatedFields.available = Boolean(available);
+    }
     
     // Check if there's a new image to upload
     if (req.file) {
@@ -520,6 +525,37 @@ exports.updateProduct = async (req, res, next) => {
     
     res.status(200).json({
       message: "Product updated successfully",
+      product: updatedProduct
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.toggleProductAvailability = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const numericId = Number(id);
+    
+    // Find product by id
+    const product = await Product.findOne({ id: numericId });
+    
+    if (!product) {
+      return res.status(404).json({ 
+        error: "Product not found",
+        message: `No product found with ID ${id}`
+      });
+    }
+    
+    // Toggle availability
+    const updatedProduct = await Product.findOneAndUpdate(
+      { id: numericId },
+      { available: !product.available },
+      { new: true, runValidators: true }
+    );
+    
+    res.status(200).json({
+      message: `Product ${updatedProduct.available ? 'marked as available' : 'marked as out of stock'}`,
       product: updatedProduct
     });
   } catch (err) {

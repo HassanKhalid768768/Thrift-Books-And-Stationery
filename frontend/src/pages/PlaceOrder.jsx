@@ -180,7 +180,19 @@ const PlaceOrder = () => {
                 
             } else {
                 console.error('PlaceOrder - Error response:', json);
-                toast.error(json.error || "Failed to place order");
+                
+                // Handle specific out-of-stock error
+                if (json.unavailableItems && json.unavailableItems.length > 0) {
+                    const itemNames = json.unavailableItems.map(item => item.name).join(', ');
+                    toast.error(`The following items are no longer available: ${itemNames}. Please update your cart.`);
+                    
+                    // Navigate back to cart to resolve the issue
+                    setTimeout(() => {
+                        navigate('/cart');
+                    }, 3000);
+                } else {
+                    toast.error(json.error || "Failed to place order");
+                }
             }
         } catch (error) {
             console.error('PlaceOrder - Network error:', error);

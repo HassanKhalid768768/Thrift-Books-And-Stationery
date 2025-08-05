@@ -16,6 +16,37 @@ exports.placeOrderDirect = async (req, res, next) => {
   const { items, amount, address, appliedCoupon, paymentMethod } = req.body;
   
   try {
+    // First validate that all items in the order are available
+    const Product = require('./../models/productModel');
+    const unavailableItems = [];
+    
+    for (const item of items) {
+      const product = await Product.findOne({ id: item.id });
+      if (!product) {
+        return res.status(400).json({
+          success: false,
+          error: `Product '${item.name}' no longer exists and has been removed from our catalog.`,
+          unavailableItems: [{ ...item, reason: 'Product not found' }]
+        });
+      }
+      
+      if (!product.available) {
+        unavailableItems.push({
+          ...item,
+          reason: 'Out of stock'
+        });
+      }
+    }
+    
+    // If any items are unavailable, return error with details
+    if (unavailableItems.length > 0) {
+      return res.status(400).json({
+        success: false,
+        error: `Some items in your cart are no longer available. Please remove them from your cart and try again.`,
+        unavailableItems: unavailableItems
+      });
+    }
+    
     // Clean up only Stripe pending orders, keep bank transfer orders for longer
     await Order.deleteMany({
       userId: _id,

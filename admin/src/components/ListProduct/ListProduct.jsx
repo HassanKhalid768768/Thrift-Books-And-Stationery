@@ -81,6 +81,21 @@ const ListProduct = () => {
         setIsSearching(false);
     };
 
+    const toggleProductAvailability = async (id) => {
+        try {
+            const response = await api.toggleProductAvailability(id);
+            const json = await response.json();
+            if (response.ok) {
+                await fetchInfo();
+                toast.success(json.message);
+            } else {
+                toast.error(json.error);
+            }
+        } catch (error) {
+            toast.error('Failed to update product availability');
+        }
+    };
+
     return ( 
         <div className={`list-product ${darkMode ? 'dark-mode' : ''}`}>
             <h1>All Products</h1>
@@ -95,6 +110,7 @@ const ListProduct = () => {
                 <p>Old Price</p>
                 <p>New Price</p>
                 <p>Category</p>
+                <p>Stock Status</p>
                 <p>Edit</p>
                 <p>Remove</p>
             </div>
@@ -120,6 +136,18 @@ const ListProduct = () => {
                                    product.category === "stationary" ? "Stationary" : 
                                    product.category === "gadgets" ? "Gadgets" : 
                                    product.category}</p>
+                                <div className="stock-status-container">
+                                    <span className={`stock-status ${product.available ? 'in-stock' : 'out-of-stock'}`}>
+                                        {product.available ? 'In Stock' : 'Out of Stock'}
+                                    </span>
+                                    <button 
+                                        className={`stock-toggle-btn ${product.available ? 'mark-out' : 'mark-in'}`}
+                                        onClick={() => toggleProductAvailability(product.id)}
+                                        title={product.available ? 'Mark as Out of Stock' : 'Mark as In Stock'}
+                                    >
+                                        {product.available ? 'Mark Out' : 'Mark In'}
+                                    </button>
+                                </div>
                                 <img 
                                     onClick={() => openEditModal(product)} 
                                     src={editIcon} 

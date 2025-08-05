@@ -25,6 +25,7 @@ router.get("/suggestions", productController.getProductSuggestions);
 router.post("/",authMiddleware, upload.single("product"),productController.createProduct);
 router.delete("/:id", authMiddleware, adminMiddleware, productController.deleteProduct);
 router.patch("/:id", authMiddleware, adminMiddleware, upload.single("product"), productController.updateProduct);
+router.patch("/:id/toggle-availability", authMiddleware, adminMiddleware, productController.toggleProductAvailability);
 router.get("/newCollections", productController.getNewCollections);
 router.get("/popularBooks", productController.getPopularBooks);
 router.get("/category/:category", productController.getProductsByCategory);

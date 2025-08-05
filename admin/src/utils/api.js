@@ -73,6 +73,10 @@ export const api = {
     method: 'DELETE'
   }),
 
+  toggleProductAvailability: (id) => apiCall(`/api/products/${id}/toggle-availability`, {
+    method: 'PATCH'
+  }),
+
   // Orders management
   getOrders: () => apiCall('/api/orders'),
   
