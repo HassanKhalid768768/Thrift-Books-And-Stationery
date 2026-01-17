@@ -195,7 +195,7 @@ ${couponInfo}
 Total Amount: PKR ${order.amount}
 
 ==================
-Thrift Books and Stationery
+TBS-Thrift & Budget Store
     `;
 
     const mailOptions = {

@@ -82,10 +82,10 @@ const Footer = () => {
         {/* ABOUT US */}
         <Grid item xs={12} sm={6} md={3}>
           <Typography variant="h6" gutterBottom>
-            About Thrift Books & Stationery
+            About TBS-Thrift & Budget Store
           </Typography>
           <Typography variant="body2" sx={{ maxWidth: 280, mb: 2 }}>
-            Thrift Books & Stationery is a comprehensive e-commerce platform offering books, stationery, and educational materials. We provide a smooth, user-friendly shopping experience with smart search features and easy order tracking. Our platform ensures seamless navigation and interactive displays for modern book lovers and students.
+            TBS-Thrift & Budget Store is a comprehensive e-commerce platform offering books, stationery, and educational materials. We provide a smooth, user-friendly shopping experience with smart search features and easy order tracking. Our platform ensures seamless navigation and interactive displays for modern book lovers and students.
           </Typography>
         </Grid>
 
@@ -157,7 +157,7 @@ const Footer = () => {
       {/* COPYRIGHT */}
       <Box sx={{ textAlign: "center", mt: 5, opacity: 0.7 }}>
         <Typography variant="body2">
-          © {new Date().getFullYear()} Thrift Books & Stationery. All rights reserved.
+          © {new Date().getFullYear()} TBS-Thrift & Budget Store. All rights reserved.
         </Typography>
       </Box>
     </Box>

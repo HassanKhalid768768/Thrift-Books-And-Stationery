@@ -400,7 +400,7 @@ const ContactUs = () => {
                       Visit Us
                     </Typography>
                     <Typography variant="body1">
-                      Thrift Books & Stationery<br />
+                      TBS-Thrift & Budget Store<br />
                       Karachi, Pakistan
                     </Typography>
                   </Box>
@@ -513,7 +513,7 @@ const ContactUs = () => {
                         setMapLoaded(false);
                         setMapError(true);
                       }}
-                      title="Thrift Books & Stationery Location"
+                      title="TBS-Thrift & Budget Store Location"
                     ></iframe>
                   )}
             </Box>

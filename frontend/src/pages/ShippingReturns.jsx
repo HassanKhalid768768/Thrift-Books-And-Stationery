@@ -131,7 +131,7 @@ const ShippingReturns = () => {
           Return Address
         </Typography>
         <Typography variant="body1" paragraph sx={{ fontStyle: 'italic', color: 'var(--text-primary)' }}>
-          Thrift Books & Stationery Returns Department<br />
+          TBS-Thrift & Budget Store Returns Department<br />
           123 Book Street<br />
           Gulberg III, Karachi<br />
           Pakistan 54000

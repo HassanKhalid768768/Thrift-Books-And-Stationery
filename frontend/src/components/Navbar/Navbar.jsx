@@ -173,7 +173,7 @@ const Navbar = () => {
             <div className='navbar'>
                 <div className="nav-logo">
                     <Link to="/" style={{textDecoration: 'none'}}>
-                        <p>Thrift Books<span> & Stationery</span></p>
+                        <p>TBS-Thrift & Budget Store</p>
                     </Link>
                 </div>
                 

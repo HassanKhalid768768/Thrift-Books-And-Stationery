@@ -1,4 +1,4 @@
-# Thrift Books And Stationery
+# TBS-Thrift & Budget Store
 
 A full-stack e-commerce application for buying and selling thrift books and stationery items. This project features a React frontend, Node.js/Express backend, and includes payment processing with Stripe.
 
