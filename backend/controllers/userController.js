@@ -3,6 +3,13 @@ const jwt = require("jsonwebtoken");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
 const errorHandler = require("../utils/errorHandler");
+require("dotenv").config();
+
+// Validate SECRET_KEY is set
+if (!process.env.SECRET_KEY) {
+  console.error("ERROR: SECRET_KEY is not set in environment variables!");
+  console.error("Please add SECRET_KEY to your .env file in the backend directory.");
+}
 
 exports.signupUser = async (req, res,next) => {
   const { name, email, password, cartData } = req.body;
@@ -47,6 +54,9 @@ exports.signupUser = async (req, res,next) => {
 
     //jwt authentication
     //create token
+    if (!process.env.SECRET_KEY) {
+      return next(errorHandler(500, "Server configuration error: SECRET_KEY is not set. Please contact administrator."));
+    }
     const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, {
       expiresIn: "1d",
     });
@@ -69,6 +79,9 @@ exports.loginUser = async (req, res, next) => {
     }
     const isMatch = await bcrypt.compare(password, user.password);
     if (isMatch) {
+      if (!process.env.SECRET_KEY) {
+        return next(errorHandler(500, "Server configuration error: SECRET_KEY is not set. Please contact administrator."));
+      }
       const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, {
         expiresIn: "1d",
       });

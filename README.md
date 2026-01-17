@@ -139,7 +139,7 @@ Thrift-Books-And-Stationery/
 ### Backend (.env)
 ```env
 MONGODB_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret_key
+SECRET_KEY=your_jwt_secret_key
 CLOUDINARY_CLOUD_NAME=your_cloudinary_name
 CLOUDINARY_API_KEY=your_cloudinary_key
 CLOUDINARY_API_SECRET=your_cloudinary_secret
@@ -147,6 +147,10 @@ EMAIL_HOST=your_email_host
 EMAIL_PORT=your_email_port
 EMAIL_USER=your_email_username
 EMAIL_PASS=your_email_password
+PORT=4000
+FRONTEND_URL=http://localhost:3000
+ADMIN_URL=http://localhost:3001
+BACKEND_URL=http://localhost:4000
 ```
 
 ### Frontend (.env)
