@@ -1,12 +1,13 @@
-import React,{useContext, useRef, useState, useEffect} from 'react';
-import './Navbar.css'
-import cart_icon from '../../assets/cart_icon.png'
-import {Link, useNavigate} from 'react-router-dom';
+import React, { useContext, useRef, useState, useEffect } from 'react';
+import './Navbar.css';
+import cart_icon from '../../assets/cart_icon.png';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { StoreContext } from '../../context/StoreContext';
 import { DarkModeContext } from '../../context/DarkModeContext';
-import hamburger from './../../assets/hamburger.png'
-import hamburgerWhite from './../../assets/hamburger.png' // Using same icon but will apply filter
-import profile_icon from './../../assets/profile_icon.png'
+import { api } from '../../utils/api';
+import hamburger from './../../assets/hamburger.png';
+import hamburgerWhite from './../../assets/hamburger.png';
+import profile_icon from './../../assets/profile_icon.png';
 
 const Navbar = () => {
     const [menu, setMenu] = useState("shop");
@@ -19,6 +20,35 @@ const Navbar = () => {
     const [showResults, setShowResults] = useState(false);
     const [showMobileSearch, setShowMobileSearch] = useState(false);
     const [showSearchOverlay, setShowSearchOverlay] = useState(false);
+    const [categories, setCategories] = useState([]);
+    const [showCategoriesDropdown, setShowCategoriesDropdown] = useState(false);
+    const categoriesRef = useRef(null);
+    const { pathname } = useLocation();
+
+    // Fetch categories for Shop dropdown
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const res = await api.getCategories();
+                const data = await res.json();
+                if (res.ok) setCategories(Array.isArray(data) ? data : []);
+            } catch (e) { setCategories([]); }
+        };
+        fetchCategories();
+    }, []);
+
+    // Close categories dropdown when clicking outside
+    useEffect(() => {
+        const handle = (e) => {
+            if (categoriesRef.current && !categoriesRef.current.contains(e.target)) {
+                setShowCategoriesDropdown(false);
+            }
+        };
+        document.addEventListener('mousedown', handle);
+        return () => document.removeEventListener('mousedown', handle);
+    }, []);
+
+    const currentCategory = categories.find(c => pathname === `/${c.slug}`);
 
     const hamburger_toggle = (e) => {
         menuRef.current.classList.toggle('nav-menu-visible');
@@ -180,18 +210,50 @@ const Navbar = () => {
                 <img className="nav-hamburger" onClick={hamburger_toggle} src={darkMode ? hamburgerWhite : hamburger} alt="menu" />
                 
                 <ul ref={menuRef} className="nav-menu">
-                    <li onClick={() => handleMenuClick("books")}>
-                        <Link style={{textDecoration: 'none'}} to="/books" className={menu==="books"?"active":""}>Books</Link>
+                    {/* Desktop: Shop dropdown with all categories */}
+                    <li
+                        className="nav-categories-wrapper nav-categories-desktop"
+                        ref={categoriesRef}
+                        onMouseEnter={() => setShowCategoriesDropdown(true)}
+                        onMouseLeave={() => setShowCategoriesDropdown(false)}
+                    >
+                        <span className={`nav-categories-trigger ${currentCategory ? 'active' : ''}`}>Shop</span>
+                        {showCategoriesDropdown && (
+                            <div className="nav-categories-dropdown">
+                                {categories.length === 0 ? (
+                                    <div className="nav-categories-empty">No categories yet</div>
+                                ) : (
+                                    categories.map((cat) => (
+                                        <Link
+                                            key={cat._id}
+                                            to={`/${cat.slug}`}
+                                            style={{ textDecoration: 'none' }}
+                                            onClick={() => { handleMenuClick(cat.slug); setShowCategoriesDropdown(false); }}
+                                            className={currentCategory?.slug === cat.slug ? 'active' : ''}
+                                        >
+                                            {cat.name}
+                                        </Link>
+                                    ))
+                                )}
+                            </div>
+                        )}
                     </li>
-                    <li onClick={() => handleMenuClick("stationary")}>
-                        <Link style={{textDecoration: 'none'}} to="/stationary" className={menu==="stationary"?"active":""}>Stationary</Link>
-                    </li>
-                    <li onClick={() => handleMenuClick("gadgets")}>
-                        <Link style={{textDecoration: 'none'}} to="/gadgets" className={menu==="gadgets"?"active":""}>Gadgets</Link>
-                    </li>
-                    <li onClick={() => handleMenuClick("water-bottles-and-lunch-boxes")}>
-                        <Link style={{textDecoration: 'none'}} to="/water-bottles-and-lunch-boxes" className={menu==="water-bottles-and-lunch-boxes"?"active":""}>Water Bottles & Lunch Boxes</Link>
-                    </li>
+                    {/* Mobile: full list of categories */}
+                    {categories.map((cat) => (
+                        <li
+                            key={cat._id}
+                            className="nav-categories-mobile-item"
+                            onClick={() => handleMenuClick(cat.slug)}
+                        >
+                            <Link
+                                to={`/${cat.slug}`}
+                                style={{ textDecoration: 'none' }}
+                                className={currentCategory?.slug === cat.slug ? 'active' : ''}
+                            >
+                                {cat.name}
+                            </Link>
+                        </li>
+                    ))}
                 </ul>
                 <div className="nav-search" ref={searchRef}>
                     {/* Mobile search icon */}
