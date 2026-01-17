@@ -44,22 +44,6 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route
-            path="/books"
-            element={<ShopCategory category="books" />}
-          />
-          <Route
-            path="/stationary"
-            element={<ShopCategory category="stationary" />}
-          />
-          <Route
-            path="/gadgets"
-            element={<ShopCategory category="gadgets" />}
-          />
-          <Route
-            path="/water-bottles-and-lunch-boxes"
-            element={<ShopCategory category="water-bottles-and-lunch-boxes" />}
-          />
           <Route path="/product" element={<Product />}>
             <Route path=":productId" element={<Product/>}/>
           </Route>
@@ -67,12 +51,14 @@ function App() {
           <Route path="/login" element={<LoginSignup />} />
           <Route path="/order" element={<PlaceOrder/>}/>
           <Route path="/verify" element={<Verify/>}/>
-          <Route path="myorders" element={<MyOrders/>}/>
+          <Route path="/myorders" element={<MyOrders/>}/>
           <Route path="/search" element={<SearchResults/>}/>
           <Route path="/faq" element={<FAQ/>}/>
           <Route path="/shipping-returns" element={<ShippingReturns/>}/>
           <Route path="/contact" element={<ContactUs/>}/>
           <Route path="/admin/messages" element={<AdminMessages/>}/>
+          {/* Dynamic category route - must be after specific routes so /product, /cart, etc. don't match */}
+          <Route path="/:categorySlug" element={<ShopCategory />} />
         </Routes>
         <Footer />
     </div>

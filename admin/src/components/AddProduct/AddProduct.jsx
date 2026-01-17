@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import "./AddProduct.css";
 import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
@@ -12,13 +12,34 @@ const AddProduct = () => {
     const { darkMode } = useContext(DarkModeContext);
     const [image,setImage] = useState(false);
     const [uploading, setUploading] = useState(false);
+    const [categories, setCategories] = useState([]);
     const [productDetails, setProductDetails] = useState({
         name: "",
-        category:"books",
+        category:"",
         description: "", // Added description field
         old_price:""
     });
     const [sizes, setSizes] = useState([{ size: "", price: "" }]);
+
+    // Fetch categories on component mount
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const response = await api.getCategories();
+                const data = await response.json();
+                if (response.ok && data.length > 0) {
+                    setCategories(data);
+                    // Set default category to first one if available
+                    if (!productDetails.category) {
+                        setProductDetails(prev => ({ ...prev, category: data[0].slug }));
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching categories:', error);
+            }
+        };
+        fetchCategories();
+    }, []);
 
     const imageHandler = (e) =>{
         if (e.target.files[0]) {
@@ -186,11 +207,14 @@ const AddProduct = () => {
                     onChange={changeHandler} 
                     name="category" 
                     className="add-product-selector"
+                    required
                 >
-                    <option value="books">Books</option>
-                    <option value="stationary">Stationary</option>
-                    <option value="gadgets">Gadgets</option>
-                    <option value="water-bottles-and-lunch-boxes">Water Bottles and Lunch Boxes</option>
+                    <option value="">Select a category</option>
+                    {categories.map((cat) => (
+                        <option key={cat._id} value={cat.slug}>
+                            {cat.name}
+                        </option>
+                    ))}
                 </select>
             </div>
             

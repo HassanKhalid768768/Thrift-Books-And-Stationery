@@ -10,6 +10,7 @@ import ManageCoupons from "./components/ManageCoupons/ManageCoupons";
 import ReviewManagement from "./components/ReviewManagement/ReviewManagement";
 import AdminMessages from "./components/AdminMessages/AdminMessages";
 import Subscribers from "./components/Subscribers/Subscribers";
+import ManageCategories from "./components/ManageCategories/ManageCategories";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
 import { useContext } from 'react';
@@ -49,6 +50,7 @@ function App() {
             <Route path="/reviews" element={<ReviewManagement />} />
             <Route path="/messages" element={<AdminMessages />} />
             <Route path="/subscribers" element={<Subscribers />} />
+            <Route path="/categories" element={<ManageCategories />} />
           </Route>
 
           {/* Catch-all redirect to home */}

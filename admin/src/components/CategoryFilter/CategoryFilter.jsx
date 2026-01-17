@@ -1,23 +1,37 @@
 import React, { useState, useEffect, useContext } from 'react';
 import './CategoryFilter.css';
 import { DarkModeContext } from '../../context/DarkModeContext';
+import { api } from '../../utils/api';
 
 const CategoryFilter = ({ products, onFilterChange }) => {
     const [activeTab, setActiveTab] = useState("All");
-    const tabs = ["All", "Books", "Stationary", "Gadgets", "Water Bottles and Lunch Boxes"];
+    const [categories, setCategories] = useState([]);
     const { darkMode } = useContext(DarkModeContext);
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const response = await api.getCategories();
+                const data = await response.json();
+                if (response.ok) {
+                    setCategories(data);
+                }
+            } catch (error) {
+                console.error('Error fetching categories:', error);
+            }
+        };
+        fetchCategories();
+    }, []);
+
+    const tabs = ["All", ...categories.map(cat => cat.name)];
 
     const getCategoryCount = (category) => {
         if (category === "All") return products.length;
         
-        const categoryMap = {
-            "Books": "books",
-            "Stationary": "stationary",
-            "Gadgets": "gadgets",
-            "Water Bottles and Lunch Boxes": "water-bottles-and-lunch-boxes"
-        };
+        const categoryObj = categories.find(cat => cat.name === category);
+        if (!categoryObj) return 0;
         
-        return products.filter(item => item.category === categoryMap[category]).length;
+        return products.filter(item => item.category === categoryObj.slug).length;
     };
 
     const handleTabClick = (tab) => {
@@ -28,15 +42,14 @@ const CategoryFilter = ({ products, onFilterChange }) => {
             return;
         }
         
-        const categoryMap = {
-            "Books": "books",
-            "Stationary": "stationary",
-            "Gadgets": "gadgets",
-            "Water Bottles and Lunch Boxes": "water-bottles-and-lunch-boxes"
-        };
+        const categoryObj = categories.find(cat => cat.name === tab);
+        if (!categoryObj) {
+            onFilterChange([]);
+            return;
+        }
         
         const filteredProducts = products.filter(item => 
-            item.category === categoryMap[tab]
+            item.category === categoryObj.slug
         );
         
         onFilterChange(filteredProducts);

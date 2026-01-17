@@ -92,7 +92,10 @@ export const api = {
   subscribe: (email) => apiCall('/api/subscribers', {
     method: 'POST',
     body: JSON.stringify({ email })
-  })
+  }),
+
+  // Categories
+  getCategories: () => apiCall('/api/categories')
 };
 
 // Export backend URL for direct use if needed

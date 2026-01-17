@@ -1,7 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
-import App from "./App";
+// Use App.js (full admin with Sidebar, Categories, etc.). App.jsx is an alternate minimal version.
+import App from "./App.js";
 import { BrowserRouter } from "react-router-dom";
 import DarkModeContextProvider from "./context/DarkModeContext";
 import { AuthProvider } from "./context/AuthContext";

@@ -7,7 +7,7 @@ import { MdInventory2, MdAddBox, MdRateReview } from 'react-icons/md';
 import { FaShoppingBag } from 'react-icons/fa';
 import { RiCoupon3Fill } from 'react-icons/ri';
 import { IoMdChatboxes } from 'react-icons/io';
-import { MdEmail } from 'react-icons/md';
+import { MdEmail, MdCategory } from 'react-icons/md';
 
 const Sidebar = () => {
     const location = useLocation();
@@ -37,6 +37,12 @@ const Sidebar = () => {
                 <div className={`sidebar-item ${isActive('/addproduct') ? 'active' : ''}`}>
                     <MdAddBox style={{ color: '#4CAF50', fontSize: '24px' }} />
                     <p>Add Product</p>
+                </div>
+            </Link>
+            <Link to={'/categories'} style={{textDecoration:'none'}}>
+                <div className={`sidebar-item ${isActive('/categories') ? 'active' : ''}`}>
+                    <MdCategory style={{ color: '#FF5722', fontSize: '24px' }} />
+                    <p>Categories</p>
                 </div>
             </Link>
             <Link to={'/listorder'} style={{textDecoration:'none'}}>

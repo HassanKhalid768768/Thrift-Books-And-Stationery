@@ -141,7 +141,26 @@ export const api = {
   testAdmin: () => apiCall('/api/subscribers/test-admin'),
 
   // Dashboard stats
-  getDashboardStats: () => apiCall('/api/dashboard/stats')
+  getDashboardStats: () => apiCall('/api/dashboard/stats'),
+
+  // Categories - public (active only, for AddProduct, EditProduct, CategoryFilter)
+  getCategories: () => apiCall('/api/categories'),
+  // Categories - admin (all including inactive, for ManageCategories, requires auth)
+  getCategoriesAdmin: () => apiCall('/api/categories/admin/all'),
+  
+  createCategory: (categoryData) => apiCall('/api/categories', {
+    method: 'POST',
+    body: JSON.stringify(categoryData)
+  }),
+
+  updateCategory: (id, categoryData) => apiCall(`/api/categories/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(categoryData)
+  }),
+
+  deleteCategory: (id) => apiCall(`/api/categories/${id}`, {
+    method: 'DELETE'
+  })
 };
 
 // Export backend URL for direct use if needed

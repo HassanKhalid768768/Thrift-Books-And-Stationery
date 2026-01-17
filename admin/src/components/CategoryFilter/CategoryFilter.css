@@ -21,6 +21,27 @@
     gap: 10px;
     padding: 10px 20px; /* Consistent padding */
     background-color: white;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.category-tabs::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.category-tabs::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.category-tabs::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.category-tabs::-webkit-scrollbar-thumb:hover {
+    background: #555;
 }
 
 .category-tab {
@@ -90,6 +111,18 @@
 
 .dark-mode .category-tabs {
     background-color: #000000;
+}
+
+.dark-mode .category-tabs::-webkit-scrollbar-track {
+    background: #1a1a1a;
+}
+
+.dark-mode .category-tabs::-webkit-scrollbar-thumb {
+    background: #555;
+}
+
+.dark-mode .category-tabs::-webkit-scrollbar-thumb:hover {
+    background: #777;
 }
 
 .dark-mode .category-tab {

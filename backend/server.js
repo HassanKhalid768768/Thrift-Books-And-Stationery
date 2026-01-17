@@ -10,6 +10,7 @@ const orderRoutes = require("./routes/orderRoutes");
 const subscriberRoutes = require("./routes/subscriberRoutes");
 const couponRoutes = require("./routes/couponRoutes");
 const messageRoutes = require("./routes/messageRoutes");
+const categoryRoutes = require("./routes/categoryRoutes");
 
 const connectDB = require("./db");
 const { scheduleCleanup } = require('./utils/cleanupScheduler');
@@ -60,6 +61,7 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/subscribers", subscriberRoutes);
 app.use("/api/coupons", couponRoutes);
 app.use("/api/messages", messageRoutes);
+app.use("/api/categories", categoryRoutes);
 
 // Root route
 app.get('/', (req, res) => {

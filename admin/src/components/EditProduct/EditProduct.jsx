@@ -20,6 +20,23 @@ const EditProduct = ({ isOpen, onClose, product, onProductUpdated }) => {
         old_price: ""
     });
     const [sizes, setSizes] = useState([{ size: "", price: "" }]);
+    const [categories, setCategories] = useState([]);
+
+    // Fetch categories on component mount
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const response = await api.getCategories();
+                const data = await response.json();
+                if (response.ok) {
+                    setCategories(data);
+                }
+            } catch (error) {
+                console.error('Error fetching categories:', error);
+            }
+        };
+        fetchCategories();
+    }, []);
 
     // Initialize form with product details when component opens
     // Place useEffect before conditional return
@@ -248,11 +265,14 @@ const EditProduct = ({ isOpen, onClose, product, onProductUpdated }) => {
                             onChange={changeHandler} 
                             name="category" 
                             className="edit-product-selector"
+                            required
                         >
-                            <option value="books">Books</option>
-                            <option value="stationary">Stationary</option>
-                            <option value="gadgets">Gadgets</option>
-                            <option value="water-bottles-and-lunch-boxes">Water Bottles and Lunch Boxes</option>
+                            <option value="">Select a category</option>
+                            {categories.map((cat) => (
+                                <option key={cat._id} value={cat.slug}>
+                                    {cat.name}
+                                </option>
+                            ))}
                         </select>
                     </div>
                     
