@@ -10,6 +10,7 @@ const CartItems = () => {
     const {
         all_product,
         cartItems,
+        cartItemDetails,
         removeFromCart,
         removeItemCompletely,
         addToCart,
@@ -122,41 +123,62 @@ const CartItems = () => {
                 <p>Remove</p>
             </div>
             <hr />
-            {all_product.map((e)=>{
-                if(cartItems[e.id]>0) {
+            {Object.keys(cartItems).map((cartKey) => {
+                if (cartItems[cartKey] > 0) {
+                    // Extract itemId from cartKey (handle both "itemId" and "itemId_size" formats)
+                    const itemId = cartItemDetails[cartKey]?.itemId || (cartKey.includes('_') ? parseInt(cartKey.split('_')[0]) : parseInt(cartKey));
+                    const e = all_product.find(p => p.id === itemId);
+                    
+                    if (!e) return null;
+                    
                     const isOutOfStock = e.available === false;
+                    const itemDetails = cartItemDetails[cartKey];
+                    
                     return (
-                        <div key={e.id}>
+                        <div key={cartKey}>
                             <div className={`cartitems-format cartitems-format-main ${isOutOfStock ? 'out-of-stock-item' : ''}`}>
                                 <img src={e.image} alt="" className="carticon-product-icon"/>
                                 <div className="product-info">
                                     <p>{e.name}</p>
+                                    {itemDetails?.size && (
+                                        <span style={{ fontSize: '0.9em', color: '#666', display: 'block', marginTop: '4px' }}>
+                                            Size: {itemDetails.size}
+                                        </span>
+                                    )}
                                     {isOutOfStock && (
                                         <span className="out-of-stock-badge">Out of Stock</span>
                                     )}
                                 </div>
-                                <p>PKR {e.old_price.toLocaleString('en-PK')}</p>
+                                <p>PKR {(itemDetails?.price || e.old_price).toLocaleString('en-PK')}</p>
                                 <div className="cartitems-quantity-control">
                                     <button 
                                         className="quantity-btn minus-btn"
-                                        onClick={() => removeFromCart(e.id)}
+                                        onClick={() => removeFromCart(cartKey)}
                                         aria-label="Decrease quantity"
                                         disabled={isOutOfStock}
                                     >
                                         -
                                     </button>
-                                    <span className="quantity-display">{cartItems[e.id]}</span>
+                                    <span className="quantity-display">{cartItems[cartKey]}</span>
                                     <button 
                                         className="quantity-btn plus-btn"
-                                        onClick={() => addToCart(e.id)}
+                                        onClick={() => {
+                                            // Get the product with size info if available
+                                            const productWithSize = itemDetails?.size ? {
+                                                ...e,
+                                                selectedSize: itemDetails.size,
+                                                selectedPrice: itemDetails.price
+                                            } : e;
+                                            addToCart(e.id, 1, productWithSize);
+                                        }}
                                         aria-label="Increase quantity"
                                         disabled={isOutOfStock}
                                     >
                                         +
                                     </button>
                                 </div>
-                                <p>PKR {(e.old_price*cartItems[e.id]).toLocaleString('en-PK')}</p>
-                                <img className="cartitems-remove-icon" src={bin} onClick={()=>{removeItemCompletely(e.id)}} alt="Remove item" />
+                                <p>PKR {((itemDetails?.price || e.old_price) * cartItems[cartKey]).toLocaleString('en-PK')}</p>
+                                <img className="cartitems-remove-icon" src={bin} onClick={()=>{removeItemCompletely(cartKey)}} alt="Remove item" />
                             </div>
                             <hr />
                         </div>

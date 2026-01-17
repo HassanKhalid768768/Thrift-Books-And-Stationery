@@ -8,6 +8,7 @@ const StoreContextProvider = (props) => {
 
     const [all_product, setAll_product] = useState([]);
     const [cartItems, setCartItems] = useState({});
+    const [cartItemDetails, setCartItemDetails] = useState({}); // Store size and price info for each cart item
     const [coupon, setCoupon] = useState({ code: "", value: 0, isValid: false, minimumOrderValue: 0 });
 useEffect(() => {
         let isMounted = true;
@@ -35,6 +36,16 @@ const cartResponse = await api.getCart();
                         
                         if (cartResponse.ok && isMounted) {
                             setCartItems(cartJson);
+                            // Try to load cartItemDetails from localStorage
+                            try {
+                                const savedCartDetails = localStorage.getItem('cartItemDetails');
+                                if (savedCartDetails) {
+                                    const parsed = JSON.parse(savedCartDetails);
+                                    setCartItemDetails(parsed);
+                                }
+                            } catch (e) {
+                                console.error('Error loading cart details from localStorage:', e);
+                            }
                         } else if (isMounted) {
                             toast.error(cartJson.error || "Failed to fetch cart");
                         }
@@ -62,28 +73,61 @@ const cartResponse = await api.getCart();
     }, []);
 
     const addToCart = async (itemId, quantity = 1, productData = null) => {
-        // Update cart state with the specified quantity (default is 1)
-        if (!cartItems[itemId]) {
-            setCartItems((prev) => ({ ...prev, [itemId]: quantity }))
-        }
-        else {
-            setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] + quantity }))
-        }
-        
-        // Get product name for the notification
-        const product = all_product.find(item => item.id === Number(itemId));
+        // Get product info
+        const product = productData || all_product.find(item => item.id === Number(itemId));
         const productName = product ? product.name : 'Item';
         
+        // Determine price and size
+        let itemPrice = product?.old_price || 0;
+        let selectedSize = null;
+        
+        if (product?.sizes && product.sizes.length > 0 && product.selectedSize) {
+            const sizeObj = product.sizes.find(s => s.size === product.selectedSize);
+            if (sizeObj) {
+                itemPrice = sizeObj.price;
+                selectedSize = product.selectedSize;
+            }
+        }
+        
+        // Create composite key: itemId_size for items with sizes, just itemId for items without
+        const cartKey = selectedSize ? `${itemId}_${selectedSize}` : itemId;
+        
+        // Update cart state with the specified quantity (default is 1)
+        if (!cartItems[cartKey]) {
+            setCartItems((prev) => ({ ...prev, [cartKey]: quantity }))
+            // Store size and price info for this item
+            const newDetails = {
+                ...cartItemDetails,
+                [cartKey]: {
+                    itemId: itemId,
+                    size: selectedSize,
+                    price: itemPrice
+                }
+            };
+            setCartItemDetails(newDetails);
+            // Persist to localStorage
+            try {
+                localStorage.setItem('cartItemDetails', JSON.stringify(newDetails));
+            } catch (e) {
+                console.error('Error saving cart details to localStorage:', e);
+            }
+        }
+        else {
+            setCartItems((prev) => ({ ...prev, [cartKey]: prev[cartKey] + quantity }))
+        }
+        
         // Show success notification with quantity information
+        const sizeText = selectedSize ? ` (Size: ${selectedSize})` : '';
         if (quantity > 1) {
-            toast.success(`Added ${quantity} ${productName}${quantity > 1 ? 's' : ''} to cart`);
+            toast.success(`Added ${quantity} ${productName}${sizeText}${quantity > 1 ? 's' : ''} to cart`);
         } else {
-            toast.success(`Added to cart: ${productName}`);
+            toast.success(`Added to cart: ${productName}${sizeText}`);
         }
         
         const token = localStorage.getItem('token');
         if(token){
             // Make API calls for each item in the quantity
+            // Note: Backend still uses itemId, but frontend tracks sizes separately
             for (let i = 0; i < quantity; i++) {
                 try {
                     const response = await api.addToCart(itemId);
@@ -101,49 +145,78 @@ const cartResponse = await api.getCart();
 
     const clearCart = () => {
         setCartItems({});
+        setCartItemDetails({});
+        // Clear from localStorage
+        try {
+            localStorage.removeItem('cartItemDetails');
+        } catch (e) {
+            console.error('Error clearing cart details from localStorage:', e);
+        }
     };
 
-    const removeFromCart = async (itemId) =>{
-        // Get current quantity and product info before updating
-        const currentQuantity = cartItems[itemId];
-        const product = all_product.find(item => item.id === Number(itemId));
-        const productName = product ? product.name : 'Item';
-        
-        // Update cart state
-        setCartItems((prev)=>({...prev,[itemId]:prev[itemId]-1}));
-        
-        // Show appropriate notification based on remaining quantity
-        if (currentQuantity > 1) {
-            toast.info(`Quantity decreased: ${productName}`);
-        } else {
-            toast.info(`Removed from cart: ${productName}`);
+    const removeFromCart = async (cartKey) => {
+        if (cartItems[cartKey] > 0) {
+            setCartItems((prev) => ({ ...prev, [cartKey]: prev[cartKey] - 1 }))
+            
+            // If quantity becomes 0, remove from cartItemDetails
+            if (cartItems[cartKey] === 1) {
+                const updatedDetails = {...cartItemDetails};
+                delete updatedDetails[cartKey];
+                setCartItemDetails(updatedDetails);
+                try {
+                    localStorage.setItem('cartItemDetails', JSON.stringify(updatedDetails));
+                } catch (e) {
+                    console.error('Error saving cart details to localStorage:', e);
+                }
+            }
         }
         
         const token = localStorage.getItem('token');
         if(token){
-const response = await api.removeFromCart(itemId);
-            const json = await response.json();
-            if(!response.ok){
-                toast.error(json.error);
+            try {
+                // Extract itemId from cartKey (handle both "itemId" and "itemId_size" formats)
+                const itemId = cartKey.includes('_') ? parseInt(cartKey.split('_')[0]) : parseInt(cartKey);
+                const response = await api.removeFromCart(itemId);
+                const json = await response.json();
+                if(!response.ok){
+                    toast.error(json.error);
+                }
+            } catch (error) {
+                console.error("Error removing item from cart:", error);
+                toast.error("Failed to update cart on server");
             }
         }
-    }
+    };
 
-    const removeItemCompletely = async (itemId) => {
+    const removeItemCompletely = async (cartKey) => {
         // Get product info before removing
+        const itemDetails = cartItemDetails[cartKey];
+        const itemId = itemDetails?.itemId || (cartKey.includes('_') ? parseInt(cartKey.split('_')[0]) : parseInt(cartKey));
         const product = all_product.find(item => item.id === Number(itemId));
         const productName = product ? product.name : 'Item';
-        const quantity = cartItems[itemId];
+        const quantity = cartItems[cartKey];
+        const sizeText = itemDetails?.size ? ` (Size: ${itemDetails.size})` : '';
         
         // Update cart state - remove the item completely
         setCartItems((prev) => {
             const newCart = {...prev};
-            delete newCart[itemId];
+            delete newCart[cartKey];
             return newCart;
         });
         
+        // Remove item details
+        const updatedDetails = {...cartItemDetails};
+        delete updatedDetails[cartKey];
+        setCartItemDetails(updatedDetails);
+        // Update localStorage
+        try {
+            localStorage.setItem('cartItemDetails', JSON.stringify(updatedDetails));
+        } catch (e) {
+            console.error('Error saving cart details to localStorage:', e);
+        }
+        
         // Show removal notification
-        toast.info(`Removed from cart: ${productName} (${quantity} ${quantity > 1 ? 'items' : 'item'})`);
+        toast.info(`Removed from cart: ${productName}${sizeText} (${quantity} ${quantity > 1 ? 'items' : 'item'})`);
         
         // Update server if user is logged in
         const token = localStorage.getItem('token');
@@ -152,7 +225,7 @@ const response = await api.removeFromCart(itemId);
                 // Remove the item completely from cart - we need to call the API multiple times
                 // to remove all quantities of the item
                 for (let i = 0; i < quantity; i++) {
-await api.removeFromCart(itemId);
+                    await api.removeFromCart(itemId);
                 }
             } catch (error) {
                 console.error("Error removing item from cart:", error);
@@ -220,10 +293,21 @@ const response = await api.validateCoupon(code, orderAmount);
 
     const getTotalCartAmount = () => {
         let totalAmount = 0;
-        for (const item in cartItems) {
-            if (cartItems[item] > 0) {
-                let itemInfo = all_product.find((product) => product.id === Number(item));
-                totalAmount += itemInfo.old_price * cartItems[item];
+        for (const cartKey in cartItems) {
+            if (cartItems[cartKey] > 0) {
+                // Use stored price from cartItemDetails if available
+                const itemDetails = cartItemDetails[cartKey];
+                
+                if (itemDetails && itemDetails.price) {
+                    totalAmount += itemDetails.price * cartItems[cartKey];
+                } else {
+                    // Fallback: extract itemId from cartKey (handle both "itemId" and "itemId_size" formats)
+                    const itemId = cartKey.includes('_') ? parseInt(cartKey.split('_')[0]) : parseInt(cartKey);
+                    const itemInfo = all_product.find((product) => product.id === itemId);
+                    if (itemInfo) {
+                        totalAmount += itemInfo.old_price * cartItems[cartKey];
+                    }
+                }
             }
         }
         return totalAmount;
@@ -297,6 +381,7 @@ const response = await api.validateCoupon(code, orderAmount);
     const contextValue = {
         all_product,
         cartItems,
+        cartItemDetails,
         addToCart,
         removeFromCart,
         removeItemCompletely,

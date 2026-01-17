@@ -11,7 +11,8 @@ const PlaceOrder = () => {
         getTotalCartAmount, 
         getTotalWithDiscount, 
         all_product, 
-        cartItems, 
+        cartItems,
+        cartItemDetails,
         coupon, 
         getCouponDiscount,
         clearCoupon,
@@ -119,18 +120,28 @@ const PlaceOrder = () => {
         
         let orderItems = [];
         
-        all_product.forEach((item) => {
-            if (cartItems[item.id] > 0) {
-                let itemInfo = { ...item };
-                itemInfo['quantity'] = cartItems[item.id];
-                // If product has sizes, use the base price (or first size price)
-                // Size selection will be handled in future enhancement
-                if (item.sizes && item.sizes.length > 0) {
-                    // For now, use the first size's price or base price
-                    itemInfo['selectedSize'] = item.sizes[0]?.size || null;
-                    itemInfo['old_price'] = item.sizes[0]?.price || item.old_price;
+        // Iterate through cartItems using cartKeys (which can be itemId or itemId_size)
+        Object.keys(cartItems).forEach((cartKey) => {
+            if (cartItems[cartKey] > 0) {
+                const itemDetails = cartItemDetails[cartKey];
+                const itemId = itemDetails?.itemId || (cartKey.includes('_') ? parseInt(cartKey.split('_')[0]) : parseInt(cartKey));
+                const item = all_product.find(p => p.id === itemId);
+                
+                if (item) {
+                    let itemInfo = { ...item };
+                    itemInfo['quantity'] = cartItems[cartKey];
+                    
+                    // Use size price if available from cartItemDetails
+                    if (itemDetails) {
+                        itemInfo['selectedSize'] = itemDetails.size;
+                        itemInfo['old_price'] = itemDetails.price;
+                    } else if (item.sizes && item.sizes.length > 0) {
+                        // Fallback: use the first size's price or base price
+                        itemInfo['selectedSize'] = item.sizes[0]?.size || null;
+                        itemInfo['old_price'] = item.sizes[0]?.price || item.old_price;
+                    }
+                    orderItems.push(itemInfo);
                 }
-                orderItems.push(itemInfo);
             }
         });
         
