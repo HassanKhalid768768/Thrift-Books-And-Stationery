@@ -18,7 +18,6 @@ const ProductDisplay = (props) => {
         image: "",
         category: "",
         description: "Loading product details...",
-        new_price: 0,
         old_price: 0,
         reviews: [],
         averageRating: 0,
@@ -287,11 +286,8 @@ const ProductDisplay = (props) => {
                     <p>({productData?.numReviews || 0} reviews)</p>
                 </div>
                 <div className="productdisplay-right-prices">
-                   <div className="productdisplay-right-price-old">
-                    PKR {(product?.old_price || 0).toLocaleString('en-PK')}
-                   </div>
                    <div className="productdisplay-right-price-new">
-                    PKR {(product?.new_price || 0).toLocaleString('en-PK')}
+                    PKR {(product?.old_price || 0).toLocaleString('en-PK')}
                    </div>
                 </div>
                 <div className="productdisplay-right-description">

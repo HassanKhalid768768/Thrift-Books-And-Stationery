@@ -43,7 +43,7 @@ const Popular = ({ onQuickView }) => {
                 {error && <p style={{color: 'red'}}>Error: {error}</p>}
                 {!loading && !error && popularBooks.length === 0 && <p>No popular books found.</p>}
                 {!loading && !error && popularBooks.map((item,i)=>{
-                    return <Item key={i} id={item.id} name={item.name} image={item.image} new_price={item.new_price} old_price={item.old_price} onQuickView={onQuickView}/>
+                    return <Item key={i} id={item.id} name={item.name} image={item.image} old_price={item.old_price} onQuickView={onQuickView}/>
                 })}
             </div>
         </div>

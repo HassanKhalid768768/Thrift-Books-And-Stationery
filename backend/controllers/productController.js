@@ -244,8 +244,8 @@ exports.createReview = async (req, res, next) => {
                          item.name.toLowerCase() === product.name.toLowerCase();
         
         // 3. Properties matching (fallback)
-        const priceMatch = item.new_price && product.new_price && 
-                          Number(item.new_price) === Number(product.new_price);
+        const priceMatch = item.old_price && product.old_price && 
+                          Number(item.old_price) === Number(product.old_price);
         
         // Combined match strategy
         const isCategoryAndNameMatch = categoryMatch && nameMatch;

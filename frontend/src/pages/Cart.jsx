@@ -7,7 +7,7 @@ const Cart = () => {
     
     useEffect(() => {
         // Instantly clean up user's pending orders when they visit cart
-        // This handles cases where users navigated back from Stripe without completing payment
+        // This handles cases where users have pending orders that need cleanup
         cleanupUserPendingOrders();
     }, [cleanupUserPendingOrders]);
     

@@ -135,7 +135,7 @@ const CartItems = () => {
                                         <span className="out-of-stock-badge">Out of Stock</span>
                                     )}
                                 </div>
-                                <p>PKR {e.new_price.toLocaleString('en-PK')}</p>
+                                <p>PKR {e.old_price.toLocaleString('en-PK')}</p>
                                 <div className="cartitems-quantity-control">
                                     <button 
                                         className="quantity-btn minus-btn"
@@ -155,7 +155,7 @@ const CartItems = () => {
                                         +
                                     </button>
                                 </div>
-                                <p>PKR {(e.new_price*cartItems[e.id]).toLocaleString('en-PK')}</p>
+                                <p>PKR {(e.old_price*cartItems[e.id]).toLocaleString('en-PK')}</p>
                                 <img className="cartitems-remove-icon" src={bin} onClick={()=>{removeItemCompletely(e.id)}} alt="Remove item" />
                             </div>
                             <hr />

@@ -1,13 +1,13 @@
 # TBS-Thrift & Budget Store
 
-A full-stack e-commerce application for buying and selling thrift books and stationery items. This project features a React frontend, Node.js/Express backend, and includes payment processing with Stripe.
+A full-stack e-commerce application for buying and selling thrift books and stationery items. This project features a React frontend, Node.js/Express backend, and supports Cash on Delivery (COD) and Bank Transfer payment methods.
 
 ## 🚀 Features
 
 - **User Authentication**: Secure registration and login system
 - **Product Management**: Browse, search, and filter books and stationery items
 - **Shopping Cart**: Add/remove items with real-time updates
-- **Payment Processing**: Integrated Stripe payment gateway
+- **Payment Processing**: Cash on Delivery (COD) and Bank Transfer payment methods
 - **Image Upload**: Cloudinary integration for product images
 - **Email Notifications**: Automated email system using Nodemailer
 - **Admin Panel**: Manage products, orders, and users
@@ -27,7 +27,6 @@ A full-stack e-commerce application for buying and selling thrift books and stat
 - **MongoDB & Mongoose** - Database and ODM
 - **JWT** - Authentication tokens
 - **bcryptjs** - Password hashing
-- **Stripe** - Payment processing
 - **Cloudinary** - Image storage and management
 - **Nodemailer** - Email service
 - **Node-cron** - Task scheduling
@@ -50,7 +49,6 @@ Thrift-Books-And-Stationery/
 - Node.js (v14 or higher)
 - MongoDB
 - npm or yarn
-- Stripe account for payments
 - Cloudinary account for image storage
 
 ### Installation
@@ -77,7 +75,6 @@ Thrift-Books-And-Stationery/
    - Configure your environment variables:
      - MongoDB connection string
      - JWT secret
-     - Stripe API keys
      - Cloudinary credentials
      - Email service configuration
 
@@ -143,7 +140,6 @@ Thrift-Books-And-Stationery/
 ```env
 MONGODB_URI=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret_key
-STRIPE_SECRET_KEY=your_stripe_secret_key
 CLOUDINARY_CLOUD_NAME=your_cloudinary_name
 CLOUDINARY_API_KEY=your_cloudinary_key
 CLOUDINARY_API_SECRET=your_cloudinary_secret
@@ -156,7 +152,6 @@ EMAIL_PASS=your_email_password
 ### Frontend (.env)
 ```env
 REACT_APP_API_URL=http://localhost:5000
-REACT_APP_STRIPE_PUBLIC_KEY=your_stripe_public_key
 ```
 
 ## 🔗 API Endpoints
@@ -201,7 +196,7 @@ npm test
 - **v1.0.0** - Initial release with core functionality
   - User authentication and authorization
   - Product catalog and shopping cart
-  - Payment processing with Stripe
+  - Payment processing with COD and Bank Transfer
   - Admin panel for management
   - Email notifications
 

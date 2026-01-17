@@ -57,7 +57,7 @@ const SearchResults = () => {
         
         // Always apply price range filter regardless of default values
         filtered = filtered.filter(item => {
-            const price = Number(item.new_price);
+            const price = Number(item.old_price);
             return price >= Number(priceRange.min) && price <= Number(priceRange.max);
         });
         
@@ -163,7 +163,6 @@ const SearchResults = () => {
                                 id={item.id} 
                                 name={item.name} 
                                 image={item.image} 
-                                new_price={item.new_price} 
                                 old_price={item.old_price}
                             />
                         ))}

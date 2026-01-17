@@ -14,7 +14,6 @@ const Item = (props) => {
                 id: props.id,
                 name: props.name,
                 image: props.image,
-                new_price: props.new_price,
                 old_price: props.old_price
             });
         }
@@ -53,17 +52,9 @@ const Item = (props) => {
             
             <p className="item-name" aria-label="Product name">{props.name}</p>
             <div className="item-prices" aria-label="Product price information">
-                <div className="item-price-new" aria-label="Current price">
-                    PKR {props.new_price.toLocaleString('en-PK')}
-                </div>
-                <div className="item-price-old" aria-label="Original price">
+                <div className="item-price-new" aria-label="Price">
                     PKR {props.old_price.toLocaleString('en-PK')}
                 </div>
-                {props.new_price < props.old_price && (
-                    <span className="item-discount" aria-label="Discount percentage">
-                        {Math.round((1 - props.new_price / props.old_price) * 100)}% OFF
-                    </span>
-                )}
             </div>
         </div>
      );

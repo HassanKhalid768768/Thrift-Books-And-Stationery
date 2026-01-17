@@ -54,7 +54,7 @@ const ProductSuggestions = ({
                                              product.category}
                                         </span>
                                         <span className="suggestion-price">
-                                            PKR {product.new_price.toLocaleString('en-PK')}
+                                            PKR {product.old_price.toLocaleString('en-PK')}
                                         </span>
                                     </div>
                                 </div>

@@ -87,7 +87,7 @@ const Dashboard = () => {
                                         product.category === "gadgets" ? "Gadgets" : 
                                         product.category}
                                     </p>
-                                    <p className="price">${product.new_price}</p>
+                                    <p className="price">${product.old_price}</p>
                                 </div>
                             </div>
                         ))

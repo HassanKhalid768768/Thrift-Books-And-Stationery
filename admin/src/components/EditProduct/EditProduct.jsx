@@ -17,7 +17,6 @@ const EditProduct = ({ isOpen, onClose, product, onProductUpdated }) => {
         name: "",
         category: "",
         description: "",
-        new_price: "",
         old_price: ""
     });
 
@@ -29,7 +28,6 @@ const EditProduct = ({ isOpen, onClose, product, onProductUpdated }) => {
                 name: product.name || "",
                 category: product.category || "books",
                 description: product.description || "",
-                new_price: product.new_price || "",
                 old_price: product.old_price || ""
             });
             // Reset image state
@@ -51,7 +49,7 @@ const EditProduct = ({ isOpen, onClose, product, onProductUpdated }) => {
 
     const updateProduct = async () => {
         // Basic validation
-        if (!productDetails.name || !productDetails.new_price || !productDetails.old_price) {
+        if (!productDetails.name || !productDetails.old_price) {
             toast.error("Please fill all required fields");
             return;
         }
@@ -60,8 +58,8 @@ const EditProduct = ({ isOpen, onClose, product, onProductUpdated }) => {
         formData.append("name", productDetails.name);
         formData.append("category", productDetails.category);
         formData.append("description", productDetails.description);
-        formData.append("new_price", productDetails.new_price);
         formData.append("old_price", productDetails.old_price);
+        formData.append("new_price", productDetails.old_price); // Set new_price same as old_price for backward compatibility
 
         // Only append image if it has been changed
         if (imageChanged && image) {
@@ -139,27 +137,15 @@ const EditProduct = ({ isOpen, onClose, product, onProductUpdated }) => {
                         />
                     </div>
 
-                    <div className="editproduct-price">
-                        <div className="editproduct-itemfield">
-                            <p>Original Price</p>
-                            <input 
-                                value={productDetails.old_price} 
-                                onChange={changeHandler} 
-                                type="text" 
-                                name="old_price" 
-                                placeholder="e.g. 1999"
-                            />
-                        </div>
-                        <div className="editproduct-itemfield">
-                            <p>Sale Price</p>
-                            <input 
-                                value={productDetails.new_price} 
-                                onChange={changeHandler} 
-                                type="text" 
-                                name="new_price" 
-                                placeholder="e.g. 1499"
-                            />
-                        </div>
+                    <div className="editproduct-itemfield">
+                        <p>Price</p>
+                        <input 
+                            value={productDetails.old_price} 
+                            onChange={changeHandler} 
+                            type="text" 
+                            name="old_price" 
+                            placeholder="e.g. 1999"
+                        />
                     </div>
                     
                     <div className="editproduct-itemfield">
@@ -235,7 +221,7 @@ const EditProduct = ({ isOpen, onClose, product, onProductUpdated }) => {
                     <button 
                         onClick={updateProduct} 
                         className="update-btn"
-                        disabled={!productDetails.name || !productDetails.new_price || !productDetails.old_price}
+                        disabled={!productDetails.name || !productDetails.old_price}
                         type="button"
                     >
                         Update

@@ -223,7 +223,7 @@ const response = await api.validateCoupon(code, orderAmount);
         for (const item in cartItems) {
             if (cartItems[item] > 0) {
                 let itemInfo = all_product.find((product) => product.id === Number(item));
-                totalAmount += itemInfo.new_price * cartItems[item];
+                totalAmount += itemInfo.old_price * cartItems[item];
             }
         }
         return totalAmount;

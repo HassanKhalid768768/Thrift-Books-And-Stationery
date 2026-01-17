@@ -51,8 +51,8 @@ const orderSchema = new mongoose.Schema({
   },
   paymentMethod: {
     type: String,
-    enum: ['cod', 'bankTransfer', 'stripe'],
-    default: 'stripe'
+    enum: ['cod', 'bankTransfer'],
+    default: 'cod'
   },
 });
 

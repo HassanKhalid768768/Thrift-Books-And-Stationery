@@ -5,7 +5,6 @@ const authMiddleware = require("./../middleware/authMiddleware");
 const router = express.Router();
 
 //endpoints
-router.post("/place", authMiddleware, orderController.placeOrder);
 router.post("/place-direct", authMiddleware, orderController.placeOrderDirect);
 router.post("/verify", orderController.verifyOrder);
 router.post("/verify-bank-transfer", orderController.verifyBankTransfer);

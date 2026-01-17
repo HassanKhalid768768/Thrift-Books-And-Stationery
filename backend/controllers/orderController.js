@@ -2,15 +2,11 @@ const Order = require("./../models/orderModel");
 const User = require("./../models/userModel");
 const errorHandler = require("./../utils/errorHandler");
 const jwt = require("jsonwebtoken");
-const Stripe = require("stripe");
 const { normalizeCategory, categoriesMatch } = require('../utils/categoryUtils');
 const { generateOrderNumber } = require('../utils/orderUtils');
 require("dotenv").config();
 
-//configure stripe
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-
-// Place order directly without Stripe (for COD and Bank Transfer)
+// Place order directly (for COD and Bank Transfer)
 exports.placeOrderDirect = async (req, res, next) => {
   const { _id } = req.user;
   const { items, amount, address, appliedCoupon, paymentMethod } = req.body;
@@ -47,15 +43,11 @@ exports.placeOrderDirect = async (req, res, next) => {
       });
     }
     
-    // Clean up only Stripe pending orders, keep bank transfer orders for longer
+    // Clean up pending orders (except bank transfer orders which are kept longer)
     await Order.deleteMany({
       userId: _id,
       payment: false,
-      $or: [
-        { paymentMethod: { $exists: false } }, // Old orders without paymentMethod (Stripe)
-        { paymentMethod: 'stripe' },
-        { paymentMethod: { $ne: 'bankTransfer' } } // Not bank transfer
-      ]
+      paymentMethod: { $ne: 'bankTransfer' } // Not bank transfer
     });
     console.log('Cleaned up non-bank-transfer pending orders for user', _id);
     
@@ -155,7 +147,7 @@ async function sendOrderSummaryEmail(order) {
 
     // Create detailed order summary
     const itemsList = order.items.map(item => 
-      `- ${item.name} (Qty: ${item.quantity}) - PKR ${item.new_price} each`
+      `- ${item.name} (Qty: ${item.quantity}) - PKR ${item.old_price} each`
     ).join('\n');
     
     const couponInfo = order.appliedCoupon ? 
@@ -178,7 +170,7 @@ Order Details:
 - Order Number: ${order.orderNumber}
 - Order ID: ${order._id}
 - Status: ${order.status}
-- Payment Method: ${order.paymentMethod || 'Stripe'}
+- Payment Method: ${order.paymentMethod || 'COD'}
 - Payment Status: ${order.payment ? 'Paid' : 'Pending'}
 - Order Date: ${new Date(order.date).toLocaleString()}
 
@@ -213,119 +205,6 @@ TBS-Thrift & Budget Store
   }
 };
 
-// Place order and create payment session (kept for backward compatibility)
-exports.placeOrder = async (req, res, next) => {
-  const { _id } = req.user;
-  const frontend_url = process.env.FRONTEND_URL;
-
-  const { items, amount, address, appliedCoupon } = req.body;
-  try {
-    // Clean up only Stripe pending orders, keep bank transfer orders for longer
-    await Order.deleteMany({
-      userId: _id,
-      payment: false,
-      $or: [
-        { paymentMethod: { $exists: false } }, // Old orders without paymentMethod (Stripe)
-        { paymentMethod: 'stripe' },
-        { paymentMethod: { $ne: 'bankTransfer' } } // Not bank transfer
-      ]
-    });
-    console.log('Cleaned up non-bank-transfer pending orders for user', _id);
-    // Normalize categories in items before saving
-    const normalizedItems = items.map(item => {
-      if (item.category) {
-        return {
-          ...item,
-          category: normalizeCategory(item.category)
-        };
-      }
-      return item;
-    });
-    
-    console.log('Normalizing item categories for order');
-    console.log('Before:', items.map(item => item.category));
-    console.log('After:', normalizedItems.map(item => item.category));
-
-    // Generate unique order number
-    const orderNumber = await generateOrderNumber();
-
-    // Create the order with coupon information if applied and normalized categories
-    // Mark as pending payment initially - cart will be cleared only after successful payment
-    const order = await Order.create({
-      orderNumber,
-      userId: _id,
-      items: normalizedItems,
-      amount,
-      address,
-      appliedCoupon,
-      payment: false, // Explicitly set to false until payment is verified
-      status: 'Pending Payment'
-    });
-
-    // DO NOT clear cart here - only clear after successful payment verification
-
-    // Calculate original total (without shipping)
-    const originalTotal = items.reduce((sum, item) => sum + (item.new_price * item.quantity), 0);
-    
-    // Get discount amount if coupon applied
-    const discountAmount = appliedCoupon ? appliedCoupon.value : 0;
-    
-    // Target total is the amount from request minus shipping (1)
-    const targetTotalWithoutShipping = amount - 1;
-    
-    // Create line items with proportionally discounted prices
-    let line_items = items.map((item) => {
-      // Calculate item's proportion of the total
-      const proportion = (item.new_price * item.quantity) / originalTotal;
-      
-      // Apply proportional discount
-      let discountedUnitPrice;
-      if (discountAmount > 0) {
-        // Calculate the proportional discount for this item's total
-        const itemTotalAfterDiscount = proportion * targetTotalWithoutShipping;
-        // Get discounted unit price
-        discountedUnitPrice = Math.round((itemTotalAfterDiscount / item.quantity) * 100) / 100;
-      } else {
-        discountedUnitPrice = item.new_price;
-      }
-      
-      return {
-        price_data: {
-          currency: "pkr",
-          product_data: {
-            name: item.name + (discountAmount > 0 ? ` (Discounted with coupon: ${appliedCoupon.code})` : ""),
-          },
-          unit_amount: Math.round(discountedUnitPrice * 100), // Convert to paisa (1 PKR = 100 paisa)
-        },
-        quantity: item.quantity,
-      };
-    });
-    
-    // Add shipping fee
-    line_items.push({
-      price_data: {
-        currency: "pkr",
-        product_data: {
-          name: "Shipping Fee",
-        },
-        unit_amount: 1 * 100, // Convert to paisa (1 PKR = 100 paisa)
-      },
-      quantity: 1,
-    });
-    
-    // Create Stripe checkout session
-    const session = await stripe.checkout.sessions.create({
-      line_items: line_items,
-      mode: "payment",
-      success_url: `${frontend_url}/verify?success=true&orderId=${order._id}`,
-      cancel_url: `${frontend_url}/verify?success=false&orderId=${order._id}`,
-    });
-    
-    res.status(200).json({ success: true, session_url: session.url });
-  } catch (err) {
-    next(err);
-  }
-};
 
 // Verify order after payment
 exports.verifyOrder = async (req, res, next) => {
@@ -462,16 +341,12 @@ exports.updateStatus = async (req, res, next) => {
 // Clean up abandoned pending orders
 exports.cleanupAbandonedOrders = async (req, res, next) => {
   try {
-    // Clean up Stripe orders older than 15 minutes that are still pending payment
+    // Clean up pending orders (except bank transfer) older than 15 minutes
     const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000);
-    const stripeResult = await Order.deleteMany({
+    const pendingOrdersResult = await Order.deleteMany({
       payment: false,
       date: { $lt: fifteenMinutesAgo },
-      $or: [
-        { paymentMethod: { $exists: false } }, // Old orders without paymentMethod (Stripe)
-        { paymentMethod: 'stripe' },
-        { paymentMethod: { $ne: 'bankTransfer' } } // Not bank transfer
-      ]
+      paymentMethod: { $ne: 'bankTransfer' } // Not bank transfer
     });
     
     // Clean up bank transfer orders older than 24 hours that are still pending payment
@@ -482,15 +357,15 @@ exports.cleanupAbandonedOrders = async (req, res, next) => {
       date: { $lt: twentyFourHoursAgo }
     });
     
-    const totalDeleted = stripeResult.deletedCount + bankTransferResult.deletedCount;
-    console.log(`Cleaned up ${stripeResult.deletedCount} abandoned Stripe orders and ${bankTransferResult.deletedCount} old bank transfer orders`);
+    const totalDeleted = pendingOrdersResult.deletedCount + bankTransferResult.deletedCount;
+    console.log(`Cleaned up ${pendingOrdersResult.deletedCount} abandoned pending orders and ${bankTransferResult.deletedCount} old bank transfer orders`);
     
     if (res) {
       res.status(200).json({ 
         success: true, 
-        message: `Cleaned up ${totalDeleted} abandoned orders (${stripeResult.deletedCount} Stripe, ${bankTransferResult.deletedCount} bank transfer)`,
+        message: `Cleaned up ${totalDeleted} abandoned orders (${pendingOrdersResult.deletedCount} pending orders, ${bankTransferResult.deletedCount} bank transfer)`,
         deletedCount: totalDeleted,
-        stripeDeleted: stripeResult.deletedCount,
+        pendingOrdersDeleted: pendingOrdersResult.deletedCount,
         bankTransferDeleted: bankTransferResult.deletedCount
       });
     }
@@ -524,11 +399,7 @@ exports.cleanupUserPendingOrders = async (req, res, next) => {
     
     // By default, don't delete bank transfer orders unless explicitly requested
     if (!includeBankTransfer) {
-      query.$or = [
-        { paymentMethod: { $exists: false } }, // Old orders without paymentMethod (Stripe)
-        { paymentMethod: 'stripe' },
-        { paymentMethod: { $ne: 'bankTransfer' } } // Not bank transfer
-      ];
+      query.paymentMethod = { $ne: 'bankTransfer' }; // Not bank transfer
     }
     
     // Delete pending orders for this user based on criteria

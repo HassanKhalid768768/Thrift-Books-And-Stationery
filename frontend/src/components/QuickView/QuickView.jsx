@@ -223,15 +223,7 @@ const QuickView = ({ item, onClose }) => {
                         <h2 className="product-name">{item.name}</h2>
                         
                         <div className="product-price" aria-label="Product price information">
-                            <span className="current-price">PKR {item.new_price.toLocaleString('en-PK')}</span>
-                            {item.old_price && (
-                                <span className="old-price">PKR {item.old_price.toLocaleString('en-PK')}</span>
-                            )}
-                            {item.old_price && (
-                                <span className="discount-badge">
-                                    {Math.round((1 - item.new_price / item.old_price) * 100)}% OFF
-                                </span>
-                            )}
+                            <span className="current-price">PKR {item.old_price.toLocaleString('en-PK')}</span>
                         </div>
                         
                         <div className="product-description">

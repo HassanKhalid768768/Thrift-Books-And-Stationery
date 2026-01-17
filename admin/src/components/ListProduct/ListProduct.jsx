@@ -107,8 +107,7 @@ const ListProduct = () => {
             <div className="listproduct-format-main">
                 <p>Products</p>
                 <p>Title</p>
-                <p>Old Price</p>
-                <p>New Price</p>
+                <p>Price</p>
                 <p>Category</p>
                 <p>Stock Status</p>
                 <p>Edit</p>
@@ -131,7 +130,6 @@ const ListProduct = () => {
                                 <img src={product.image} alt="" className="listproduct-product-icon" />
                                 <p>{product.name}</p>
                                 <p>PKR {product.old_price.toLocaleString('en-PK')}</p>
-                                <p>PKR {product.new_price.toLocaleString('en-PK')}</p>
                                 <p>{product.category === "books" ? "Books" : 
                                    product.category === "stationary" ? "Stationary" : 
                                    product.category === "gadgets" ? "Gadgets" : 

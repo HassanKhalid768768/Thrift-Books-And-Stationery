@@ -16,7 +16,6 @@ const AddProduct = () => {
         name: "",
         category:"books",
         description: "", // Added description field
-        new_price:"",
         old_price:""
     });
 
@@ -34,24 +33,17 @@ const AddProduct = () => {
 
     const addProduct = async () =>{
         // Validate required fields
-        if (!productDetails.name || !productDetails.new_price || !productDetails.old_price || !image) {
+        if (!productDetails.name || !productDetails.old_price || !image) {
             toast.error("Please fill all required fields and upload an image");
             return;
         }
 
-        // Convert price strings to numbers for comparison and validate they are valid numbers
+        // Convert price string to number and validate it is a valid number
         const oldPrice = parseFloat(productDetails.old_price);
-        const newPrice = parseFloat(productDetails.new_price);
         
-        // Check if prices are valid numbers
-        if (isNaN(oldPrice) || isNaN(newPrice)) {
-            toast.error("Please enter valid numeric prices");
-            return;
-        }
-        
-        // Validate that original price is higher than sale price
-        if (oldPrice <= newPrice) {
-            toast.error("Original price must be higher than sale price");
+        // Check if price is a valid number
+        if (isNaN(oldPrice) || oldPrice <= 0) {
+            toast.error("Please enter a valid numeric price");
             return;
         }
         
@@ -61,8 +53,8 @@ const AddProduct = () => {
         formData.append("product", image);
         formData.append("category", productDetails.category);
         formData.append("description", productDetails.description);
-        formData.append("new_price", productDetails.new_price);
         formData.append("old_price", productDetails.old_price);
+        formData.append("new_price", productDetails.old_price); // Set new_price same as old_price for backward compatibility
       
         const response = await api.addProduct(formData);
         if(response.ok){
@@ -70,7 +62,6 @@ const AddProduct = () => {
                 name: "",
                 category:"books",
                 description: "", // Reset description
-                new_price:"",
                 old_price:""
             });
             setImage(false);
@@ -105,27 +96,15 @@ const AddProduct = () => {
                 />
             </div>
 
-            <div className="addproduct-price">
-                <div className="addproduct-itemfield">
-                    <p>Original Price</p>
-                    <input 
-                        value={productDetails.old_price} 
-                        onChange={changeHandler} 
-                        type="text" 
-                        name="old_price" 
-                        placeholder="e.g. 1999"
-                    />
-                </div>
-                <div className="addproduct-itemfield">
-                    <p>Sale Price</p>
-                    <input 
-                        value={productDetails.new_price} 
-                        onChange={changeHandler} 
-                        type="text" 
-                        name="new_price" 
-                        placeholder="e.g. 1499"
-                    />
-                </div>
+            <div className="addproduct-itemfield">
+                <p>Price</p>
+                <input 
+                    value={productDetails.old_price} 
+                    onChange={changeHandler} 
+                    type="text" 
+                    name="old_price" 
+                    placeholder="e.g. 1999"
+                />
             </div>
             
             <div className="addproduct-itemfield">
@@ -174,7 +153,7 @@ const AddProduct = () => {
             <button 
                 onClick={addProduct} 
                 className="addproduct-btn"
-                disabled={!image || !productDetails.name || !productDetails.new_price}
+                disabled={!image || !productDetails.name || !productDetails.old_price}
             >
                 ADD PRODUCT
             </button>
