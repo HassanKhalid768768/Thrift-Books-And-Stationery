@@ -24,6 +24,11 @@ const ListProduct = () => {
         const response = await api.getProducts();
         const json = await response.json();
         if(response.ok){
+            console.log('ListProduct - Fetched products:', json);
+            // Log sizes for first product to debug
+            if (json.length > 0) {
+                console.log('ListProduct - First product sizes:', json[0].sizes);
+            }
             setAllProducts(json);
             setFilteredProducts(json);
         }

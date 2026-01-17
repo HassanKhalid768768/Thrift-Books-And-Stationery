@@ -61,7 +61,7 @@ const cartResponse = await api.getCart();
         };
     }, []);
 
-    const addToCart = async (itemId, quantity = 1) => {
+    const addToCart = async (itemId, quantity = 1, productData = null) => {
         // Update cart state with the specified quantity (default is 1)
         if (!cartItems[itemId]) {
             setCartItems((prev) => ({ ...prev, [itemId]: quantity }))

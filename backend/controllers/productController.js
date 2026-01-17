@@ -98,10 +98,22 @@ exports.createProduct = async (req, res, next) => {
   const length = products.length;
   let id = 1;
   if (length > 0) id = products[length - 1].id + 1;
-  const { name, category, new_price, old_price, description } = req.body;
+  const { name, category, new_price, old_price, description, sizes } = req.body;
   try {
     // upload image to Cloudinary
     const result = await cloudinary.uploader.upload(req.file.path);
+    
+    // Parse sizes if provided
+    let parsedSizes = [];
+    if (sizes) {
+      try {
+        parsedSizes = typeof sizes === 'string' ? JSON.parse(sizes) : sizes;
+      } catch (e) {
+        console.error('Error parsing sizes:', e);
+        parsedSizes = [];
+      }
+    }
+    
     const product = await Product.create({
       id,
       name,
@@ -110,7 +122,10 @@ exports.createProduct = async (req, res, next) => {
       description,
       new_price,
       old_price,
+      sizes: parsedSizes,
     });
+    console.log('Create Product - Created product:', product);
+    console.log('Create Product - Created product sizes:', product.sizes);
     res.status(200).json(product);
   } catch (err) {
     next(err);
@@ -487,7 +502,46 @@ exports.updateProduct = async (req, res, next) => {
     }
     
     // Get updated fields from request body
-    const { name, category, new_price, old_price, description, available } = req.body;
+    const { name, category, new_price, old_price, description, available, sizes } = req.body;
+    
+    console.log('Update Product - Received body:', req.body);
+    console.log('Update Product - Sizes field:', sizes);
+    
+    // Parse sizes if provided
+    // Note: With multer FormData, sizes comes as a JSON string
+    let parsedSizes = [];
+    
+    // Check if sizes field exists in request (even if empty)
+    if (sizes !== undefined) {
+      // Handle empty string or empty array string
+      if (sizes === '' || sizes === '[]' || (typeof sizes === 'string' && sizes.trim() === '[]')) {
+        parsedSizes = [];
+        console.log('Update Product - Setting sizes to empty array');
+      } else if (sizes !== null) {
+        try {
+          // If it's a string, try to parse it as JSON
+          parsedSizes = typeof sizes === 'string' ? JSON.parse(sizes) : sizes;
+          // Ensure it's an array
+          if (!Array.isArray(parsedSizes)) {
+            console.warn('Update Product - Parsed sizes is not an array:', parsedSizes);
+            parsedSizes = [];
+          } else {
+            console.log('Update Product - Parsed sizes successfully:', parsedSizes);
+          }
+        } catch (e) {
+          console.error('Update Product - Error parsing sizes:', e);
+          console.error('Update Product - Sizes value that failed:', sizes);
+          parsedSizes = [];
+        }
+      } else {
+        // sizes is null, set to empty array
+        parsedSizes = [];
+      }
+    } else {
+      // If sizes is undefined (not sent in request), keep existing sizes
+      parsedSizes = product.sizes || [];
+      console.log('Update Product - Sizes not provided in request, keeping existing:', parsedSizes);
+    }
     
     // Create updated product object
     const updatedFields = {
@@ -495,7 +549,8 @@ exports.updateProduct = async (req, res, next) => {
       category: category || product.category,
       new_price: new_price || product.new_price,
       old_price: old_price || product.old_price,
-      description: description || product.description
+      description: description || product.description,
+      sizes: parsedSizes
     };
     
     // Handle availability field (allow boolean values)
@@ -522,6 +577,9 @@ exports.updateProduct = async (req, res, next) => {
       updatedFields,
       { new: true, runValidators: true }
     );
+    
+    console.log('Update Product - Updated product:', updatedProduct);
+    console.log('Update Product - Updated product sizes:', updatedProduct?.sizes);
     
     res.status(200).json({
       message: "Product updated successfully",

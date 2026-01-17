@@ -52,6 +52,19 @@ const productSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
+    sizes: {
+        type: [{
+            size: {
+                type: String,
+                required: true
+            },
+            price: {
+                type: Number,
+                required: true
+            }
+        }],
+        default: []
+    },
     reviews: [reviewSchema],
     averageRating: {
         type: Number,

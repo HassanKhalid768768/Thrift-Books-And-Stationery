@@ -81,6 +81,8 @@ const ProductDisplay = (props) => {
     const [userReviewed, setUserReviewed] = useState(false);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [productData, setProductData] = useState(product || defaultProduct);
+    const [selectedSize, setSelectedSize] = useState(null);
+    const [displayPrice, setDisplayPrice] = useState(product?.old_price || 0);
     
     const backend_url = process.env.REACT_APP_BACKEND_URL;
 
@@ -240,6 +242,22 @@ const ProductDisplay = (props) => {
         return stars;
     };
 
+    // Update display price when size is selected or product changes
+    useEffect(() => {
+        if (product) {
+            console.log('ProductDisplay - Product:', product);
+            console.log('ProductDisplay - Product sizes:', product.sizes);
+            if (selectedSize && product.sizes && Array.isArray(product.sizes) && product.sizes.length > 0) {
+                const sizeObj = product.sizes.find(s => s.size === selectedSize);
+                if (sizeObj) {
+                    setDisplayPrice(sizeObj.price);
+                }
+            } else {
+                setDisplayPrice(product.old_price || 0);
+            }
+        }
+    }, [selectedSize, product]);
+
     // Show a loading UI when product data is not available
     if (isLoading || !product) {
         return (
@@ -287,9 +305,37 @@ const ProductDisplay = (props) => {
                 </div>
                 <div className="productdisplay-right-prices">
                    <div className="productdisplay-right-price-new">
-                    PKR {(product?.old_price || 0).toLocaleString('en-PK')}
+                    PKR {displayPrice.toLocaleString('en-PK')}
                    </div>
                 </div>
+                
+                {/* Size Selection */}
+                {product?.sizes && product.sizes.length > 0 && (
+                    <div className="productdisplay-right-sizes" style={{ marginBottom: '20px' }}>
+                        <p style={{ marginBottom: '10px', fontWeight: '500' }}>Select Size:</p>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                            {product.sizes.map((sizeObj, index) => (
+                                <button
+                                    key={index}
+                                    onClick={() => setSelectedSize(sizeObj.size)}
+                                    style={{
+                                        padding: '10px 20px',
+                                        border: selectedSize === sizeObj.size ? '2px solid #4CAF50' : '1px solid #ddd',
+                                        backgroundColor: selectedSize === sizeObj.size ? '#4CAF50' : 'transparent',
+                                        color: selectedSize === sizeObj.size ? 'white' : '#333',
+                                        cursor: 'pointer',
+                                        borderRadius: '4px',
+                                        fontWeight: selectedSize === sizeObj.size ? 'bold' : 'normal',
+                                        transition: 'all 0.3s'
+                                    }}
+                                >
+                                    {sizeObj.size}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                )}
+                
                 <div className="productdisplay-right-description">
                     {product?.description || "No description available"}
                 </div>
@@ -303,7 +349,22 @@ const ProductDisplay = (props) => {
                         </p>
                     </div>
                 ) : (
-                    <button onClick={()=>{addToCart(product?.id)}} className="add-to-cart-btn">
+                    <button 
+                        onClick={() => {
+                            if (product?.sizes && product.sizes.length > 0 && !selectedSize) {
+                                toast.error("Please select a size");
+                                return;
+                            }
+                            // Store size info in product for cart
+                            const productWithSize = {
+                                ...product,
+                                selectedSize: selectedSize,
+                                selectedPrice: displayPrice
+                            };
+                            addToCart(product?.id, 1, productWithSize);
+                        }} 
+                        className="add-to-cart-btn"
+                    >
                         ADD TO CART
                     </button>
                 )}

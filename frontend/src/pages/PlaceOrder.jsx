@@ -123,6 +123,13 @@ const PlaceOrder = () => {
             if (cartItems[item.id] > 0) {
                 let itemInfo = { ...item };
                 itemInfo['quantity'] = cartItems[item.id];
+                // If product has sizes, use the base price (or first size price)
+                // Size selection will be handled in future enhancement
+                if (item.sizes && item.sizes.length > 0) {
+                    // For now, use the first size's price or base price
+                    itemInfo['selectedSize'] = item.sizes[0]?.size || null;
+                    itemInfo['old_price'] = item.sizes[0]?.price || item.old_price;
+                }
                 orderItems.push(itemInfo);
             }
         });
