@@ -36,6 +36,7 @@ const PlaceOrder = () => {
     });
     
     const [paymentMethod, setPaymentMethod] = useState("bankTransfer");
+    const [isPlacingOrder, setIsPlacingOrder] = useState(false);
     
     const changeHandler = (e) => {
         setData({ ...data, [e.target.name]: e.target.value });
@@ -44,7 +45,13 @@ const PlaceOrder = () => {
     const placeOrder = async (e) => {
         e.preventDefault();
         
-        // Debug logging
+        // Prevent duplicate orders
+        if (isPlacingOrder) {
+            toast.warning('Please wait, your order is being processed...');
+            return;
+        }
+        
+        setIsPlacingOrder(true);
         console.log('PlaceOrder - Starting order placement');
         console.log('PlaceOrder - Backend URL:', backend_url);
         console.log('PlaceOrder - Token:', token ? 'Present' : 'Missing');
@@ -60,24 +67,28 @@ const PlaceOrder = () => {
             console.log('PlaceOrder - Backend connectivity test:', testData);
         } catch (error) {
             console.error('PlaceOrder - Backend connectivity test failed:', error);
+            setIsPlacingOrder(false);
             toast.error('Cannot connect to server. Please check if the backend is running.');
             return;
         }
         
         // Validate required fields
         if (!data.firstName || !data.lastName || !data.email || !data.Address || !data.city || !data.country || !data.Phone) {
+            setIsPlacingOrder(false);
             toast.error('Please fill in all required fields');
             return;
         }
         
         // Validate payment method selection
         if (!paymentMethod) {
+            setIsPlacingOrder(false);
             toast.error('Please select a payment method');
             return;
         }
         
         // Check if cart has items
         if (getTotalCartAmount() === 0) {
+            setIsPlacingOrder(false);
             toast.error('Your cart is empty');
             return;
         }
@@ -212,6 +223,7 @@ const PlaceOrder = () => {
             }
         } catch (error) {
             console.error('PlaceOrder - Network error:', error);
+            setIsPlacingOrder(false);
             toast.error("Error connecting to server");
         }
     };
@@ -295,7 +307,13 @@ const PlaceOrder = () => {
                         </div>
                     </div>
 
-                    <button type="submit" disabled={!paymentMethod} className={!paymentMethod ? 'disabled' : ''}>PLACE ORDER</button>
+                    <button 
+                        type="submit" 
+                        disabled={!paymentMethod || isPlacingOrder} 
+                        className={(!paymentMethod || isPlacingOrder) ? 'disabled' : ''}
+                    >
+                        {isPlacingOrder ? 'PLACING ORDER...' : 'PLACE ORDER'}
+                    </button>
                 </div>
             </div>
         </form>
