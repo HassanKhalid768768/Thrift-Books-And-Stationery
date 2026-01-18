@@ -35,6 +35,11 @@ const PlaceOrder = () => {
         Phone: ""
     });
 
+    const subtotal = getTotalWithDiscount();
+    const isFreeShipping = subtotal >= 5000;
+    const baseShippingFee = data.city ? (data.city.trim().toLowerCase() === 'karachi' ? 250 : 350) : 0;
+    const shippingFee = isFreeShipping ? 0 : baseShippingFee;
+
     const [paymentMethod, setPaymentMethod] = useState("bankTransfer");
     const [isPlacingOrder, setIsPlacingOrder] = useState(false);
 
@@ -161,7 +166,7 @@ const PlaceOrder = () => {
         let orderData = {
             address: data,
             items: orderItems,
-            amount: getTotalWithDiscount() + (data.city ? (data.city.trim().toLowerCase() === 'karachi' ? 250 : 350) : 0),
+            amount: subtotal + shippingFee,
             paymentMethod: paymentMethod,
             appliedCoupon: coupon.isValid ? {
                 code: coupon.code,
@@ -275,14 +280,27 @@ const PlaceOrder = () => {
 
                         <div className="cart-total-details">
                             <p>Shipping Fee</p>
-                            <p>{!data.city ? "Will be calculated when you enter address" : `PKR ${(data.city.trim().toLowerCase() === 'karachi' ? 250 : 350).toLocaleString('en-PK')}`}</p>
+                            <p>
+                                {!data.city ? (
+                                    "Will be calculated when you enter address"
+                                ) : isFreeShipping ? (
+                                    <span style={{ color: '#12b76a', fontWeight: 'bold' }}>FREE SHIPPING</span>
+                                ) : (
+                                    `PKR ${baseShippingFee.toLocaleString('en-PK')}`
+                                )}
+                            </p>
                         </div>
                         <hr />
 
                         <div className="cart-total-details">
                             <h3>Total </h3>
-                            <h3>PKR {(getTotalCartAmount() === 0 ? 0 : getTotalWithDiscount() + (data.city ? (data.city.trim().toLowerCase() === 'karachi' ? 250 : 350) : 0)).toLocaleString('en-PK')}</h3>
+                            <h3>PKR {(getTotalCartAmount() === 0 ? 0 : subtotal + shippingFee).toLocaleString('en-PK')}</h3>
                         </div>
+                        {isFreeShipping && (
+                            <div className="free-shipping-note" style={{ color: '#12b76a', fontSize: '0.85rem', marginTop: '5px', fontWeight: '500' }}>
+                                ✨ Amazing! You've unlocked FREE SHIPPING on this order.
+                            </div>
+                        )}
                         <div className="shipping-disclaimer" style={{ fontSize: '0.8rem', color: '#666', marginTop: '10px', fontStyle: 'italic' }}>
                             <p>* For parcels above 2 kg, additional Rs. 50 per kg will be charged.</p>
                         </div>

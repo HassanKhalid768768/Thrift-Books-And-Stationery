@@ -1,5 +1,5 @@
-import React, {createContext, useEffect, useState} from 'react';
-import {toast} from "react-toastify";
+import React, { createContext, useEffect, useState } from 'react';
+import { toast } from "react-toastify";
 import { api } from '../utils/api';
 
 export const StoreContext = createContext(null);
@@ -10,30 +10,31 @@ const StoreContextProvider = (props) => {
     const [cartItems, setCartItems] = useState({});
     const [cartItemDetails, setCartItemDetails] = useState({}); // Store size and price info for each cart item
     const [coupon, setCoupon] = useState({ code: "", value: 0, isValid: false, minimumOrderValue: 0 });
-useEffect(() => {
+    const [userProfile, setUserProfile] = useState(null);
+    useEffect(() => {
         let isMounted = true;
-        
-        const fetchData = async() => {
+
+        const fetchData = async () => {
             try {
                 // Fetch all products
                 const response = await api.getProducts();
                 const json = await response.json();
-                
+
                 if (response.ok && isMounted) {
                     setAll_product(json);
                 } else if (isMounted) {
                     toast.error(json.error || "Failed to fetch products");
                 }
-                
+
                 // Get the current token for cart operations
                 const token = localStorage.getItem('token');
-                
+
                 if (token && isMounted) {
                     try {
-const cartResponse = await api.getCart();
-                        
+                        const cartResponse = await api.getCart();
+
                         const cartJson = await cartResponse.json();
-                        
+
                         if (cartResponse.ok && isMounted) {
                             setCartItems(cartJson);
                             // Try to load cartItemDetails from localStorage
@@ -55,6 +56,20 @@ const cartResponse = await api.getCart();
                             toast.error("Could not connect to server");
                         }
                     }
+
+                    // Fetch User Profile
+                    try {
+                        const profileResponse = await api.getProfile();
+                        const profileJson = await profileResponse.json();
+                        if (profileResponse.ok && isMounted) {
+                            setUserProfile(profileJson);
+                        }
+                    } catch (error) {
+                        console.error("Error fetching profile:", error);
+                    }
+                } else if (isMounted) {
+                    // Clear profile if no token
+                    setUserProfile(null);
                 }
             } catch (error) {
                 console.error("Error in data fetching:", error);
@@ -63,9 +78,9 @@ const cartResponse = await api.getCart();
                 }
             }
         };
-        
+
         fetchData();
-        
+
         // Cleanup function to prevent state updates after unmount
         return () => {
             isMounted = false;
@@ -76,11 +91,11 @@ const cartResponse = await api.getCart();
         // Get product info
         const product = productData || all_product.find(item => item.id === Number(itemId));
         const productName = product ? product.name : 'Item';
-        
+
         // Determine price and size
         let itemPrice = product?.old_price || 0;
         let selectedSize = null;
-        
+
         if (product?.sizes && product.sizes.length > 0 && product.selectedSize) {
             const sizeObj = product.sizes.find(s => s.size === product.selectedSize);
             if (sizeObj) {
@@ -88,10 +103,10 @@ const cartResponse = await api.getCart();
                 selectedSize = product.selectedSize;
             }
         }
-        
+
         // Create composite key: itemId_size for items with sizes, just itemId for items without
         const cartKey = selectedSize ? `${itemId}_${selectedSize}` : itemId;
-        
+
         // Update cart state with the specified quantity (default is 1)
         if (!cartItems[cartKey]) {
             setCartItems((prev) => ({ ...prev, [cartKey]: quantity }))
@@ -115,7 +130,7 @@ const cartResponse = await api.getCart();
         else {
             setCartItems((prev) => ({ ...prev, [cartKey]: prev[cartKey] + quantity }))
         }
-        
+
         // Show success notification with quantity information
         const sizeText = selectedSize ? ` (Size: ${selectedSize})` : '';
         if (quantity > 1) {
@@ -123,16 +138,16 @@ const cartResponse = await api.getCart();
         } else {
             toast.success(`Added to cart: ${productName}${sizeText}`);
         }
-        
+
         const token = localStorage.getItem('token');
-        if(token){
+        if (token) {
             // Make API calls for each item in the quantity
             // Note: Backend still uses itemId, but frontend tracks sizes separately
             for (let i = 0; i < quantity; i++) {
                 try {
                     const response = await api.addToCart(itemId);
                     const json = await response.json();
-                    if(!response.ok){
+                    if (!response.ok) {
                         toast.error(json.error);
                     }
                 } catch (error) {
@@ -157,10 +172,10 @@ const cartResponse = await api.getCart();
     const removeFromCart = async (cartKey) => {
         if (cartItems[cartKey] > 0) {
             setCartItems((prev) => ({ ...prev, [cartKey]: prev[cartKey] - 1 }))
-            
+
             // If quantity becomes 0, remove from cartItemDetails
             if (cartItems[cartKey] === 1) {
-                const updatedDetails = {...cartItemDetails};
+                const updatedDetails = { ...cartItemDetails };
                 delete updatedDetails[cartKey];
                 setCartItemDetails(updatedDetails);
                 try {
@@ -170,15 +185,15 @@ const cartResponse = await api.getCart();
                 }
             }
         }
-        
+
         const token = localStorage.getItem('token');
-        if(token){
+        if (token) {
             try {
                 // Extract itemId from cartKey (handle both "itemId" and "itemId_size" formats)
                 const itemId = cartKey.includes('_') ? parseInt(cartKey.split('_')[0]) : parseInt(cartKey);
                 const response = await api.removeFromCart(itemId);
                 const json = await response.json();
-                if(!response.ok){
+                if (!response.ok) {
                     toast.error(json.error);
                 }
             } catch (error) {
@@ -196,16 +211,16 @@ const cartResponse = await api.getCart();
         const productName = product ? product.name : 'Item';
         const quantity = cartItems[cartKey];
         const sizeText = itemDetails?.size ? ` (Size: ${itemDetails.size})` : '';
-        
+
         // Update cart state - remove the item completely
         setCartItems((prev) => {
-            const newCart = {...prev};
+            const newCart = { ...prev };
             delete newCart[cartKey];
             return newCart;
         });
-        
+
         // Remove item details
-        const updatedDetails = {...cartItemDetails};
+        const updatedDetails = { ...cartItemDetails };
         delete updatedDetails[cartKey];
         setCartItemDetails(updatedDetails);
         // Update localStorage
@@ -214,13 +229,13 @@ const cartResponse = await api.getCart();
         } catch (e) {
             console.error('Error saving cart details to localStorage:', e);
         }
-        
+
         // Show removal notification
         toast.info(`Removed from cart: ${productName}${sizeText} (${quantity} ${quantity > 1 ? 'items' : 'item'})`);
-        
+
         // Update server if user is logged in
         const token = localStorage.getItem('token');
-        if(token){
+        if (token) {
             try {
                 // Remove the item completely from cart - we need to call the API multiple times
                 // to remove all quantities of the item
@@ -237,10 +252,10 @@ const cartResponse = await api.getCart();
     const validateCoupon = async (code) => {
         try {
             const orderAmount = getTotalCartAmount();
-const response = await api.validateCoupon(code, orderAmount);
-            
+            const response = await api.validateCoupon(code, orderAmount);
+
             const data = await response.json();
-            
+
             if (response.ok && data.valid) {
                 setCoupon({
                     code: data.code,
@@ -260,11 +275,11 @@ const response = await api.validateCoupon(code, orderAmount);
             return false;
         }
     };
-    
+
     const clearCoupon = () => {
         setCoupon({ code: "", value: 0, isValid: false, minimumOrderValue: 0 });
     };
-    
+
     // Auto-validate coupon when cart amount changes
     useEffect(() => {
         const validateCouponOnCartChange = async () => {
@@ -273,7 +288,7 @@ const response = await api.validateCoupon(code, orderAmount);
                     const currentOrderAmount = getTotalCartAmount();
                     const response = await api.validateCoupon(coupon.code, currentOrderAmount);
                     const data = await response.json();
-                    
+
                     if (!response.ok || !data.valid) {
                         // Coupon is no longer valid, remove it
                         clearCoupon();
@@ -285,7 +300,7 @@ const response = await api.validateCoupon(code, orderAmount);
                 }
             }
         };
-        
+
         // Debounce the validation to avoid too many API calls
         const timeoutId = setTimeout(validateCouponOnCartChange, 500);
         return () => clearTimeout(timeoutId);
@@ -297,7 +312,7 @@ const response = await api.validateCoupon(code, orderAmount);
             if (cartItems[cartKey] > 0) {
                 // Use stored price from cartItemDetails if available
                 const itemDetails = cartItemDetails[cartKey];
-                
+
                 if (itemDetails && itemDetails.price) {
                     totalAmount += itemDetails.price * cartItems[cartKey];
                 } else {
@@ -312,11 +327,11 @@ const response = await api.validateCoupon(code, orderAmount);
         }
         return totalAmount;
     };
-    
+
     const getCouponDiscount = () => {
         return coupon.isValid ? coupon.value : 0;
     };
-    
+
     const getTotalWithDiscount = () => {
         const subtotal = getTotalCartAmount();
         const discount = getCouponDiscount();
@@ -330,20 +345,20 @@ const response = await api.validateCoupon(code, orderAmount);
         }
         return totalItem;
     };
-    
+
     // Clean up any abandoned orders when user returns to cart
     const cleanupAbandonedOrders = async () => {
         try {
             const token = localStorage.getItem('token');
             if (!token) return;
-            
+
             const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/orders/cleanup`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 }
             });
-            
+
             if (response.ok) {
                 const data = await response.json();
                 console.log('Cleanup completed:', data.message);
@@ -352,13 +367,13 @@ const response = await api.validateCoupon(code, orderAmount);
             console.error('Error during cleanup:', error);
         }
     };
-    
+
     // Instantly clean up user's pending orders
     const cleanupUserPendingOrders = async () => {
         try {
             const token = localStorage.getItem('token');
             if (!token) return;
-            
+
             const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/orders/cleanup-user`, {
                 method: 'POST',
                 headers: {
@@ -366,7 +381,7 @@ const response = await api.validateCoupon(code, orderAmount);
                     'authorization': `Bearer ${token}`
                 }
             });
-            
+
             if (response.ok) {
                 const data = await response.json();
                 console.log('Instant cleanup completed:', data.message);
@@ -394,7 +409,8 @@ const response = await api.validateCoupon(code, orderAmount);
         getCouponDiscount,
         getTotalWithDiscount,
         cleanupAbandonedOrders,
-        cleanupUserPendingOrders
+        cleanupUserPendingOrders,
+        userProfile
     };
 
     return (

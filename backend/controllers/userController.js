@@ -11,7 +11,7 @@ if (!process.env.SECRET_KEY) {
   console.error("Please add SECRET_KEY to your .env file in the backend directory.");
 }
 
-exports.signupUser = async (req, res,next) => {
+exports.signupUser = async (req, res, next) => {
   const { name, email, password, cartData } = req.body;
 
   // validation
@@ -60,7 +60,7 @@ exports.signupUser = async (req, res,next) => {
     const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, {
       expiresIn: "1d",
     });
-    res.status(200).json({ token, role:user.role});
+    res.status(200).json({ token, role: user.role });
   } catch (err) {
     next(err);
   }
@@ -85,9 +85,22 @@ exports.loginUser = async (req, res, next) => {
       const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, {
         expiresIn: "1d",
       });
-      res.status(200).json({ token, role:user.role});
+      res.status(200).json({ token, role: user.role });
     }
     else return next(errorHandler(400, "Invalid login credentials"));
+  } catch (err) {
+    next(err);
+  }
+};
+
+// getUserProfile
+exports.getUserProfile = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user._id).select("name email role");
+    if (!user) {
+      return next(errorHandler(404, "User not found"));
+    }
+    res.status(200).json(user);
   } catch (err) {
     next(err);
   }

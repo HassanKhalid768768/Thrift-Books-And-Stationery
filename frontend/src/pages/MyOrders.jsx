@@ -22,32 +22,32 @@ const MyOrders = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const token = localStorage.getItem('token');
-    
+
     const fetchOrders = async () => {
         setIsLoading(true);
         setError(null);
-        
+
         // Check if user has token
         if (!token) {
             setError('Please login to view your orders');
             setIsLoading(false);
             return;
         }
-        
+
         try {
             console.log('Fetching orders for user with token:', token ? 'Token present' : 'No token');
             const response = await api.getUserOrders();
             console.log('API response status:', response.status);
-            
+
             const json = await response.json();
             console.log('API response data:', json);
-            
+
             if (response.ok) {
                 // Extract orders array from response
                 const ordersData = json.orders || [];
                 console.log('Fetched orders:', ordersData);
                 setOrders(ordersData);
-                
+
                 if (ordersData.length === 0) {
                     console.log('No orders found for user');
                 }
@@ -74,7 +74,7 @@ const MyOrders = () => {
     }, [token]);
 
     const getStatusColor = (status) => {
-        switch(status?.toLowerCase()) {
+        switch (status?.toLowerCase()) {
             case 'processing':
                 return 'status-processing';
             case 'shipped':
@@ -86,7 +86,7 @@ const MyOrders = () => {
         }
     }
 
-    return ( 
+    return (
         <div className={`my-orders ${darkMode ? 'dark-mode' : ''}`}>
             <h2>My Orders</h2>
             <div className="container">
@@ -121,12 +121,12 @@ const MyOrders = () => {
                                     </div>
                                 </div>
                                 <div className="order-images">
-                                    {order.items && Array.isArray(order.items) && 
+                                    {order.items && Array.isArray(order.items) &&
                                         order.items.map((item, itemIndex) => (
                                             <div key={itemIndex} className="order-image-container">
-                                                <img 
-                                                    src={item.image} 
-                                                    alt={item.name} 
+                                                <img
+                                                    src={item.image}
+                                                    alt={item.name}
                                                     className="order-product-image"
                                                     title={`${item.name} x ${item.quantity}`}
                                                 />
@@ -137,9 +137,9 @@ const MyOrders = () => {
                                 </div>
                                 <div className="order-details">
                                     <p className="order-items">
-                                        {order.items && Array.isArray(order.items) ? 
+                                        {order.items && Array.isArray(order.items) ?
                                             order.items.map((item, itemIndex) => {
-                                                if (itemIndex === order.items.length-1) {
+                                                if (itemIndex === order.items.length - 1) {
                                                     return `${item.name} x ${item.quantity}`
                                                 } else {
                                                     return `${item.name} x ${item.quantity}, `
@@ -149,6 +149,12 @@ const MyOrders = () => {
                                     <p className="order-amount">PKR {order.amount ? order.amount.toLocaleString('en-PK') : '0'}</p>
                                     <p className="order-count">Items: {order.items && Array.isArray(order.items) ? order.items.length : 0}</p>
                                     <p className="order-status"><span>&#x25cf;</span> <b>{order.status || 'Processing'}</b></p>
+
+                                    <div className="order-whatsapp-container">
+                                        <p>Send payment screenshot via WhatsApp:</p>
+                                        <a href={`https://api.whatsapp.com/send?phone=%2B923003383851&text=Hello, I'm sending payment proof for Order %23${formatOrderNumber(order.orderNumber) || order._id?.substring(order._id.length - 6)}`} className="whatsapp-button" target="_blank" rel="noopener noreferrer">Send via WhatsApp</a>
+                                    </div>
+
                                     <button className="track-button" onClick={fetchOrders}>Track Order</button>
                                 </div>
                             </div>
@@ -156,8 +162,8 @@ const MyOrders = () => {
                     })
                 )}
             </div>
-        </div> 
+        </div>
     );
 }
- 
+
 export default MyOrders;

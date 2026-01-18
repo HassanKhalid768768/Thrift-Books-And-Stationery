@@ -11,7 +11,7 @@ import profile_icon from './../../assets/profile_icon.png';
 
 const Navbar = () => {
     const [menu, setMenu] = useState("shop");
-    const { getTotalCartItems, all_product } = useContext(StoreContext);
+    const { getTotalCartItems, all_product, userProfile } = useContext(StoreContext);
     const { darkMode, toggleDarkMode } = useContext(DarkModeContext);
     const menuRef = useRef();
     const searchRef = useRef();
@@ -348,6 +348,15 @@ const Navbar = () => {
                         <div className='navbar-profile'>
                             <img src={profile_icon} alt="" />
                             <ul className="nav-profile-dropdown">
+                                {userProfile && (
+                                    <>
+                                        <div className="nav-profile-info">
+                                            <p className="profile-name">{userProfile.name}</p>
+                                            <p className="profile-email">{userProfile.email}</p>
+                                        </div>
+                                        <hr />
+                                    </>
+                                )}
                                 <li onClick={() => { navigate("/myorders"); scrollToTop(); }}>Orders</li>
                                 <hr />
                                 <li onClick={logout}>Logout</li>

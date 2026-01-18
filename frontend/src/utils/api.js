@@ -19,7 +19,7 @@ export const apiCall = async (endpoint, options = {}) => {
   };
 
   const finalOptions = { ...defaultOptions, ...options };
-  
+
   try {
     const response = await fetch(url, finalOptions);
     return response;
@@ -42,14 +42,16 @@ export const api = {
     body: JSON.stringify(userData)
   }),
 
+  getProfile: () => apiCall('/api/users/profile'),
+
   // Products
   getProducts: () => apiCall('/api/products'),
-  
+
   getProduct: (id) => apiCall(`/api/products/${id}`),
 
   // Cart operations
   getCart: () => apiCall('/api/cart/getCart'),
-  
+
   addToCart: (itemId) => apiCall('/api/cart/addToCart', {
     method: 'POST',
     body: JSON.stringify({ itemId })

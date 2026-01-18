@@ -149,6 +149,7 @@
     box-shadow: 0 2px 4px var(--shadow-color);
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
+
 .item-quantity {
     position: absolute;
     top: -8px;
@@ -331,6 +332,46 @@
 .dark-mode .error-message button:hover,
 .dark-mode .shop-now-btn:hover {
     background-color: #ff6b81;
+}
+
+/* WhatsApp Button Styles */
+.order-whatsapp-container {
+    margin: 15px 0;
+    padding: 12px;
+    background-color: rgba(37, 211, 102, 0.05);
+    border-radius: 8px;
+    border-left: 3px solid #25D366;
+}
+
+.order-whatsapp-container p {
+    margin: 0 0 8px 0;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.whatsapp-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    background-color: #25D366;
+    color: white !important;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 13px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(37, 211, 102, 0.2);
+}
+
+.whatsapp-button:hover {
+    background-color: #1e8e3e;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(37, 211, 102, 0.3);
+}
+
+.dark-mode .order-whatsapp-container {
+    background-color: rgba(37, 211, 102, 0.1);
 }
 
 /* Responsive design */
