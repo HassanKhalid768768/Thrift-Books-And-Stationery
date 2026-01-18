@@ -25,20 +25,24 @@
 /* On mobile, show the whole image by using 'contain' */
 @media (max-width: 768px) {
     .main-carousel-container {
-        height: 60vh; /* Adjust height for mobile */
+        height: 40vh;
+        max-height: 300px;
     }
     
     .carousel-image {
-        object-fit: contain;
+        object-fit: cover;
+        object-position: center;
     }
 }
 
 @media (max-width: 480px) {
     .main-carousel-container {
-        height: 21vh; /* Further adjust for very small devices */
+        height: 180px;
+        max-height: 200px;
     }
     
     .carousel-image {
-        object-fit: contain;
+        object-fit: cover;
+        object-position: center;
     }
 }
