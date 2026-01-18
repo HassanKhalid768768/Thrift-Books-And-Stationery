@@ -309,20 +309,12 @@ const ProductDisplay = (props) => {
                 </div>
                 {/* Image Gallery */}
                 {(product.additionalImages && product.additionalImages.length > 0) && (
-                    <div className="productdisplay-img-list" style={{ display: 'flex', gap: '10px', marginTop: '10px', overflowX: 'auto', paddingBottom: '5px' }}>
+                    <div className="productdisplay-img-list">
                         <img
                             src={product.image}
                             alt="Main View"
                             onClick={() => setActiveImage(product.image)}
                             className={activeImage === product.image ? 'active-thumbnail' : ''}
-                            style={{
-                                width: '70px',
-                                height: '70px',
-                                objectFit: 'cover',
-                                cursor: 'pointer',
-                                border: activeImage === product.image ? '2px solid #ff4141' : '1px solid #ddd',
-                                opacity: activeImage === product.image ? 1 : 0.6
-                            }}
                         />
                         {product.additionalImages.map((img, index) => (
                             <img
@@ -331,14 +323,6 @@ const ProductDisplay = (props) => {
                                 alt={`View ${index + 1}`}
                                 onClick={() => setActiveImage(img)}
                                 className={activeImage === img ? 'active-thumbnail' : ''}
-                                style={{
-                                    width: '70px',
-                                    height: '70px',
-                                    objectFit: 'cover',
-                                    cursor: 'pointer',
-                                    border: activeImage === img ? '2px solid #ff4141' : '1px solid #ddd',
-                                    opacity: activeImage === img ? 1 : 0.6
-                                }}
                             />
                         ))}
                     </div>

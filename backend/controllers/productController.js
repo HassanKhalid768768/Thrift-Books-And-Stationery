@@ -587,7 +587,7 @@ exports.updateProduct = async (req, res, next) => {
       updatedFields.available = Boolean(available);
     }
 
-    // Check if there's a new image to upload
+    // Check if there's a new image to upload or selected from library
     if (req.files && req.files['product']) {
       // Delete the old image from Cloudinary if it exists
       if (product.image) {
@@ -596,37 +596,45 @@ exports.updateProduct = async (req, res, next) => {
           await cloudinary.uploader.destroy(imageId);
         } catch (e) { console.error('Error deleting old image:', e); }
       }
-
-      // Upload new image to Cloudinary (already uploaded by multer middleware)
       updatedFields.image = req.files['product'][0].path;
+    } else if (req.body.image) {
+      // Handle image selected from library (passed as URL string)
+      updatedFields.image = req.body.image;
     }
 
     // Check for existing images to keep
     let currentAdditionalImages = product.additionalImages || [];
-    console.log('UpdateProduct - Initial additionalImages:', currentAdditionalImages);
-    console.log('UpdateProduct - Body existingAdditionalImages:', req.body.existingAdditionalImages);
     if (req.body.existingAdditionalImages) {
       try {
         const keptImages = JSON.parse(req.body.existingAdditionalImages);
-        // Optionally delete images from Cloudinary that are in product.additionalImages but NOT in keptImages
-        // keeping it simple for now, just updating the reference in DB
         currentAdditionalImages = Array.isArray(keptImages) ? keptImages : [];
-        console.log('UpdateProduct - Parsed keptImages:', currentAdditionalImages);
       } catch (e) {
         console.error('Error parsing existingAdditionalImages:', e);
       }
     }
 
-    // Check if there are additional images
+    // Initialize additionalImages with kept images
+    let finalAdditionalImages = [...currentAdditionalImages];
+
+    // Append new uploaded files
     if (req.files && req.files['additionalImages']) {
-      console.log('UpdateProduct - Found new additionalImages files');
-      const newImages = req.files['additionalImages'].map(file => file.path);
-      // Append to existing images (or the filtered list of kept images)
-      updatedFields.additionalImages = [...currentAdditionalImages, ...newImages];
-    } else if (req.body.existingAdditionalImages) {
-      // If no new images but we have a modified list of existing images
-      updatedFields.additionalImages = currentAdditionalImages;
+      const newFiles = req.files['additionalImages'].map(file => file.path);
+      finalAdditionalImages = [...finalAdditionalImages, ...newFiles];
     }
+
+    // Append new images selected from library
+    if (req.body.newAdditionalImageUrls) {
+      try {
+        const libraryImages = JSON.parse(req.body.newAdditionalImageUrls);
+        if (Array.isArray(libraryImages)) {
+          finalAdditionalImages = [...finalAdditionalImages, ...libraryImages];
+        }
+      } catch (e) {
+        console.error('Error parsing newAdditionalImageUrls:', e);
+      }
+    }
+
+    updatedFields.additionalImages = finalAdditionalImages;
 
     console.log('UpdateProduct - Final updatedFields.additionalImages:', updatedFields.additionalImages);
 
