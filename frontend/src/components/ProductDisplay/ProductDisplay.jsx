@@ -85,10 +85,13 @@ const ProductDisplay = (props) => {
     const [displayPrice, setDisplayPrice] = useState(product?.old_price || 0);
     const [activeImage, setActiveImage] = useState("");
 
-    // Update active image when product changes
+    // Update active image and product data when product changes
     useEffect(() => {
-        if (product && product.image) {
-            setActiveImage(product.image);
+        if (product) {
+            if (product.image) {
+                setActiveImage(product.image);
+            }
+            setProductData(product);
         }
     }, [product]);
 
