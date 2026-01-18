@@ -1,56 +1,56 @@
 :root {
-    /* Light mode variables */
-    --place-order-bg: #ffffff;
-    --place-order-card-bg: #ffffff;
-    --place-order-text: #333333;
-    --place-order-text-secondary: #555555;
-    --place-order-border: #ddd;
-    --place-order-input-border: #c5c5c5;
-    --place-order-shadow: rgba(0, 0, 0, 0.1);
-    --place-order-success: #12b76a;
-    --place-order-coupon-bg: #e9f7fe;
-    --place-order-coupon-text: #0089d0;
-    --place-order-accent: tomato;
+  /* Light mode variables */
+  --place-order-bg: #ffffff;
+  --place-order-card-bg: #ffffff;
+  --place-order-text: #333333;
+  --place-order-text-secondary: #555555;
+  --place-order-border: #ddd;
+  --place-order-input-border: #c5c5c5;
+  --place-order-shadow: rgba(0, 0, 0, 0.1);
+  --place-order-success: #12b76a;
+  --place-order-coupon-bg: #e9f7fe;
+  --place-order-coupon-text: #0089d0;
+  --place-order-accent: tomato;
 }
 
 .dark-mode {
-    /* Dark mode variables */
-    --place-order-bg: #121212;
-    --place-order-card-bg: #1e1e1e;
-    --place-order-text: #f5f5f5;
-    --place-order-text-secondary: #b3b3b3;
-    --place-order-border: #333333;
-    --place-order-input-border: #444444;
-    --place-order-shadow: rgba(0, 0, 0, 0.3);
-    --place-order-success: #2ecc71;
-    --place-order-coupon-bg: #1a3f5a;
-    --place-order-coupon-text: #4db5ff;
-    --place-order-accent: #ff6347;
+  /* Dark mode variables */
+  --place-order-bg: #121212;
+  --place-order-card-bg: #1e1e1e;
+  --place-order-text: #f5f5f5;
+  --place-order-text-secondary: #b3b3b3;
+  --place-order-border: #333333;
+  --place-order-input-border: #444444;
+  --place-order-shadow: rgba(0, 0, 0, 0.3);
+  --place-order-success: #2ecc71;
+  --place-order-coupon-bg: #1a3f5a;
+  --place-order-coupon-text: #4db5ff;
+  --place-order-accent: #ff6347;
 }
 
 .discount {
-    color: var(--place-order-success);
-    font-weight: 500;
+  color: var(--place-order-success);
+  font-weight: 500;
 }
 
 .discount-value {
-    color: var(--place-order-success);
-    font-weight: bold;
+  color: var(--place-order-success);
+  font-weight: bold;
 }
 
 .coupon-code-label {
-    display: inline-block;
-    font-weight: bold;
-    background-color: var(--place-order-coupon-bg);
-    padding: 2px 6px;
-    border-radius: 3px;
-    color: var(--place-order-coupon-text);
-    font-size: 0.9em;
-    margin-left: 5px;
+  display: inline-block;
+  font-weight: bold;
+  background-color: var(--place-order-coupon-bg);
+  padding: 2px 6px;
+  border-radius: 3px;
+  color: var(--place-order-coupon-text);
+  font-size: 0.9em;
+  margin-left: 5px;
 }
 
 
-.place-order{
+.place-order {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 30px;
@@ -66,7 +66,8 @@
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.place-order-left, .place-order-right{
+.place-order-left,
+.place-order-right {
   width: 100%;
   max-width: 500px;
 }
@@ -81,7 +82,7 @@
   height: fit-content;
 }
 
-.place-order-left .title{
+.place-order-left .title {
   font-size: 24px;
   font-weight: 600;
   margin-bottom: 30px;
@@ -89,7 +90,7 @@
   transition: color 0.3s ease;
 }
 
-.place-order-left input{
+.place-order-left input {
   margin-bottom: 15px;
   width: 100%;
   padding: 12px 16px;
@@ -119,7 +120,7 @@
   box-shadow: 0 0 0 3px rgba(255, 99, 71, 0.2);
 }
 
-.place-order-left .multi-fields{
+.place-order-left .multi-fields {
   display: flex;
   gap: 10px;
 }
@@ -128,34 +129,34 @@
   flex: 1
 }
 
-.cart-total{
-  flex:1;
+.cart-total {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap:20px;
+  gap: 20px;
 }
 
-.cart-total h1{
+.cart-total h1 {
   font-size: 24px;
   margin-bottom: 20px;
   color: var(--place-order-text);
   transition: color 0.3s ease;
 }
 
-.cart-total-details{
+.cart-total-details {
   display: flex;
   justify-content: space-between;
   color: var(--place-order-text-secondary);
   transition: color 0.3s ease;
 }
-  
-.cart-total hr{
-  margin:10px 0px;
+
+.cart-total hr {
+  margin: 10px 0px;
   border-color: var(--place-order-border);
   transition: border-color 0.3s ease;
 }
 
-.cart-total button{
+.cart-total button {
   border: none;
   color: white;
   background: linear-gradient(135deg, var(--place-order-accent), #ff4500);
@@ -247,6 +248,7 @@
     opacity: 0;
     transform: translateY(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -280,6 +282,74 @@
   box-shadow: 0 4px 8px rgba(37, 211, 102, 0.4);
 }
 
+@media (max-width: 767px) {
+  .place-order {
+    margin-top: 80px;
+    margin-bottom: 30px;
+    padding: 15px;
+    gap: 20px;
+    box-shadow: none;
+    background-color: transparent;
+  }
+
+  .place-order-left,
+  .place-order-right {
+    max-width: 100%;
+  }
+
+  .card {
+    padding: 15px;
+  }
+
+  .place-order-left .title {
+    font-size: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .multi-fields {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .place-order-left input {
+    padding: 10px 14px;
+    font-size: 16px;
+    /* Better for mobile zoom prevention */
+  }
+
+  .cart-total h1 {
+    font-size: 20px;
+    text-align: center;
+  }
+
+  .cart-total button {
+    padding: 14px 0;
+    font-size: 15px;
+    margin-top: 20px;
+    position: sticky;
+    bottom: 10px;
+    z-index: 10;
+  }
+
+  .payment-option {
+    padding: 12px;
+  }
+
+  .payment-option label {
+    font-size: 14px;
+  }
+
+  .bank-transfer-details {
+    padding: 15px;
+  }
+
+  .whatsapp-button {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+
 @media (min-width: 768px) {
   .place-order {
     grid-template-columns: repeat(2, 1fr);
@@ -289,4 +359,3 @@
     width: 100%;
   }
 }
-
