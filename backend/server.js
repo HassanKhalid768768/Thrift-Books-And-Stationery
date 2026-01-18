@@ -1,5 +1,11 @@
 require('dotenv').config();
 
+console.log("Cloudinary Config Check:");
+console.log("CLOUD_NAME:", process.env.CLOUDINARY_CLOUD_NAME ? "EXISTS" : "MISSING");
+console.log("API_KEY:", process.env.CLOUDINARY_API_KEY ? "EXISTS" : "MISSING");
+console.log("SECRET_KEY:", process.env.CLOUDINARY_SECRET_KEY ? "EXISTS" : "MISSING");
+console.log("API_SECRET:", process.env.CLOUDINARY_API_SECRET ? "EXISTS" : "MISSING");
+
 const express = require("express");
 const cors = require("cors");
 
@@ -95,11 +101,13 @@ app.get('/api/test', (req, res) => {
 
 // Error handling
 app.use((err, req, res, next) => {
+  console.error("SERVER ERROR:", err); // Log the full error to console
   const statusCode = err.statusCode || 500;
   const message = err.message || "Internal Server Error";
   res.status(statusCode).json({
     success: false,
     error: message,
+    stack: process.env.NODE_ENV === 'development' ? err.stack : undefined // Optional: send stack to frontend in dev
   });
 });
 

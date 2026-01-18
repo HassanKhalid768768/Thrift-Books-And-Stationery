@@ -7,10 +7,10 @@ import { DarkModeContext } from "../../context/DarkModeContext";
 import { toast } from "react-toastify";
 
 const ProductDisplay = (props) => {
-    const {product} = props;
-    const {addToCart} = useContext(StoreContext);
+    const { product } = props;
+    const { addToCart } = useContext(StoreContext);
     const { darkMode } = useContext(DarkModeContext);
-    
+
     // Initialize with default empty product if product is undefined
     const defaultProduct = {
         id: 0,
@@ -32,22 +32,22 @@ const ProductDisplay = (props) => {
 
     const handleMouseMove = (e) => {
         if (!imageRef.current || !zoomRef.current) return;
-        
+
         const rect = imageRef.current.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
-        
+
         // Calculate percentage positions
         const xPercent = (x / rect.width) * 100;
         const yPercent = (y / rect.height) * 100;
-        
+
         setZoomPosition({ x: xPercent, y: yPercent });
-        
+
         // Position the zoom view near the cursor
         const zoomSize = 200;
         let zoomX = e.clientX + 20;
         let zoomY = e.clientY - zoomSize / 2;
-        
+
         // Keep zoom view within viewport
         if (zoomX + zoomSize > window.innerWidth) {
             zoomX = e.clientX - zoomSize - 20;
@@ -58,7 +58,7 @@ const ProductDisplay = (props) => {
         if (zoomY + zoomSize > window.innerHeight) {
             zoomY = window.innerHeight - zoomSize - 10;
         }
-        
+
         zoomRef.current.style.left = `${zoomX}px`;
         zoomRef.current.style.top = `${zoomY}px`;
     };
@@ -83,7 +83,15 @@ const ProductDisplay = (props) => {
     const [productData, setProductData] = useState(product || defaultProduct);
     const [selectedSize, setSelectedSize] = useState(null);
     const [displayPrice, setDisplayPrice] = useState(product?.old_price || 0);
-    
+    const [activeImage, setActiveImage] = useState("");
+
+    // Update active image when product changes
+    useEffect(() => {
+        if (product && product.image) {
+            setActiveImage(product.image);
+        }
+    }, [product]);
+
     const backend_url = process.env.REACT_APP_BACKEND_URL;
 
     // Check if user is authenticated and can review the product
@@ -93,11 +101,11 @@ const ProductDisplay = (props) => {
             setIsLoading(true);
             return;
         }
-        
+
         setIsLoading(false);
         const token = localStorage.getItem('token');
         setIsAuthenticated(!!token);
-        
+
         if (token && product && product.id) {
             // Check if user has purchased this product
             const checkOrderStatus = async () => {
@@ -110,25 +118,25 @@ const ProductDisplay = (props) => {
                         },
                         body: JSON.stringify({ productId: product.id })
                     });
-                    
+
                     if (response.ok) {
                         const data = await response.json();
-                        
+
                         // Check if there's at least one delivered order with this product
-                        const hasDeliveredOrder = data.orders && data.orders.some(order => 
-                            order.status === "Delivered" && 
+                        const hasDeliveredOrder = data.orders && data.orders.some(order =>
+                            order.status === "Delivered" &&
                             order.items.some(item => item.id === product.id)
                         );
-                        
+
                         setCanReview(hasDeliveredOrder);
-                        
+
                         // Check if user already reviewed this product
-                        const hasReviewed = productData && 
-                                          productData.reviews && 
-                                          productData.reviews.some(review => 
-                                            review && review.userId && data.userId && 
-                                            review.userId.toString() === data.userId.toString()
-                                          );
+                        const hasReviewed = productData &&
+                            productData.reviews &&
+                            productData.reviews.some(review =>
+                                review && review.userId && data.userId &&
+                                review.userId.toString() === data.userId.toString()
+                            );
                         setUserReviewed(hasReviewed);
                     } else {
                         console.error("Failed to check order status");
@@ -139,40 +147,40 @@ const ProductDisplay = (props) => {
                     toast.error("Error checking purchase history");
                 }
             };
-            
+
             checkOrderStatus();
         }
     }, [product, backend_url]);
-    
+
     const handleReviewChange = (e) => {
         setReviewForm({
             ...reviewForm,
             [e.target.name]: e.target.value
         });
     };
-    
+
     const handleStarClick = (rating) => {
         setReviewForm({
             ...reviewForm,
             rating
         });
     };
-    
+
     const handleReviewSubmit = async (e) => {
         e.preventDefault();
-        
+
         if (!product || !product.id) {
             toast.error("Product information is missing");
             return;
         }
-        
+
         if (!reviewForm.comment.trim()) {
             toast.error("Please provide a review comment");
             return;
         }
-        
+
         setIsSubmitting(true);
-        
+
         try {
             const token = localStorage.getItem('token');
             const response = await fetch(`${backend_url}/api/products/${product.id}/reviews`, {
@@ -186,14 +194,14 @@ const ProductDisplay = (props) => {
                     comment: reviewForm.comment
                 })
             });
-            
+
             const data = await response.json();
-            
+
             if (response.ok) {
                 toast.success("Your review has been submitted!");
                 setUserReviewed(true);
                 setReviewForm({ rating: 5, comment: '' });
-                
+
                 // Update product data with new review
                 if (data.product) {
                     // First update with the data we already have
@@ -202,7 +210,7 @@ const ProductDisplay = (props) => {
                         averageRating: data.product.averageRating,
                         numReviews: data.product.numReviews
                     }));
-                    
+
                     // Refresh the product data to show the new review
                     try {
                         const productResponse = await fetch(`${backend_url}/api/products/${product.id}`);
@@ -226,16 +234,16 @@ const ProductDisplay = (props) => {
             setIsSubmitting(false);
         }
     };
-    
+
     // Function to render stars based on rating
     const renderStars = (rating) => {
         const stars = [];
         for (let i = 1; i <= 5; i++) {
             stars.push(
-                <img 
-                    key={i} 
-                    src={i <= rating ? star_icon : star_dull_icon} 
-                    alt={`star ${i}`} 
+                <img
+                    key={i}
+                    src={i <= rating ? star_icon : star_dull_icon}
+                    alt={`star ${i}`}
                 />
             );
         }
@@ -269,14 +277,14 @@ const ProductDisplay = (props) => {
         );
     }
 
-    return ( 
+    return (
         <div className={`productdisplay ${darkMode ? 'dark-mode' : ''}`}>
             <div className="productdisplay-left">
                 <div className="productdisplay-img">
-                    <img 
+                    <img
                         ref={imageRef}
-                        className="productdisplay-main-img zoomable-image" 
-                        src={product.image || ''} 
+                        className="productdisplay-main-img zoomable-image"
+                        src={activeImage || product.image || ''}
                         alt={product.name || 'Product'}
                         onMouseMove={handleMouseMove}
                         onMouseEnter={handleMouseEnter}
@@ -284,11 +292,11 @@ const ProductDisplay = (props) => {
                     />
                     {/* Zoom lens - follows mouse cursor */}
                     {isZooming && (
-                        <div 
+                        <div
                             ref={zoomRef}
                             className="zoom-lens"
                             style={{
-                                backgroundImage: `url(${product.image})`,
+                                backgroundImage: `url(${activeImage || product.image})`,
                                 backgroundPosition: `${zoomPosition.x}% ${zoomPosition.y}%`,
                                 backgroundSize: '300%',
                                 backgroundRepeat: 'no-repeat'
@@ -296,6 +304,42 @@ const ProductDisplay = (props) => {
                         />
                     )}
                 </div>
+                {/* Image Gallery */}
+                {(product.additionalImages && product.additionalImages.length > 0) && (
+                    <div className="productdisplay-img-list" style={{ display: 'flex', gap: '10px', marginTop: '10px', overflowX: 'auto', paddingBottom: '5px' }}>
+                        <img
+                            src={product.image}
+                            alt="Main View"
+                            onClick={() => setActiveImage(product.image)}
+                            className={activeImage === product.image ? 'active-thumbnail' : ''}
+                            style={{
+                                width: '70px',
+                                height: '70px',
+                                objectFit: 'cover',
+                                cursor: 'pointer',
+                                border: activeImage === product.image ? '2px solid #ff4141' : '1px solid #ddd',
+                                opacity: activeImage === product.image ? 1 : 0.6
+                            }}
+                        />
+                        {product.additionalImages.map((img, index) => (
+                            <img
+                                key={index}
+                                src={img}
+                                alt={`View ${index + 1}`}
+                                onClick={() => setActiveImage(img)}
+                                className={activeImage === img ? 'active-thumbnail' : ''}
+                                style={{
+                                    width: '70px',
+                                    height: '70px',
+                                    objectFit: 'cover',
+                                    cursor: 'pointer',
+                                    border: activeImage === img ? '2px solid #ff4141' : '1px solid #ddd',
+                                    opacity: activeImage === img ? 1 : 0.6
+                                }}
+                            />
+                        ))}
+                    </div>
+                )}
             </div>
             <div className="productdisplay-right">
                 <h1>{productData?.name || "Product Name"}</h1>
@@ -304,11 +348,11 @@ const ProductDisplay = (props) => {
                     <p>({productData?.numReviews || 0} reviews)</p>
                 </div>
                 <div className="productdisplay-right-prices">
-                   <div className="productdisplay-right-price-new">
-                    PKR {displayPrice.toLocaleString('en-PK')}
-                   </div>
+                    <div className="productdisplay-right-price-new">
+                        PKR {displayPrice.toLocaleString('en-PK')}
+                    </div>
                 </div>
-                
+
                 {/* Size Selection */}
                 {product?.sizes && product.sizes.length > 0 && (
                     <div className="productdisplay-right-sizes" style={{ marginBottom: '20px' }}>
@@ -335,7 +379,7 @@ const ProductDisplay = (props) => {
                         </div>
                     </div>
                 )}
-                
+
                 <div className="productdisplay-right-description">
                     {product?.description || "No description available"}
                 </div>
@@ -349,7 +393,7 @@ const ProductDisplay = (props) => {
                         </p>
                     </div>
                 ) : (
-                    <button 
+                    <button
                         onClick={() => {
                             if (product?.sizes && product.sizes.length > 0 && !selectedSize) {
                                 toast.error("Please select a size");
@@ -362,7 +406,7 @@ const ProductDisplay = (props) => {
                                 selectedPrice: displayPrice
                             };
                             addToCart(product?.id, 1, productWithSize);
-                        }} 
+                        }}
                         className="add-to-cart-btn"
                     >
                         ADD TO CART
@@ -372,7 +416,7 @@ const ProductDisplay = (props) => {
                 {/* Reviews Section */}
                 <div className="productdisplay-reviews">
                     <h2>Customer Reviews</h2>
-                    
+
                     {/* Review Form */}
                     {isAuthenticated ? (
                         canReview && !userReviewed ? (
@@ -383,7 +427,7 @@ const ProductDisplay = (props) => {
                                         <p>Rating:</p>
                                         <div className="star-rating">
                                             {[1, 2, 3, 4, 5].map((star) => (
-                                                <img 
+                                                <img
                                                     key={star}
                                                     src={star <= reviewForm.rating ? star_icon : star_dull_icon}
                                                     alt={`${star} star`}
@@ -405,8 +449,8 @@ const ProductDisplay = (props) => {
                                             rows="4"
                                         ></textarea>
                                     </div>
-                                    <button 
-                                        type="submit" 
+                                    <button
+                                        type="submit"
                                         className="submit-review-btn"
                                         disabled={isSubmitting}
                                     >
@@ -428,7 +472,7 @@ const ProductDisplay = (props) => {
                             <p>Please <a href="/login">login</a> to write a review. Only customers who have purchased this product can leave reviews.</p>
                         </div>
                     )}
-                    
+
                     {/* Reviews List */}
                     {productData.reviews && productData.reviews.length > 0 ? (
                         <div className="reviews-list">
@@ -454,7 +498,7 @@ const ProductDisplay = (props) => {
                 </div>
             </div>
         </div>
-     );
+    );
 }
- 
+
 export default ProductDisplay;
