@@ -22,6 +22,7 @@ const calculateTotalQuantity = (items) => {
 // Status color mapping
 const statusColors = {
   "Ordered": "#f0ad4e",      // Orange
+  "Payment Received": "#9b59b6",  // Purple
   "Shipped": "#5bc0de",      // Blue
   "Out for delivery": "#0275d8", // Primary blue
   "Delivered": "#5cb85c"     // Green
@@ -262,6 +263,7 @@ const ListOrder = () => {
                                             }}
                                         >
                                             <option value="Ordered">Ordered</option>
+                                            <option value="Payment Received">Payment Received</option>
                                             <option value="Shipped">Shipped</option>
                                             <option value="Out for delivery">Out for delivery</option>
                                             <option value="Delivered">Delivered</option>
