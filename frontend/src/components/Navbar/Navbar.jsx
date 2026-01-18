@@ -11,7 +11,7 @@ import profile_icon from './../../assets/profile_icon.png';
 
 const Navbar = () => {
     const [menu, setMenu] = useState("shop");
-    const {getTotalCartItems, all_product} = useContext(StoreContext);
+    const { getTotalCartItems, all_product } = useContext(StoreContext);
     const { darkMode, toggleDarkMode } = useContext(DarkModeContext);
     const menuRef = useRef();
     const searchRef = useRef();
@@ -22,6 +22,7 @@ const Navbar = () => {
     const [showSearchOverlay, setShowSearchOverlay] = useState(false);
     const [categories, setCategories] = useState([]);
     const [showCategoriesDropdown, setShowCategoriesDropdown] = useState(false);
+    const [showMobileCategories, setShowMobileCategories] = useState(true); // Default open for easier access
     const categoriesRef = useRef(null);
     const dropdownTimeoutRef = useRef(null);
     const { pathname } = useLocation();
@@ -57,7 +58,7 @@ const Navbar = () => {
         setShowMobileSearch(false);
         setShowSearchOverlay(false);
     }
-    
+
     // Add scroll to top function
     const scrollToTop = () => {
         window.scrollTo({
@@ -66,29 +67,29 @@ const Navbar = () => {
         });
     }
 
-    const logout=()=>{
+    const logout = () => {
         localStorage.removeItem('token');
         window.location.replace('/');
     }
 
     const navigate = useNavigate();
-    
+
     // Filter products as user types
     useEffect(() => {
         if (searchTerm.trim() === "") {
             setSearchResults([]);
             return;
         }
-        
+
         const filtered = all_product
-            .filter(product => 
+            .filter(product =>
                 product.name.toLowerCase().includes(searchTerm.toLowerCase())
             )
             .slice(0, 5); // Limit to 5 results
-            
+
         setSearchResults(filtered);
     }, [searchTerm, all_product]);
-    
+
     // Close search results when clicking outside
     // Close search results when clicking outside
     useEffect(() => {
@@ -97,10 +98,10 @@ const Navbar = () => {
             if (!event.target.closest('.nav-menu') && !event.target.closest('.nav-hamburger')) {
                 if (searchRef.current && !searchRef.current.contains(event.target)) {
                     setShowResults(false);
-                    
+
                     // Add mobile search handling
                     // Only close if clicking outside search area and not clicking the search icon
-                    if (!event.target.closest('.mobile-search-icon') && 
+                    if (!event.target.closest('.mobile-search-icon') &&
                         !event.target.closest('.search-input-container')) {
                         setShowMobileSearch(false);
                         setShowSearchOverlay(false);
@@ -109,20 +110,20 @@ const Navbar = () => {
                 }
             }
         };
-        
+
         document.addEventListener("mousedown", handleClickOutsideSearch);
         return () => {
             document.removeEventListener("mousedown", handleClickOutsideSearch);
         };
     }, []);
-    
+
     // Close hamburger menu when clicking outside
     useEffect(() => {
         const handleClickOutsideMenu = (event) => {
             // Check if menu is visible and click is outside menu and hamburger button
             if (
-                menuRef.current?.classList.contains('nav-menu-visible') && 
-                !menuRef.current.contains(event.target) && 
+                menuRef.current?.classList.contains('nav-menu-visible') &&
+                !menuRef.current.contains(event.target) &&
                 !event.target.closest('.nav-hamburger')
             ) {
                 menuRef.current.classList.remove('nav-menu-visible');
@@ -134,7 +135,7 @@ const Navbar = () => {
             document.removeEventListener('mousedown', handleClickOutsideMenu);
         };
     }, []);
-    
+
     // Handle search result click
     const handleProductClick = (productId) => {
         navigate(`/product/${productId}`);
@@ -165,7 +166,7 @@ const Navbar = () => {
             handleSearchSubmit(e);
         }
     };
-    
+
     // Handler for menu item clicks
     const handleMenuClick = (menuType) => {
         setMenu(menuType);
@@ -175,7 +176,7 @@ const Navbar = () => {
         setShowMobileSearch(false);
         setShowSearchOverlay(false);
     };
-    
+
     // Toggle mobile search
     const toggleMobileSearch = () => {
         setShowMobileSearch(!showMobileSearch);
@@ -187,7 +188,7 @@ const Navbar = () => {
         // Close hamburger menu if it's open
         menuRef.current.classList.remove('nav-menu-visible');
     };
-    
+
     // Handle overlay click
     const handleOverlayClick = () => {
         setShowMobileSearch(false);
@@ -203,13 +204,13 @@ const Navbar = () => {
             </div>
             <div className='navbar'>
                 <div className="nav-logo">
-                    <Link to="/" style={{textDecoration: 'none'}}>
+                    <Link to="/" style={{ textDecoration: 'none' }}>
                         <p>TBS-Thrift & Budget Store</p>
                     </Link>
                 </div>
-                
+
                 <img className="nav-hamburger" onClick={hamburger_toggle} src={darkMode ? hamburgerWhite : hamburger} alt="menu" />
-                
+
                 <ul ref={menuRef} className="nav-menu">
                     {/* Desktop: Shop dropdown with all categories */}
                     <li
@@ -225,7 +226,7 @@ const Navbar = () => {
                             }, 200);
                         }}
                     >
-                        <span className={`nav-categories-trigger ${currentCategory ? 'active' : ''}`}>Shop</span>
+                        <span className={`nav-categories-trigger ${currentCategory ? 'active' : ''}`}>Categories</span>
                         {showCategoriesDropdown && (
                             <div className="nav-categories-dropdown">
                                 {categories.length === 0 ? (
@@ -247,39 +248,50 @@ const Navbar = () => {
                         )}
                     </li>
                     {/* Mobile: full list of categories */}
-                    {categories.map((cat) => (
-                        <li
-                            key={cat._id}
-                            className="nav-categories-mobile-item"
-                            onClick={() => handleMenuClick(cat.slug)}
-                        >
-                            <Link
-                                to={`/${cat.slug}`}
-                                style={{ textDecoration: 'none' }}
-                                className={currentCategory?.slug === cat.slug ? 'active' : ''}
+                    {/* Mobile: Collapsible Categories Menu */}
+                    <li
+                        className="nav-categories-mobile-trigger"
+                        onClick={() => setShowMobileCategories(!showMobileCategories)}
+                    >
+                        <span>Categories</span>
+                        <span className={`mobile-dropdown-arrow ${showMobileCategories ? 'open' : ''}`}>▼</span>
+                    </li>
+
+                    <div className={`nav-categories-mobile-container ${showMobileCategories ? 'open' : ''}`}>
+                        {categories.map((cat) => (
+                            <li
+                                key={cat._id}
+                                className="nav-categories-mobile-item"
+                                onClick={() => handleMenuClick(cat.slug)}
                             >
-                                {cat.name}
-                            </Link>
-                        </li>
-                    ))}
+                                <Link
+                                    to={`/${cat.slug}`}
+                                    style={{ textDecoration: 'none' }}
+                                    className={currentCategory?.slug === cat.slug ? 'active' : ''}
+                                >
+                                    {cat.name}
+                                </Link>
+                            </li>
+                        ))}
+                    </div>
                 </ul>
                 <div className="nav-search" ref={searchRef}>
                     {/* Mobile search icon */}
-                    <div 
-                        className="mobile-search-icon" 
+                    <div
+                        className="mobile-search-icon"
                         onClick={toggleMobileSearch}
                         title="Search"
                     ></div>
-                    
+
                     {/* Search overlay */}
                     {showSearchOverlay && (
                         <div className="search-overlay" onClick={handleOverlayClick}></div>
                     )}
-                    
+
                     <form onSubmit={handleSearchSubmit} className={`search-input-container ${showMobileSearch ? 'show-mobile' : ''}`}>
-                        <input 
-                            type="text" 
-                            placeholder="Search & press Enter..." 
+                        <input
+                            type="text"
+                            placeholder="Search & press Enter..."
                             value={searchTerm}
                             onChange={(e) => {
                                 setSearchTerm(e.target.value);
@@ -288,18 +300,18 @@ const Navbar = () => {
                             onFocus={() => setShowResults(true)}
                             onKeyPress={handleKeyPress}
                         />
-                        <div 
-                            className="search-icon" 
+                        <div
+                            className="search-icon"
                             onClick={handleSearchSubmit}
                             title="Search"
                         ></div>
                     </form>
-                    
+
                     {showResults && searchResults.length > 0 && (
                         <ul className="search-results">
                             {searchResults.map((item) => (
-                                <li 
-                                    key={item.id} 
+                                <li
+                                    key={item.id}
                                     onClick={() => handleProductClick(item.id)}
                                 >
                                     <div className="search-result-item">
@@ -311,42 +323,42 @@ const Navbar = () => {
                         </ul>
                     )}
                 </div>
-                
+
                 <div className="nav-login-cart">
-                <div className="dark-mode-toggle" onClick={toggleDarkMode} title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}>
-                    {darkMode ? (
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <circle cx="12" cy="12" r="5"></circle>
-                            <line x1="12" y1="1" x2="12" y2="3"></line>
-                            <line x1="12" y1="21" x2="12" y2="23"></line>
-                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                            <line x1="1" y1="12" x2="3" y2="12"></line>
-                            <line x1="21" y1="12" x2="23" y2="12"></line>
-                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                        </svg>
-                    ) : (
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                        </svg>
-                    )}
-                </div>
-                {!localStorage.getItem('token')?<Link to="/login"><button>Login</button></Link>:
-                <div className='navbar-profile'>
-                    <img src={profile_icon} alt="" />
-                    <ul className="nav-profile-dropdown">
-                       <li onClick={()=>{navigate("/myorders"); scrollToTop();}}>Orders</li>
-                       <hr />
-                       <li onClick={logout}>Logout</li>
-                    </ul>
-                </div>}
-                <Link to="/cart" onClick={scrollToTop}><img src={cart_icon} alt="" /></Link>
-                <div className="nav-cart-count">{getTotalCartItems()}</div>
+                    <div className="dark-mode-toggle" onClick={toggleDarkMode} title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}>
+                        {darkMode ? (
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <circle cx="12" cy="12" r="5"></circle>
+                                <line x1="12" y1="1" x2="12" y2="3"></line>
+                                <line x1="12" y1="21" x2="12" y2="23"></line>
+                                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                                <line x1="1" y1="12" x2="3" y2="12"></line>
+                                <line x1="21" y1="12" x2="23" y2="12"></line>
+                                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                            </svg>
+                        ) : (
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                            </svg>
+                        )}
+                    </div>
+                    {!localStorage.getItem('token') ? <Link to="/login"><button>Login</button></Link> :
+                        <div className='navbar-profile'>
+                            <img src={profile_icon} alt="" />
+                            <ul className="nav-profile-dropdown">
+                                <li onClick={() => { navigate("/myorders"); scrollToTop(); }}>Orders</li>
+                                <hr />
+                                <li onClick={logout}>Logout</li>
+                            </ul>
+                        </div>}
+                    <Link to="/cart" onClick={scrollToTop}><img src={cart_icon} alt="" /></Link>
+                    <div className="nav-cart-count">{getTotalCartItems()}</div>
                 </div>
             </div>
         </div>
-     );
+    );
 }
 
 export default Navbar;
