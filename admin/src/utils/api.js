@@ -10,10 +10,10 @@ const getAuthHeaders = () => {
 // Generic API call function
 export const apiCall = async (endpoint, options = {}) => {
   const url = `${backend_url}${endpoint}`;
-  
+
   // Don't set Content-Type for FormData, let browser handle it
   const isFormData = options.body instanceof FormData;
-  
+
   const defaultOptions = {
     headers: {
       ...(!isFormData && { 'Content-Type': 'application/json' }),
@@ -23,7 +23,7 @@ export const apiCall = async (endpoint, options = {}) => {
   };
 
   const finalOptions = { ...defaultOptions, ...options };
-  
+
   try {
     const response = await fetch(url, finalOptions);
     return response;
@@ -43,14 +43,14 @@ export const api = {
 
   // Products management
   getProducts: () => apiCall('/api/products'),
-  
+
   searchProducts: (searchQuery, category) => {
     const params = new URLSearchParams();
     if (searchQuery) params.append('query', searchQuery);
     if (category) params.append('category', category);
     return apiCall(`/api/products/search?${params.toString()}`);
   },
-  
+
   getProductSuggestions: (searchQuery, category, limit = 10) => {
     const params = new URLSearchParams();
     if (searchQuery) params.append('query', searchQuery);
@@ -58,7 +58,7 @@ export const api = {
     params.append('limit', limit);
     return apiCall(`/api/products/suggestions?${params.toString()}`);
   },
-  
+
   addProduct: (formData) => apiCall('/api/products', {
     method: 'POST',
     body: formData
@@ -79,7 +79,7 @@ export const api = {
 
   // Orders management
   getOrders: () => apiCall('/api/orders'),
-  
+
   updateOrderStatus: (orderId, status) => apiCall(`/api/orders/status`, {
     method: 'POST',
     body: JSON.stringify({ orderId, status })
@@ -91,7 +91,7 @@ export const api = {
 
   // Coupons management
   getCoupons: () => apiCall('/api/coupons'),
-  
+
   createCoupon: (couponData) => apiCall('/api/coupons', {
     method: 'POST',
     body: JSON.stringify(couponData)
@@ -108,7 +108,7 @@ export const api = {
 
   // Messages management
   getMessages: () => apiCall('/api/messages'),
-  
+
   updateMessageStatus: (id, status) => apiCall(`/api/messages/${id}`, {
     method: 'PATCH',
     body: JSON.stringify({ status })
@@ -120,7 +120,7 @@ export const api = {
 
   // Reviews management
   getReviews: () => apiCall('/api/reviews'),
-  
+
   approveReview: (id) => apiCall(`/api/reviews/${id}/approve`, {
     method: 'PUT'
   }),
@@ -131,7 +131,7 @@ export const api = {
 
   // Subscribers management
   getSubscribers: () => apiCall('/api/subscribers'),
-  
+
   deleteSubscriber: (id) => apiCall(`/api/subscribers/${id}`, {
     method: 'DELETE'
   }),
@@ -147,7 +147,7 @@ export const api = {
   getCategories: () => apiCall('/api/categories'),
   // Categories - admin (all including inactive, for ManageCategories, requires auth)
   getCategoriesAdmin: () => apiCall('/api/categories/admin/all'),
-  
+
   createCategory: (categoryData) => apiCall('/api/categories', {
     method: 'POST',
     body: JSON.stringify(categoryData)
@@ -160,7 +160,14 @@ export const api = {
 
   deleteCategory: (id) => apiCall(`/api/categories/${id}`, {
     method: 'DELETE'
-  })
+  }),
+
+  // Cloudinary Images
+  getCloudinaryImages: (cursor) => {
+    const params = new URLSearchParams();
+    if (cursor) params.append('next_cursor', cursor);
+    return apiCall(`/api/products/images?${params.toString()}`);
+  }
 };
 
 // Export backend URL for direct use if needed

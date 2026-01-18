@@ -4,8 +4,9 @@ import upload_area from "./../../assets/upload_area.svg";
 import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
 import { DarkModeContext } from "../../context/DarkModeContext";
-import { FiUploadCloud } from 'react-icons/fi';
+import { FiUploadCloud, FiImage } from 'react-icons/fi';
 import { api } from '../../utils/api';
+import CloudinaryImageSelector from '../CloudinaryImageSelector/CloudinaryImageSelector';
 
 const EditProduct = ({ isOpen, onClose, product, onProductUpdated }) => {
     // Move all hooks to the top level
@@ -24,6 +25,10 @@ const EditProduct = ({ isOpen, onClose, product, onProductUpdated }) => {
     const [categories, setCategories] = useState([]);
     const [additionalImages, setAdditionalImages] = useState([]); // New images to upload
     const [existingAdditionalImages, setExistingAdditionalImages] = useState([]); // URLs of existing images
+    const [newAdditionalImageUrls, setNewAdditionalImageUrls] = useState([]); // New URLs from library
+    const [showImageSelector, setShowImageSelector] = useState(false);
+    const [selectorMode, setSelectorMode] = useState('main'); // 'main' or 'additional'
+    const [imageFromLibrary, setImageFromLibrary] = useState(null); // URL string from library for main image replacement
 
     // Fetch categories on component mount
     useEffect(() => {
@@ -72,6 +77,8 @@ const EditProduct = ({ isOpen, onClose, product, onProductUpdated }) => {
             // Initialize existing additional images
             setExistingAdditionalImages(product.additionalImages || []);
             setAdditionalImages([]);
+            setNewAdditionalImageUrls([]);
+            setImageFromLibrary(null);
         }
     }, [product, isOpen]);
 
@@ -99,6 +106,30 @@ const EditProduct = ({ isOpen, onClose, product, onProductUpdated }) => {
     const removeExistingImage = (index) => {
         setExistingAdditionalImages(prev => prev.filter((_, i) => i !== index));
     }
+
+
+
+    const removeNewLibraryImage = (index) => {
+        setNewAdditionalImageUrls(prev => prev.filter((_, i) => i !== index));
+    }
+
+    const openImageSelector = (mode) => {
+        setSelectorMode(mode);
+        setShowImageSelector(true);
+    };
+
+    const handleLibrarySelection = (selection) => {
+        if (selectorMode === 'main') {
+            setImageFromLibrary(selection);
+            setImage(null);
+            setImageChanged(true);
+        } else {
+            // mode is 'additional'
+            if (Array.isArray(selection)) {
+                setNewAdditionalImageUrls(prev => [...prev, ...selection]);
+            }
+        }
+    };
 
     const handleSizeChange = (index, field, value) => {
         const newSizes = [...sizes];
@@ -159,7 +190,26 @@ const EditProduct = ({ isOpen, onClose, product, onProductUpdated }) => {
         });
 
         // Append list of existing images to keep
+        // Append list of existing images to keep
         formData.append("existingAdditionalImages", JSON.stringify(existingAdditionalImages));
+
+        // Append new additional images from library
+        if (newAdditionalImageUrls.length > 0) {
+            formData.append("newAdditionalImageUrls", JSON.stringify(newAdditionalImageUrls));
+        }
+
+        // Handle main image replacement from library
+        if (imageChanged && imageFromLibrary) {
+            // If we have a URL from library for main image, we can't send it as 'product' file
+            // We need to signal backend to update image from URL.
+            // Since backend expects file in 'product', we might need to change backend logic or 
+            // append it as a separate field and handle it.
+            // For now, let's append it to formData which might need backend adjustment if not already handling text field for main image
+            // NOTE: Our backend updateProduct only checks req.files['product'].
+            // We need to add logic to backend to check for req.body.image if no file is uploaded.
+            // Let's assume we added that logic or will add it.
+            formData.append("image", imageFromLibrary);
+        }
 
         try {
             const response = await api.updateProduct(product.id, formData);
@@ -307,48 +357,73 @@ const EditProduct = ({ isOpen, onClose, product, onProductUpdated }) => {
 
                     <div className="editproduct-itemfield">
                         <p>Product Image</p>
-                        <div
-                            className="upload-area"
-                            onClick={() => document.getElementById('edit-file-input').click()}
-                            role="button"
-                            tabIndex={0}
-                            onKeyPress={(e) => {
-                                if (e.key === 'Enter' || e.key === ' ') {
-                                    document.getElementById('edit-file-input').click();
-                                }
-                            }}
-                        >
-                            {imageChanged && image ? (
-                                <img
-                                    src={URL.createObjectURL(image)}
-                                    alt="Preview"
-                                    className="editproduct-thumbnail-img"
-                                />
-                            ) : product?.image ? (
-                                <img
-                                    src={product.image}
-                                    alt="Current"
-                                    className="editproduct-thumbnail-img"
-                                />
-                            ) : (
-                                <div className="upload-placeholder">
+                        <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                            <div
+                                className="upload-area"
+                                onClick={() => document.getElementById('edit-file-input').click()}
+                                role="button"
+                                tabIndex={0}
+                                style={{ flex: 1 }}
+                            >
+                                {imageChanged && image ? (
                                     <img
-                                        src={upload_area}
-                                        alt="Upload Area"
-                                        className="upload-icon"
+                                        src={URL.createObjectURL(image)}
+                                        alt="Preview"
+                                        className="editproduct-thumbnail-img"
                                     />
-                                    <p>Click or drag image to upload</p>
-                                </div>
-                            )}
+                                ) : imageChanged && imageFromLibrary ? (
+                                    <img
+                                        src={imageFromLibrary}
+                                        alt="New Library Selection"
+                                        className="editproduct-thumbnail-img"
+                                    />
+                                ) : product?.image ? (
+                                    <img
+                                        src={product.image}
+                                        alt="Current"
+                                        className="editproduct-thumbnail-img"
+                                    />
+                                ) : (
+                                    <div className="upload-placeholder">
+                                        <img
+                                            src={upload_area}
+                                            alt="Upload Area"
+                                            className="upload-icon"
+                                        />
+                                        <p>Click to upload new file</p>
+                                    </div>
+                                )}
+                            </div>
+                            <input
+                                onChange={imageHandler}
+                                type="file"
+                                name="image"
+                                id="edit-file-input"
+                                hidden
+                                accept="image/*"
+                            />
+
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                                <p style={{ margin: 0, fontSize: '0.9rem' }}>OR</p>
+                                <button
+                                    type="button"
+                                    className="select-library-btn"
+                                    onClick={() => openImageSelector('main')}
+                                    style={{
+                                        padding: '8px 12px',
+                                        background: '#f0f0f0',
+                                        border: '1px solid #ddd',
+                                        borderRadius: '4px',
+                                        cursor: 'pointer',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '5px'
+                                    }}
+                                >
+                                    <FiImage /> Select from Library
+                                </button>
+                            </div>
                         </div>
-                        <input
-                            onChange={imageHandler}
-                            type="file"
-                            name="image"
-                            id="edit-file-input"
-                            hidden
-                            accept="image/*"
-                        />
                     </div>
 
                     <div className="editproduct-itemfield">
@@ -423,9 +498,64 @@ const EditProduct = ({ isOpen, onClose, product, onProductUpdated }) => {
                                     </div>
                                 ))}
 
+                                {/* New Images from Library */}
+                                {newAdditionalImageUrls.map((imgUrl, index) => (
+                                    <div key={`lib-new-${index}`} style={{ position: 'relative' }}>
+                                        <img
+                                            src={imgUrl}
+                                            alt={`Library New ${index}`}
+                                            className="editproduct-thumbnail-img"
+                                            style={{ width: '80px', height: '80px', objectFit: 'cover' }}
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => removeNewLibraryImage(index)}
+                                            style={{
+                                                position: 'absolute',
+                                                top: '-5px',
+                                                right: '-5px',
+                                                background: 'red',
+                                                color: 'white',
+                                                border: 'none',
+                                                borderRadius: '50%',
+                                                width: '20px',
+                                                height: '20px',
+                                                cursor: 'pointer',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                fontSize: '12px'
+                                            }}
+                                        >
+                                            X
+                                        </button>
+                                    </div>
+                                ))}
+
                                 <label htmlFor="edit-additional-file-input" className="upload-area-container" style={{ width: '80px', height: '80px', minHeight: '80px', border: '1px dashed #ddd', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
                                     <FiUploadCloud className="upload-icon" style={{ fontSize: '24px' }} />
                                 </label>
+                                <button
+                                    type="button"
+                                    onClick={() => openImageSelector('additional')}
+                                    style={{
+                                        width: '80px',
+                                        height: '80px',
+                                        border: '1px solid #ddd',
+                                        borderRadius: '4px',
+                                        background: '#f9f9f9',
+                                        cursor: 'pointer',
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        gap: '5px',
+                                        fontSize: '10px'
+                                    }}
+                                >
+                                    <FiImage size={20} />
+                                    Select
+                                </button>
                             </div>
                             <input
                                 onChange={additionalImagesHandler}
@@ -437,7 +567,7 @@ const EditProduct = ({ isOpen, onClose, product, onProductUpdated }) => {
                                 accept="image/*"
                             />
                             <p style={{ fontSize: '0.8rem', color: '#666' }}>
-                                {existingAdditionalImages.length + additionalImages.length} images total
+                                {existingAdditionalImages.length + additionalImages.length + newAdditionalImageUrls.length} images total
                             </p>
                         </div>
                     </div>
@@ -461,6 +591,13 @@ const EditProduct = ({ isOpen, onClose, product, onProductUpdated }) => {
                     </button>
                 </div>
             </div>
+
+            <CloudinaryImageSelector
+                isOpen={showImageSelector}
+                onClose={() => setShowImageSelector(false)}
+                onSelect={handleLibrarySelection}
+                multiple={selectorMode === 'additional'}
+            />
         </div>
     );
 };

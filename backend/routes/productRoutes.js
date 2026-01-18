@@ -22,6 +22,7 @@ const upload = multer({ storage: storage });
 router.get("/", productController.getAllProducts);
 router.get("/search", productController.searchProducts);
 router.get("/suggestions", productController.getProductSuggestions);
+router.get("/images", authMiddleware, adminMiddleware, productController.getCloudinaryImages);
 router.post("/", authMiddleware, upload.fields([{ name: 'product', maxCount: 1 }, { name: 'additionalImages', maxCount: 10 }]), productController.createProduct);
 router.delete("/:id", authMiddleware, adminMiddleware, productController.deleteProduct);
 router.patch("/:id", authMiddleware, adminMiddleware, upload.fields([{ name: 'product', maxCount: 1 }, { name: 'additionalImages', maxCount: 10 }]), productController.updateProduct);

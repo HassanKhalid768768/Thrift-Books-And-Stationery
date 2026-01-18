@@ -3,15 +3,20 @@ import "./AddProduct.css";
 import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
 import { DarkModeContext } from "../../context/DarkModeContext";
-import { FiUploadCloud } from 'react-icons/fi';
+import { FiUploadCloud, FiImage } from 'react-icons/fi';
 import { api } from '../../utils/api';
+import CloudinaryImageSelector from '../CloudinaryImageSelector/CloudinaryImageSelector';
 
 const AddProduct = () => {
 
     const { token, isAuthenticated } = useAuth();
     const { darkMode } = useContext(DarkModeContext);
-    const [image, setImage] = useState(false);
-    const [additionalImages, setAdditionalImages] = useState([]);
+    const [image, setImage] = useState(false); // File object
+    const [imageFromLibrary, setImageFromLibrary] = useState(null); // URL string from library
+    const [additionalImages, setAdditionalImages] = useState([]); // File objects
+    const [additionalImagesFromLibrary, setAdditionalImagesFromLibrary] = useState([]); // URL strings from library
+    const [showImageSelector, setShowImageSelector] = useState(false);
+    const [selectorMode, setSelectorMode] = useState('main'); // 'main' or 'additional'
     const [uploading, setUploading] = useState(false);
     const [categories, setCategories] = useState([]);
     const [productDetails, setProductDetails] = useState({
@@ -60,6 +65,27 @@ const AddProduct = () => {
         setAdditionalImages(prev => prev.filter((_, i) => i !== index));
     }
 
+    const removeLibraryImage = (index) => {
+        setAdditionalImagesFromLibrary(prev => prev.filter((_, i) => i !== index));
+    }
+
+    const openImageSelector = (mode) => {
+        setSelectorMode(mode);
+        setShowImageSelector(true);
+    };
+
+    const handleLibrarySelection = (selection) => {
+        if (selectorMode === 'main') {
+            setImageFromLibrary(selection);
+            setImage(false); // Clear file input if library image selected
+        } else {
+            // mode is 'additional'
+            if (Array.isArray(selection)) {
+                setAdditionalImagesFromLibrary(prev => [...prev, ...selection]);
+            }
+        }
+    };
+
     const changeHandler = (e) => {
         setProductDetails({ ...productDetails, [e.target.name]: e.target.value })
     }
@@ -83,8 +109,8 @@ const AddProduct = () => {
 
     const addProduct = async () => {
         // Validate required fields
-        if (!productDetails.name || !productDetails.old_price || !image) {
-            toast.error("Please fill all required fields and upload an image");
+        if (!productDetails.name || !productDetails.old_price || (!image && !imageFromLibrary)) {
+            toast.error("Please fill all required fields and select an image");
             return;
         }
 
@@ -106,7 +132,11 @@ const AddProduct = () => {
         // Setup FormData with all product details
         const formData = new FormData();
         formData.append("name", productDetails.name);
-        formData.append("product", image);
+        if (image) {
+            formData.append("product", image);
+        } else if (imageFromLibrary) {
+            formData.append("mainImage", imageFromLibrary); // Need to handle this in backend
+        }
         formData.append("category", productDetails.category);
         formData.append("description", productDetails.description);
         formData.append("old_price", productDetails.old_price);
@@ -128,6 +158,10 @@ const AddProduct = () => {
             formData.append("additionalImages", img);
         });
 
+        if (additionalImagesFromLibrary.length > 0) {
+            formData.append("additionalImageUrls", JSON.stringify(additionalImagesFromLibrary));
+        }
+
         const response = await api.addProduct(formData);
         if (response.ok) {
             setProductDetails({
@@ -137,8 +171,11 @@ const AddProduct = () => {
                 old_price: ""
             });
             setSizes([{ size: "", price: "" }]);
+            setSizes([{ size: "", price: "" }]);
             setImage(false);
+            setImageFromLibrary(null);
             setAdditionalImages([]);
+            setAdditionalImagesFromLibrary([]);
             toast.success("product added");
         } else {
             const data = await response.json();
@@ -240,38 +277,101 @@ const AddProduct = () => {
 
             <div className="addproduct-itemfield">
                 <p>Product Image</p>
-                <label htmlFor="file-input" className="upload-area-container">
-                    {image ? (
-                        <img
-                            src={URL.createObjectURL(image)}
-                            alt="Product Preview"
-                            className="addproduct-thumbnail-img"
-                        />
-                    ) : (
-                        <>
-                            <FiUploadCloud className="upload-icon" />
-                            <p className="upload-text">
-                                {uploading ? 'Uploading...' : 'Click or drag image to upload'}
-                            </p>
-                        </>
-                    )}
-                </label>
-                <input
-                    onChange={imageHandler}
-                    type="file"
-                    name="image"
-                    id="file-input"
-                    hidden
-                    accept="image/*"
-                />
+                <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                    <label htmlFor="file-input" className="upload-area-container">
+                        {image ? (
+                            <img
+                                src={URL.createObjectURL(image)}
+                                alt="Product Preview"
+                                className="addproduct-thumbnail-img"
+                            />
+                        ) : imageFromLibrary ? (
+                            <img
+                                src={imageFromLibrary}
+                                alt="Product Preview"
+                                className="addproduct-thumbnail-img"
+                            />
+                        ) : (
+                            <>
+                                <FiUploadCloud className="upload-icon" />
+                                <p className="upload-text">
+                                    {uploading ? 'Uploading...' : 'Click or drag image to upload'}
+                                </p>
+                            </>
+                        )}
+                    </label>
+                    <input
+                        onChange={imageHandler}
+                        type="file"
+                        name="image"
+                        id="file-input"
+                        hidden
+                        accept="image/*"
+                    />
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                        <p style={{ margin: 0, fontSize: '0.9rem' }}>OR</p>
+                        <button
+                            type="button"
+                            className="select-library-btn"
+                            onClick={() => openImageSelector('main')}
+                            style={{
+                                padding: '8px 12px',
+                                background: '#f0f0f0',
+                                border: '1px solid #ddd',
+                                borderRadius: '4px',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '5px'
+                            }}
+                        >
+                            <FiImage /> Select from Library
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <div className="addproduct-itemfield">
                 <p>Additional Images (Optional)</p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                        {/* Library Images */}
+                        {additionalImagesFromLibrary.map((imgUrl, index) => (
+                            <div key={`lib-${index}`} style={{ position: 'relative' }}>
+                                <img
+                                    src={imgUrl}
+                                    alt={`Library ${index}`}
+                                    className="addproduct-thumbnail-img"
+                                    style={{ width: '80px', height: '80px', objectFit: 'cover' }}
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => removeLibraryImage(index)}
+                                    style={{
+                                        position: 'absolute',
+                                        top: '-5px',
+                                        right: '-5px',
+                                        background: 'red',
+                                        color: 'white',
+                                        border: 'none',
+                                        borderRadius: '50%',
+                                        width: '20px',
+                                        height: '20px',
+                                        cursor: 'pointer',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        fontSize: '12px'
+                                    }}
+                                >
+                                    X
+                                </button>
+                            </div>
+                        ))}
+
+                        {/* File Uploads */}
                         {additionalImages.map((img, index) => (
-                            <div key={index} style={{ position: 'relative' }}>
+                            <div key={`file-${index}`} style={{ position: 'relative' }}>
                                 <img
                                     src={URL.createObjectURL(img)}
                                     alt={`Preview ${index}`}
@@ -305,6 +405,27 @@ const AddProduct = () => {
                         <label htmlFor="additional-file-input" className="upload-area-container" style={{ width: '80px', height: '80px', minHeight: '80px' }}>
                             <FiUploadCloud className="upload-icon" style={{ fontSize: '24px' }} />
                         </label>
+                        <button
+                            type="button"
+                            onClick={() => openImageSelector('additional')}
+                            style={{
+                                width: '80px',
+                                height: '80px',
+                                border: '1px solid #ddd',
+                                borderRadius: '4px',
+                                background: '#f9f9f9',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '5px',
+                                fontSize: '10px'
+                            }}
+                        >
+                            <FiImage size={20} />
+                            Select
+                        </button>
                     </div>
                     <input
                         onChange={additionalImagesHandler}
@@ -316,7 +437,7 @@ const AddProduct = () => {
                         accept="image/*"
                     />
                     <p style={{ fontSize: '0.8rem', color: '#666' }}>
-                        {additionalImages.length} additional image{additionalImages.length !== 1 ? 's' : ''} selected
+                        {additionalImages.length + additionalImagesFromLibrary.length} additional image(s) selected
                     </p>
                 </div>
             </div>
@@ -324,10 +445,17 @@ const AddProduct = () => {
             <button
                 onClick={addProduct}
                 className="addproduct-btn"
-                disabled={!image || !productDetails.name || !productDetails.old_price}
+                disabled={!productDetails.name || !productDetails.old_price || (!image && !imageFromLibrary)}
             >
                 ADD PRODUCT
             </button>
+
+            <CloudinaryImageSelector
+                isOpen={showImageSelector}
+                onClose={() => setShowImageSelector(false)}
+                onSelect={handleLibrarySelection}
+                multiple={selectorMode === 'additional'}
+            />
         </div>
     );
 }

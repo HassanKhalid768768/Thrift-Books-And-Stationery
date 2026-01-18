@@ -664,3 +664,22 @@ exports.toggleProductAvailability = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.getCloudinaryImages = async (req, res, next) => {
+  try {
+    console.log('getCloudinaryImages - Request received');
+    const { next_cursor } = req.query;
+    // Fetch images (resource_type: image)
+    const result = await cloudinary.api.resources({
+      type: 'upload',
+      resource_type: 'image',
+      max_results: 30,
+      next_cursor: next_cursor
+    });
+    console.log('getCloudinaryImages - Fetched resources count:', result.resources ? result.resources.length : 'No resources field');
+    res.status(200).json(result);
+  } catch (err) {
+    console.error("Error fetching Cloudinary images:", err);
+    next(err);
+  }
+};
