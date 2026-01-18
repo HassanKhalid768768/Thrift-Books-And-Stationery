@@ -34,7 +34,7 @@ const allowedOrigins = [
   process.env.ADMIN_URL,
   "http://localhost:3000",
   "http://localhost:3001"
-].filter(Boolean); // Remove any undefined values
+].filter(Boolean).map(url => url.replace(/\/$/, "")); // Remove trailing slashes
 
 // Debug: Log the allowed origins
 console.log('Allowed CORS origins:', allowedOrigins);

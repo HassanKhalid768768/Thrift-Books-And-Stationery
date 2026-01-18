@@ -1,7 +1,6 @@
 const Product = require("./../models/productModel");
 const Order = require("./../models/orderModel");
 const fs = require("fs");
-require("dotenv").config({ path: "./config.env" });
 const cloudinary = require("./../utils/cloudinary");
 const { normalizeCategory, categoriesMatch, isValidCategory, getValidCategories } = require('./../utils/categoryUtils');
 
