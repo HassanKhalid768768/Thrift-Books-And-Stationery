@@ -578,30 +578,72 @@ body {
 
 .nav-profile-dropdown {
     position: absolute;
-    display: none;
-    top: 100%;
+    top: calc(100% + 5px);
     right: 0;
-    z-index: 1005;
-    /* Increased z-index to appear above fixed header */
-    gap: 10px;
+    z-index: 10005;
     background-color: #fff;
-    padding: 12px 25px;
-    border-radius: 4px;
-    border: 1px solid tomato;
+    padding: 0;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
     list-style: none;
-    outline: none;
-    cursor: pointer;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    min-width: 150px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    min-width: 200px;
+    overflow: hidden;
+
+    /* Hover delay logic */
+    display: block;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition-delay: 0.4s;
+    /* Delay when moving mouse AWAY - prevents accidental closure */
 }
 
 /* Show dropdown on hover */
 .navbar-profile:hover .nav-profile-dropdown {
-    display: block;
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
+    transition-delay: 0s;
+}
+
+/* Show dropdown immediately on active state (click) */
+.nav-profile-dropdown.active {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateY(0) !important;
+    pointer-events: auto !important;
+    transition: none !important;
 }
 
 .nav-profile-dropdown li {
+    padding: 12px 20px;
     cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.nav-profile-dropdown li:hover {
+    background-color: #fbfbfb;
+    color: tomato;
+}
+
+.dark-mode .nav-profile-dropdown li {
+    color: #f5f5f5;
+}
+
+.dark-mode .nav-profile-dropdown li:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #ff6347;
 }
 
 .dark-mode .navbar-profile:hover .nav-profile-dropdown {
@@ -1207,8 +1249,21 @@ body {
 
     /* Improve mobile profile dropdown */
     .nav-profile-dropdown {
-        right: -15px;
-        width: 200px;
+        right: -10px;
+        width: 250px;
+        padding: 5px 0;
+    }
+
+    .nav-profile-info {
+        padding: 12px 15px;
+    }
+
+    .profile-name,
+    .profile-email {
+        white-space: normal !important;
+        word-break: break-word !important;
+        text-overflow: initial !important;
+        overflow: visible !important;
     }
 
     .dark-mode .nav-menu-visible {

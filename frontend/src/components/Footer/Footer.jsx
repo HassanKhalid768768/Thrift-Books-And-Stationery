@@ -1,13 +1,43 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useMemo } from "react";
 import { Grid, Typography, Button, TextField, Box, IconButton } from "@mui/material";
 import { Facebook } from "@mui/icons-material";
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import { toast } from "react-toastify";
 import { api } from '../../utils/api';
+import { StoreContext } from "../../context/StoreContext";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const { all_product } = useContext(StoreContext);
+
+  // Helper to scroll to top on navigation
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Function to format category slug to Title Case
+  const formatCategoryName = (slug) => {
+    if (!slug) return "";
+    return slug
+      .split('-')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  };
+
+  // Get 4 random categories dynamically
+  const randomCategories = useMemo(() => {
+    if (!all_product || all_product.length === 0) return [];
+
+    // Get unique categories
+    const uniqueCategories = [...new Set(all_product.map(item => item.category))].filter(Boolean);
+
+    // Shuffle and pick 4
+    return uniqueCategories
+      .sort(() => 0.5 - Math.random())
+      .slice(0, 4);
+  }, [all_product]);
 
   const changeHandler = (e) => {
     setEmail(e.target.value);
@@ -18,12 +48,12 @@ const Footer = () => {
       toast.error('Please enter your email address');
       return;
     }
-    
+
     setIsLoading(true);
     try {
       const response = await api.subscribe(email);
       const json = await response.json();
-      
+
       if (response.ok) {
         toast.success('Subscribed successfully!');
         setEmail('');
@@ -46,18 +76,32 @@ const Footer = () => {
           <Typography variant="h6" gutterBottom>
             Shop
           </Typography>
-          <Button component="a" href="/books" color="inherit" sx={{ display: "block", textAlign: "left" }}>
-            Books
-          </Button>
-          <Button component="a" href="/stationary" color="inherit" sx={{ display: "block", textAlign: "left" }}>
-            Stationary
-          </Button>
-          <Button component="a" href="/gadgets" color="inherit" sx={{ display: "block", textAlign: "left" }}>
-            Gadgets
-          </Button>
-          <Button component="a" href="/water-bottles-and-lunch-boxes" color="inherit" sx={{ display: "block", textAlign: "left" }}>
-            Water Bottles & Lunch Boxes
-          </Button>
+          {randomCategories.length > 0 ? (
+            randomCategories.map((category, index) => (
+              <Button
+                key={index}
+                component={Link}
+                to={`/${category}`}
+                onClick={scrollToTop}
+                color="inherit"
+                sx={{ display: "block", textAlign: "left", textTransform: 'none' }}
+              >
+                {formatCategoryName(category)}
+              </Button>
+            ))
+          ) : (
+            <>
+              <Button component={Link} to="/books" onClick={scrollToTop} color="inherit" sx={{ display: "block", textAlign: "left" }}>
+                Books
+              </Button>
+              <Button component={Link} to="/stationary" onClick={scrollToTop} color="inherit" sx={{ display: "block", textAlign: "left" }}>
+                Stationary
+              </Button>
+              <Button component={Link} to="/gadgets" onClick={scrollToTop} color="inherit" sx={{ display: "block", textAlign: "left" }}>
+                Gadgets
+              </Button>
+            </>
+          )}
         </Grid>
 
         {/* CUSTOMER SERVICE */}
@@ -65,16 +109,16 @@ const Footer = () => {
           <Typography variant="h6" gutterBottom>
             Customer Service
           </Typography>
-          <Button component="a" href="/faq" color="inherit" sx={{ display: "block", textAlign: "left" }}>
+          <Button component={Link} to="/faq" onClick={scrollToTop} color="inherit" sx={{ display: "block", textAlign: "left" }}>
             FAQs
           </Button>
-          <Button component="a" href="/shipping-returns" color="inherit" sx={{ display: "block", textAlign: "left" }}>
+          <Button component={Link} to="/shipping-returns" onClick={scrollToTop} color="inherit" sx={{ display: "block", textAlign: "left" }}>
             Shipping & Returns
           </Button>
-          <Button component="a" href="/myorders" color="inherit" sx={{ display: "block", textAlign: "left" }}>
+          <Button component={Link} to="/myorders" onClick={scrollToTop} color="inherit" sx={{ display: "block", textAlign: "left" }}>
             Track Order
           </Button>
-          <Button component="a" href="/contact" color="inherit" sx={{ display: "block", textAlign: "left" }}>
+          <Button component={Link} to="/contact" onClick={scrollToTop} color="inherit" sx={{ display: "block", textAlign: "left" }}>
             Contact Us
           </Button>
         </Grid>
@@ -107,9 +151,9 @@ const Footer = () => {
               disabled={isLoading}
               sx={{ bgcolor: "white", borderRadius: 1, flexGrow: 1 }}
             />
-            <Button 
-              variant="contained" 
-              color="secondary" 
+            <Button
+              variant="contained"
+              color="secondary"
               sx={{ whiteSpace: "nowrap" }}
               onClick={submitHandler}
               disabled={isLoading}
@@ -120,32 +164,32 @@ const Footer = () => {
 
           {/* SOCIAL MEDIA LINKS */}
           <Box sx={{ mt: 3, display: "flex", justifyContent: "center", gap: 2 }}>
-            <IconButton 
+            <IconButton
               href="https://www.facebook.com/profile.php?id=61555751977927&rdid=J9JSnfwTEO74QzSk&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1AzjR1Zc2M%2F#"
-              target="_blank" 
-              rel="noopener noreferrer" 
+              target="_blank"
+              rel="noopener noreferrer"
               color="inherit"
-              sx={{ 
+              sx={{
                 transition: 'transform 0.2s, color 0.2s',
-                '&:hover': { 
+                '&:hover': {
                   transform: 'scale(1.1)',
                   color: '#1877F2' // Facebook brand color
-                } 
+                }
               }}
             >
               <Facebook fontSize="large" />
             </IconButton>
-            <IconButton 
+            <IconButton
               href="https://api.whatsapp.com/send?phone=%2B923003383851&context=AfepripkwO52YOtyqBBXmRt-LrMnIucbELBLylQcrKlgU-j-f6Fea8PMKAKPOOqYTa98CwMwkS14vdMR9z30pXBTlj7KjHzNNDPF4xV9djlTG2KbEpD1NvjZev8s8JGvzUVKGFSyXmRuuvljVJbZB2wVTw&source=FB_Page&app=facebook&entry_point=page_cta&fbclid=IwY2xjawLkh9dleHRuA2FlbQIxMABicmlkETF2cjdPbEZuSGs4WHBlMEtrAR63RLZkCAbMXqXvBrotjsPDf9whlscHDWbaVWA3yK2ojFlcAO8qAbw9xUtSIMQ_aem_TMnobXT3-k8sQr9epELmvg"
-              target="_blank" 
-              rel="noopener noreferrer" 
+              target="_blank"
+              rel="noopener noreferrer"
               color="inherit"
-              sx={{ 
+              sx={{
                 transition: 'transform 0.2s, color 0.2s',
-                '&:hover': { 
+                '&:hover': {
                   transform: 'scale(1.1)',
                   color: '#25D366' // WhatsApp brand color
-                } 
+                }
               }}
             >
               <WhatsAppIcon fontSize="large" />

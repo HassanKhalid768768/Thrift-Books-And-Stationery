@@ -4,6 +4,8 @@ import cart_icon from '../../assets/cart_icon.png';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { StoreContext } from '../../context/StoreContext';
 import { DarkModeContext } from '../../context/DarkModeContext';
+import ShoppingBagOutlinedIcon from '@mui/icons-material/ShoppingBagOutlined';
+import LogoutIcon from '@mui/icons-material/Logout';
 import { api } from '../../utils/api';
 import hamburger from './../../assets/hamburger.png';
 import hamburgerWhite from './../../assets/hamburger.png';
@@ -23,6 +25,18 @@ const Navbar = () => {
     const [categories, setCategories] = useState([]);
     const [showCategoriesDropdown, setShowCategoriesDropdown] = useState(false);
     const [showMobileCategories, setShowMobileCategories] = useState(true); // Default open for easier access
+    const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+    const profileRef = useRef();
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (profileRef.current && !profileRef.current.contains(event.target)) {
+                setShowProfileDropdown(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
     const categoriesRef = useRef(null);
     const dropdownTimeoutRef = useRef(null);
     const { pathname } = useLocation();
@@ -345,9 +359,9 @@ const Navbar = () => {
                         )}
                     </div>
                     {!localStorage.getItem('token') ? <Link to="/login"><button>Login</button></Link> :
-                        <div className='navbar-profile'>
+                        <div className='navbar-profile' ref={profileRef} onClick={(e) => { e.stopPropagation(); setShowProfileDropdown(!showProfileDropdown); }}>
                             <img src={profile_icon} alt="" />
-                            <ul className="nav-profile-dropdown">
+                            <ul className={`nav-profile-dropdown ${showProfileDropdown ? 'active' : ''}`}>
                                 {userProfile && (
                                     <>
                                         <div className="nav-profile-info">
@@ -357,9 +371,15 @@ const Navbar = () => {
                                         <hr />
                                     </>
                                 )}
-                                <li onClick={() => { navigate("/myorders"); scrollToTop(); }}>Orders</li>
+                                <li onClick={() => { navigate("/myorders"); scrollToTop(); setShowProfileDropdown(false); }}>
+                                    <ShoppingBagOutlinedIcon style={{ fontSize: '20px' }} />
+                                    <span>Orders</span>
+                                </li>
                                 <hr />
-                                <li onClick={logout}>Logout</li>
+                                <li onClick={() => { logout(); setShowProfileDropdown(false); }}>
+                                    <LogoutIcon style={{ fontSize: '20px' }} />
+                                    <span>Logout</span>
+                                </li>
                             </ul>
                         </div>}
                     <Link to="/cart" onClick={scrollToTop}><img src={cart_icon} alt="" /></Link>
