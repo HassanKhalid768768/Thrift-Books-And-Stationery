@@ -158,7 +158,17 @@ exports.deleteCategory = async (req, res, next) => {
     
     await Category.findByIdAndDelete(id);
     
-    res.status(200).json({ message: "Category deleted successfully" });
+    // Re-order remaining categories
+    const remainingCategories = await Category.find({})
+      .sort({ displayOrder: 1, name: 1 });
+    
+    // Update displayOrder to be sequential (1, 2, 3, ...)
+    for (let i = 0; i < remainingCategories.length; i++) {
+      remainingCategories[i].displayOrder = i + 1;
+      await remainingCategories[i].save();
+    }
+    
+    res.status(200).json({ message: "Category deleted successfully and order rearranged" });
   } catch (err) {
     next(err);
   }
