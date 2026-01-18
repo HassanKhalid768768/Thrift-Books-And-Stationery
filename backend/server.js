@@ -102,16 +102,20 @@ app.get('/api/test', (req, res) => {
 // Error handling
 app.use((err, req, res, next) => {
   console.error("SERVER ERROR DETECTED:");
-  console.error("Message:", err.message);
-  console.error("Stack:", err.stack);
+  if (err) {
+    console.error("Message:", err.message || err);
+    console.error("Stack:", err.stack || "No stack trace available");
+    console.error("Full Error Object:", JSON.stringify(err, Object.getOwnPropertyNames(err)));
+  } else {
+    console.error("Unknown error (err is undefined or null)");
+  }
 
-  const statusCode = err.statusCode || 500;
-  const message = err.message || "Internal Server Error";
+  const statusCode = err?.statusCode || 500;
+  const message = err?.message || "Internal Server Error";
 
   res.status(statusCode).json({
     success: false,
     error: message,
-    // Provide stack for debugging if it's a 500
     details: statusCode === 500 ? "Check server logs for details" : undefined
   });
 });
