@@ -3,7 +3,7 @@ import './StatusFilter.css';
 
 const StatusFilter = ({ orders, onFilterChange, statusColors }) => {
     const [activeTab, setActiveTab] = useState("All");
-    const statuses = ["All", "Ordered", "Payment Received", "Shipped", "Out for delivery", "Delivered"];
+    const statuses = ["All", "Ordered", "Payment Done", "Shipped", "Out for delivery", "Delivered"];
     
     // Add All to statusColors if not present
     const allStatusColors = { ...statusColors, "All": "#666" };
