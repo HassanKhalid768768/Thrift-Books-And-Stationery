@@ -383,7 +383,7 @@
 
 @media(max-width:800px) {
     .cartitems {
-        margin: 40px 15px;
+        margin: 20px 10px;
         margin-top: 80px;
     }
 
@@ -392,16 +392,21 @@
     }
 
     .cartitems-format {
-        display: flex;
-        flex-direction: column;
+        display: grid !important;
+        grid-template-columns: 85px 1fr;
+        grid-template-areas:
+            "image info"
+            "image quantity"
+            "total total";
         background-color: var(--bg-secondary);
-        padding: 20px;
+        padding: 15px;
         border-radius: 12px;
         border: 1px solid var(--border-color);
-        margin-bottom: 20px;
+        margin-bottom: 15px;
         position: relative;
-        gap: 15px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        gap: 8px 15px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        align-items: start;
     }
 
     .dark-mode .cartitems-format {
@@ -409,117 +414,170 @@
     }
 
     .carticon-product-icon {
-        width: 100px;
-        height: 100px;
-        margin: 0 auto;
+        grid-area: image;
+        width: 85px !important;
+        height: 110px !important;
+        object-fit: cover !important;
+        margin: 0 !important;
+        border-radius: 8px;
     }
 
-    .cartitems-format p {
+    .product-info {
+        grid-area: info;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        padding-right: 25px;
+        /* Space for remove icon */
+        text-align: left;
+    }
+
+    .product-info p {
         margin: 0;
-        text-align: center;
-        font-size: 16px;
-    }
-
-    /* Product name styling on mobile */
-    .cartitems-format p:nth-child(2) {
         font-weight: 600;
-        font-size: 18px;
+        font-size: 15px;
         color: var(--text-primary);
+        line-height: 1.3;
     }
 
     /* Price styling on mobile */
-    .cartitems-format p:nth-child(3)::before {
+    .cartitems-format>p:nth-of-type(1) {
+        grid-area: info;
+        margin-top: 25px;
+        /* Push down below title */
+        font-weight: 500;
+        color: var(--text-secondary);
+        font-size: 14px;
+        text-align: left;
+    }
+
+    .cartitems-format>p:nth-of-type(1)::before {
         content: "Price: ";
-        font-weight: 500;
+        font-weight: 400;
         color: var(--text-secondary);
+        font-size: 12px;
     }
 
-    /* Total styling on mobile */
-    .cartitems-format p:nth-child(5) {
-        font-weight: 700;
-        color: var(--accent-color);
-        font-size: 18px;
-        padding-top: 10px;
-        border-top: 1px solid var(--border-color);
-    }
-
-    .cartitems-format p:nth-child(5)::before {
-        content: "Total: ";
-        font-weight: 500;
-        color: var(--text-secondary);
-    }
-
+    /* Quantity control alignment */
     .cartitems-quantity-control {
-        margin: 0 auto;
-        width: 120px;
-        height: 40px;
+        grid-area: quantity;
+        margin: 0 !important;
+        width: 90px !important;
+        height: 30px !important;
+        background: var(--bg-primary);
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
     }
 
     .quantity-btn {
-        width: 35px;
-        height: 35px;
+        width: 28px !important;
+        height: 28px !important;
+        background: transparent !important;
+        border: none !important;
+    }
+
+    .quantity-display {
+        font-size: 13px !important;
+        width: 30px !important;
+    }
+
+    /* Total styling on mobile */
+    .cartitems-format>p:nth-of-type(2) {
+        grid-area: total;
+        font-weight: 700;
+        color: var(--accent-color);
+        font-size: 16px;
+        padding-top: 10px;
+        border-top: 1px solid var(--border-color);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        margin: 0 !important;
+    }
+
+    .cartitems-format>p:nth-of-type(2)::before {
+        content: "Subtotal";
+        font-weight: 500;
+        color: var(--text-secondary);
+        font-size: 13px;
     }
 
     .cartitems-remove-icon {
         position: absolute;
         top: 15px;
         right: 15px;
-        margin: 0;
-        width: 20px;
-        opacity: 0.7;
-        transition: opacity 0.2s;
-    }
-
-    .cartitems-remove-icon:hover {
-        opacity: 1;
+        margin: 0 !important;
+        width: 18px !important;
+        opacity: 0.6;
     }
 
     .cartitems-down {
-        margin-top: 40px;
-        padding: 0 5px;
+        margin-top: 30px;
+        padding: 0;
     }
 
     .cartitems-total {
         padding: 20px;
-        background-color: var(--bg-secondary);
+        margin-bottom: 30px;
         border-radius: 12px;
-        border: 1px solid var(--border-color);
     }
 
     .cartitems-total h1 {
-        text-align: center;
-        font-size: 22px;
+        font-size: 20px;
+        text-align: left;
+        margin-bottom: 20px;
+    }
+
+    .cartitems-total-item {
+        font-size: 14px;
+        padding: 10px 0;
     }
 
     .cartitems-total button {
         width: 100%;
-        padding: 15px;
-        font-size: 16px;
+        padding: 16px;
+        font-size: 15px;
         font-weight: 600;
+        margin-top: 20px;
         border-radius: 8px;
     }
 
     .coupon-section {
-        margin-top: 20px;
+        padding: 15px;
+        background-color: var(--bg-primary);
     }
 
     .coupon-input-container {
-        flex-direction: column;
+        flex-direction: row;
+        gap: 8px;
+    }
+
+    .coupon-input {
+        flex: 1;
+        font-size: 13px;
     }
 
     .apply-coupon-btn {
-        width: 100%;
+        width: auto;
+        font-size: 13px;
+        white-space: nowrap;
     }
 }
 
 @media(max-width:400px) {
     .cartitems {
-        margin: 30px 10px;
+        margin: 15px 8px;
         margin-top: 70px;
     }
 
+    .cartitems-format {
+        grid-template-columns: 75px 1fr;
+        padding: 12px;
+    }
+
     .carticon-product-icon {
-        width: 80px;
-        height: 80px;
+        width: 75px !important;
+        height: 100px !important;
     }
 }
