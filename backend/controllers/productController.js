@@ -109,11 +109,26 @@ exports.createProduct = async (req, res, next) => {
     if (req.files && req.files['product']) {
       // Cloudinary handles upload automatically via storage engine
       mainImage = req.files['product'][0].path;
+    } else if (req.body.mainImage) {
+      // Handle image selected from library
+      mainImage = req.body.mainImage;
     }
 
     let additionalImages = [];
     if (req.files && req.files['additionalImages']) {
       additionalImages = req.files['additionalImages'].map(file => file.path);
+    }
+
+    // Handle additional images from library
+    if (req.body.additionalImageUrls) {
+      try {
+        const libraryImages = JSON.parse(req.body.additionalImageUrls);
+        if (Array.isArray(libraryImages)) {
+          additionalImages = [...additionalImages, ...libraryImages];
+        }
+      } catch (e) {
+        console.error('Error parsing additionalImageUrls:', e);
+      }
     }
 
     // Parse sizes if provided
