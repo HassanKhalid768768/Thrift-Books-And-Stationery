@@ -11,8 +11,25 @@ const ProductSearch = ({ onSearch, onClear }) => {
     const [suggestions, setSuggestions] = useState([]);
     const [isSuggestionLoading, setIsSuggestionLoading] = useState(false);
     const [showSuggestions, setShowSuggestions] = useState(false);
+    const [categories, setCategories] = useState([]);
     const searchRef = useRef(null);
     const debounceRef = useRef(null);
+
+    // Fetch categories on mount
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const response = await api.getCategories();
+                const data = await response.json();
+                if (response.ok) {
+                    setCategories(data);
+                }
+            } catch (error) {
+                console.error('Error fetching categories:', error);
+            }
+        };
+        fetchCategories();
+    }, []);
 
     // Hide suggestions when clicking outside
     useEffect(() => {
@@ -138,9 +155,11 @@ const ProductSearch = ({ onSearch, onClear }) => {
                             className="search-select"
                         >
                             <option value="all">All Categories</option>
-                            <option value="books">Books</option>
-                            <option value="stationary">Stationary</option>
-                            <option value="gadgets">Gadgets</option>
+                            {categories.map((cat) => (
+                                <option key={cat._id} value={cat.slug}>
+                                    {cat.name}
+                                </option>
+                            ))}
                         </select>
                     </div>
                 </div>
