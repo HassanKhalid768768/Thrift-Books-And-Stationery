@@ -1,13 +1,13 @@
 # TBS-Thrift & Budget Store
 
-A full-stack e-commerce application for buying and selling thrift books and stationery items. This project features a React frontend, Node.js/Express backend, and supports Cash on Delivery (COD) and Bank Transfer payment methods.
+A full-stack e-commerce application for buying and selling thrift books and stationery items. This project features a React frontend, Node.js/Express backend, and supports Bank Transfer payment method.
 
 ## 🚀 Features
 
 - **User Authentication**: Secure registration and login system
 - **Product Management**: Browse, search, and filter books and stationery items
 - **Shopping Cart**: Add/remove items with real-time updates
-- **Payment Processing**: Cash on Delivery (COD) and Bank Transfer payment methods
+- **Payment Processing**: Bank Transfer payment method
 - **Image Upload**: Cloudinary integration for product images
 - **Email Notifications**: Automated email system using Nodemailer
 - **Admin Panel**: Manage products, orders, and users
@@ -200,7 +200,7 @@ npm test
 - **v1.0.0** - Initial release with core functionality
   - User authentication and authorization
   - Product catalog and shopping cart
-  - Payment processing with COD and Bank Transfer
+  - Payment processing with Bank Transfer
   - Admin panel for management
   - Email notifications
 

@@ -67,12 +67,10 @@ exports.placeOrderDirect = async (req, res, next) => {
     console.log('After:', normalizedItems.map(item => item.category));
 
     // Determine order status based on payment method
-    let orderStatus = 'Order Confirmed';
-    let paymentStatus = true;
+    let orderStatus = 'Pending Payment Verification';
+    let paymentStatus = false; // Will be updated when payment proof is verified
     
-    if (paymentMethod === 'cod') {
-      orderStatus = 'Order Confirmed - COD';
-    } else if (paymentMethod === 'bankTransfer') {
+    if (paymentMethod === 'bankTransfer') {
       orderStatus = 'Pending Payment Verification';
       paymentStatus = false; // Will be updated when payment proof is verified
     }
@@ -93,13 +91,8 @@ exports.placeOrderDirect = async (req, res, next) => {
       paymentMethod: paymentMethod
     });
 
-    // Clear user's cart for COD orders, keep for bank transfer until payment verified
-    if (paymentMethod === 'cod') {
-      await User.findByIdAndUpdate(_id, { cartData: {} });
-      console.log(`COD order placed successfully, cart cleared for user ${_id}`);
-    } else {
-      console.log(`Bank transfer order placed, awaiting payment verification for user ${_id}`);
-    }
+    // Keep cart until payment is verified
+    console.log(`Bank transfer order placed, awaiting payment verification for user ${_id}`);
 
     res.status(200).json({ 
       success: true, 

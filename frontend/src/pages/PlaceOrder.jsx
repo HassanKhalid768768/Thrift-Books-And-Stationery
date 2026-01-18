@@ -35,7 +35,7 @@ const PlaceOrder = () => {
         Phone: ""
     });
     
-    const [paymentMethod, setPaymentMethod] = useState("");
+    const [paymentMethod, setPaymentMethod] = useState("bankTransfer");
     
     const changeHandler = (e) => {
         setData({ ...data, [e.target.name]: e.target.value });
@@ -183,11 +183,9 @@ const PlaceOrder = () => {
                 // Clear coupon after successful order placement
                 clearCoupon();
                 
-                // Clear cart for COD orders (backend already clears it, but update frontend too)
-                if (paymentMethod === 'cod') {
+                // Clear cart after successful order placement
+                if (paymentMethod === 'bankTransfer') {
                     clearCart();
-                    toast.success('Order placed successfully! Cash on Delivery confirmed.');
-                } else if (paymentMethod === 'bankTransfer') {
                     toast.success('Order placed successfully! Please send payment proof via WhatsApp.');
                 }
                 
@@ -277,18 +275,6 @@ const PlaceOrder = () => {
 
                     <div className="payment-methods">
                         <h2>Payment Options</h2>
-                        <div className="payment-option">
-                            <input 
-                                type="radio" 
-                                id="cod" 
-                                name="paymentOption" 
-                                value="cod" 
-                                checked={paymentMethod === "cod"}
-                                onChange={(e) => setPaymentMethod(e.target.value)}
-                                required 
-                            />
-                            <label htmlFor="cod">Cash on Delivery (Karachi residents only, additional charges apply)</label>
-                        </div>
                         <div className="payment-option">
                             <input 
                                 type="radio" 
