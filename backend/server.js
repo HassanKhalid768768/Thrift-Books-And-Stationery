@@ -68,6 +68,11 @@ app.get('/', (req, res) => {
   res.send('Backend is up and running');
 });
 
+// Health check endpoint (for UptimeRobot to keep server awake)
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
+
 // Test CORS endpoint
 app.get('/test-cors', (req, res) => {
   res.json({

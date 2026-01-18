@@ -61,12 +61,7 @@ const Home = () => {
                 <section className="home-section popular-section">
                     <Popular onQuickView={handleQuickView} />
                 </section>
-                
-                {/* Trends Banner - New section with parallax effect */}
-                <section className="trends-banner-container">
-                    <TrendsBanner />
-                </section>
-                
+
                 {/* New Collections - Existing section */}
                 <section className="home-section collections-section">
                     <NewCollections onQuickView={handleQuickView} />
