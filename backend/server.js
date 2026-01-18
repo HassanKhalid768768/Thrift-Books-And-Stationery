@@ -101,13 +101,18 @@ app.get('/api/test', (req, res) => {
 
 // Error handling
 app.use((err, req, res, next) => {
-  console.error("SERVER ERROR:", err); // Log the full error to console
+  console.error("SERVER ERROR DETECTED:");
+  console.error("Message:", err.message);
+  console.error("Stack:", err.stack);
+
   const statusCode = err.statusCode || 500;
   const message = err.message || "Internal Server Error";
+
   res.status(statusCode).json({
     success: false,
     error: message,
-    stack: process.env.NODE_ENV === 'development' ? err.stack : undefined // Optional: send stack to frontend in dev
+    // Provide stack for debugging if it's a 500
+    details: statusCode === 500 ? "Check server logs for details" : undefined
   });
 });
 

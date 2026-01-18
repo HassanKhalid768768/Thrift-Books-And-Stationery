@@ -94,23 +94,24 @@ exports.getProductSuggestions = async (req, res, next) => {
 };
 
 exports.createProduct = async (req, res, next) => {
-  const products = await Product.find({});
-  const length = products.length;
-  let id = 1;
-  if (length > 0) id = products[length - 1].id + 1;
-  const { name, category, new_price, old_price, description, sizes } = req.body;
-
-  console.log('CreatesProduct - Body:', JSON.stringify(req.body, null, 2));
-  console.log('CreateProduct - Files:', req.files);
-
   try {
+    // Optimize ID generation: find only the last product by ID
+    const lastProduct = await Product.findOne().sort({ id: -1 });
+    let id = 1;
+    if (lastProduct) {
+      id = lastProduct.id + 1;
+    }
+
+    const { name, category, new_price, old_price, description, sizes } = req.body;
+
+    console.log('CreatesProduct - Body:', JSON.stringify(req.body, null, 2));
+    console.log('CreateProduct - Files:', req.files);
+
     // upload image to Cloudinary
     let mainImage = "";
     if (req.files && req.files['product']) {
-      // Cloudinary handles upload automatically via storage engine
       mainImage = req.files['product'][0].path;
     } else if (req.body.mainImage) {
-      // Handle image selected from library
       mainImage = req.body.mainImage;
     }
 
@@ -157,6 +158,7 @@ exports.createProduct = async (req, res, next) => {
     console.log('Create Product - Created product sizes:', product.sizes);
     res.status(200).json(product);
   } catch (err) {
+    console.error("Error creating product:", err);
     next(err);
   }
 };
