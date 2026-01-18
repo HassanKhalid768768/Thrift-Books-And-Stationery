@@ -310,7 +310,7 @@ body {
         display: block;
         width: 100%;
         text-align: center;
-        padding: 15px 0;
+        padding: 8px 0;
         border-bottom: 1px solid var(--border-color);
     }
 
@@ -968,7 +968,6 @@ body {
         box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         padding: 0;
         margin: 0;
-        margin-top: 10px;
         flex-direction: column;
         align-items: center;
         justify-content: center;
@@ -979,8 +978,10 @@ body {
         display: flex;
         flex-direction: column;
         animation: slideDown 0.3s ease-out;
-        max-height: calc(100vh - var(--header-height) - 20px);
+        max-height: 350px;
+        padding-top: 5px;
         overflow-y: auto;
+        overflow-x: hidden;
         -webkit-overflow-scrolling: touch;
     }
     
@@ -998,7 +999,7 @@ body {
     .nav-menu li {
         width: 100%;
         text-align: center;
-        padding: 15px 0;
+        padding: 8px 0;
         border-bottom: 1px solid var(--border-color);
     }
     
