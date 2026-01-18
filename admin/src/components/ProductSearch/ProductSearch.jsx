@@ -4,7 +4,7 @@ import { DarkModeContext } from '../../context/DarkModeContext';
 import ProductSuggestions from '../ProductSuggestions/ProductSuggestions';
 import { api } from '../../utils/api';
 
-const ProductSearch = ({ onSearch, onClear }) => {
+const ProductSearch = ({ onSearch, onClear, disabled }) => {
     const { darkMode } = useContext(DarkModeContext);
     const [searchQuery, setSearchQuery] = useState('');
     const [searchCategory, setSearchCategory] = useState('all');
@@ -47,11 +47,13 @@ const ProductSearch = ({ onSearch, onClear }) => {
 
     const handleSearch = (e) => {
         e.preventDefault();
+        if (disabled) return;
         onSearch(searchQuery.trim(), searchCategory);
         setShowSuggestions(false);
     };
 
     const handleClear = () => {
+        if (disabled) return;
         setSearchQuery('');
         setSearchCategory('all');
         setSuggestions([]);
@@ -60,7 +62,7 @@ const ProductSearch = ({ onSearch, onClear }) => {
     };
 
     const fetchSuggestions = async (query, category) => {
-        if (!query || query.trim().length < 2) {
+        if (disabled || !query || query.trim().length < 2) {
             setSuggestions([]);
             setIsSuggestionLoading(false);
             return;
@@ -84,15 +86,16 @@ const ProductSearch = ({ onSearch, onClear }) => {
     };
 
     const handleInputChange = (e) => {
+        if (disabled) return;
         const value = e.target.value;
         setSearchQuery(value);
         setShowSuggestions(true);
-        
+
         // Clear existing debounce
         if (debounceRef.current) {
             clearTimeout(debounceRef.current);
         }
-        
+
         if (value.trim() === '') {
             setSuggestions([]);
             setIsSuggestionLoading(false);
@@ -106,9 +109,10 @@ const ProductSearch = ({ onSearch, onClear }) => {
     };
 
     const handleCategoryChange = (e) => {
+        if (disabled) return;
         const newCategory = e.target.value;
         setSearchCategory(newCategory);
-        
+
         // Re-fetch suggestions with new category if there's a query
         if (searchQuery.trim()) {
             if (debounceRef.current) {
@@ -121,13 +125,14 @@ const ProductSearch = ({ onSearch, onClear }) => {
     };
 
     const handleSuggestionSelect = (product) => {
+        if (disabled) return;
         setSearchQuery(product.name);
         setShowSuggestions(false);
         onSearch(product.name, searchCategory);
     };
 
     return (
-        <div className={`product-search ${darkMode ? 'dark-mode' : ''}`} ref={searchRef}>
+        <div className={`product-search ${darkMode ? 'dark-mode' : ''} ${disabled ? 'disabled' : ''}`} ref={searchRef}>
             <form onSubmit={handleSearch} className="search-form">
                 <div className="search-inputs">
                     <div className="search-input-group">
@@ -136,23 +141,27 @@ const ProductSearch = ({ onSearch, onClear }) => {
                             placeholder="Search products by name, description, or category..."
                             value={searchQuery}
                             onChange={handleInputChange}
-                            onFocus={() => searchQuery.trim() && setShowSuggestions(true)}
+                            onFocus={() => !disabled && searchQuery.trim() && setShowSuggestions(true)}
                             className="search-input"
                             autoComplete="off"
+                            disabled={disabled}
                         />
-                        <ProductSuggestions 
-                            suggestions={suggestions}
-                            isVisible={showSuggestions}
-                            onSuggestionSelect={handleSuggestionSelect}
-                            isLoading={isSuggestionLoading}
-                            darkMode={darkMode}
-                        />
+                        {!disabled && (
+                            <ProductSuggestions
+                                suggestions={suggestions}
+                                isVisible={showSuggestions}
+                                onSuggestionSelect={handleSuggestionSelect}
+                                isLoading={isSuggestionLoading}
+                                darkMode={darkMode}
+                            />
+                        )}
                     </div>
                     <div className="search-select-group">
                         <select
                             value={searchCategory}
                             onChange={handleCategoryChange}
                             className="search-select"
+                            disabled={disabled}
                         >
                             <option value="all">All Categories</option>
                             {categories.map((cat) => (
@@ -164,10 +173,10 @@ const ProductSearch = ({ onSearch, onClear }) => {
                     </div>
                 </div>
                 <div className="search-buttons">
-                    <button type="submit" className="search-btn">
+                    <button type="submit" className="search-btn" disabled={disabled}>
                         Search
                     </button>
-                    <button type="button" onClick={handleClear} className="clear-btn">
+                    <button type="button" onClick={handleClear} className="clear-btn" disabled={disabled}>
                         Clear
                     </button>
                 </div>
