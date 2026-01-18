@@ -159,7 +159,7 @@ exports.getNewCollections = async (req, res, next) => {
 
 exports.getPopularBooks = async (req, res, next) => {
   try {
-    const products = await Product.find({ category: "books" });
+    const products = await Product.find({ category: "course-books" });
     const popularBooks = products.slice(0, 4);
     res.status(200).json(popularBooks);
   } catch (err) {

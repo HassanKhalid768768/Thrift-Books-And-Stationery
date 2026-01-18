@@ -23,6 +23,7 @@ const Navbar = () => {
     const [categories, setCategories] = useState([]);
     const [showCategoriesDropdown, setShowCategoriesDropdown] = useState(false);
     const categoriesRef = useRef(null);
+    const dropdownTimeoutRef = useRef(null);
     const { pathname } = useLocation();
 
     // Fetch categories for Shop dropdown
@@ -214,8 +215,15 @@ const Navbar = () => {
                     <li
                         className="nav-categories-wrapper nav-categories-desktop"
                         ref={categoriesRef}
-                        onMouseEnter={() => setShowCategoriesDropdown(true)}
-                        onMouseLeave={() => setShowCategoriesDropdown(false)}
+                        onMouseEnter={() => {
+                            clearTimeout(dropdownTimeoutRef.current);
+                            setShowCategoriesDropdown(true);
+                        }}
+                        onMouseLeave={() => {
+                            dropdownTimeoutRef.current = setTimeout(() => {
+                                setShowCategoriesDropdown(false);
+                            }, 200);
+                        }}
                     >
                         <span className={`nav-categories-trigger ${currentCategory ? 'active' : ''}`}>Shop</span>
                         {showCategoriesDropdown && (
