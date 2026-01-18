@@ -916,8 +916,8 @@ body {
 
 @media(max-width:800px) {
     :root {
-        --header-height: 85px;
-        /* Adjusted for smaller screens */
+        --header-height: 110px;
+        /* Increased to prevent content cutting */
     }
 
     body {
@@ -1223,8 +1223,8 @@ body {
 
 @media(max-width:500px) {
     :root {
-        --header-height: 75px;
-        /* Adjusted for smaller screens */
+        --header-height: 100px;
+        /* Increased for smaller screens */
     }
 
     body {
