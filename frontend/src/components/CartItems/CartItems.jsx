@@ -254,13 +254,13 @@ const CartItems = () => {
                         
                         <div className="cartitems-total-item">
                             <p>Shipping Fee</p>
-                            <p>PKR {(getTotalCartAmount()===0?0:1).toLocaleString('en-PK')}</p>
+                            <p>Will be calculated on checkout</p>
                         </div>
                         <hr />
                         
                         <div className="cartitems-total-item">
                             <h3>Total</h3>
-                            <h3>PKR {(getTotalCartAmount()===0?0:getTotalWithDiscount()+1).toLocaleString('en-PK')}</h3>
+                            <h3>PKR {(getTotalCartAmount()===0?0:getTotalWithDiscount()).toLocaleString('en-PK')}</h3>
                         </div>
                     </div>
                     
