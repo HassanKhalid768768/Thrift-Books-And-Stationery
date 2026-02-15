@@ -26,6 +26,19 @@ export const apiCall = async (endpoint, options = {}) => {
 
   try {
     const response = await fetch(url, finalOptions);
+
+    // Automatically logout on 401 Unauthorized or 403 Forbidden
+    if (response.status === 401 || response.status === 403) {
+      // Clear storage
+      localStorage.removeItem('token');
+      localStorage.removeItem('admin');
+
+      // Force redirect to login if we're not already there
+      if (window.location.pathname !== '/') {
+        window.location.href = '/';
+      }
+    }
+
     return response;
   } catch (error) {
     console.error('API call failed:', error);

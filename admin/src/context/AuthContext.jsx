@@ -19,40 +19,55 @@ export const AuthProvider = ({ children }) => {
 
   // Check for token and admin status in localStorage on component mount
   useEffect(() => {
-    const checkAuth = () => {
+    const verifyAuth = async () => {
       const storedToken = localStorage.getItem('token');
       const storedAdmin = localStorage.getItem('admin') === 'true';
-      
+
       if (storedToken && storedAdmin) {
-        setToken(storedToken);
-        setIsAdmin(true);
-        setIsAuthenticated(true);
+        try {
+          // Verify token with backend
+          const response = await api.testAdmin();
+
+          if (response.ok) {
+            setToken(storedToken);
+            setIsAdmin(true);
+            setIsAuthenticated(true);
+          } else {
+            // Token is invalid/expired - clear local storage
+            localStorage.removeItem('token');
+            localStorage.removeItem('admin');
+          }
+        } catch (error) {
+          console.error("Token verification failed:", error);
+          localStorage.removeItem('token');
+          localStorage.removeItem('admin');
+        }
       }
-      
+
       setLoading(false);
     };
-    
-    checkAuth();
+
+    verifyAuth();
   }, []);
 
   // Login function
   const login = async (email, password) => {
     try {
       const response = await api.login({ email, password });
-      
+
       const data = await response.json();
-      
+
       if (response.ok) {
         if (data.role === 'admin') {
           // Store auth data
           localStorage.setItem('token', data.token);
           localStorage.setItem('admin', 'true');
-          
+
           // Update state
           setToken(data.token);
           setIsAdmin(true);
           setIsAuthenticated(true);
-          
+
           customToast.success("You're logged in as admin");
           return true;
         } else {
@@ -75,12 +90,12 @@ export const AuthProvider = ({ children }) => {
     // Clear localStorage
     localStorage.removeItem('token');
     localStorage.removeItem('admin');
-    
+
     // Reset state
     setToken(null);
     setIsAdmin(false);
     setIsAuthenticated(false);
-    
+
     customToast.info("You've been logged out");
   };
 
