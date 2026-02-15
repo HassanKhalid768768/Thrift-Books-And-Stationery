@@ -5,6 +5,7 @@ import star_dull_icon from "../../assets/star_dull_icon.png"
 import { StoreContext } from "../../context/StoreContext";
 import { DarkModeContext } from "../../context/DarkModeContext";
 import { toast } from "react-toastify";
+import bin_icon from "../../assets/recycle-bin.png";
 
 const ProductDisplay = (props) => {
     const { product } = props;
@@ -76,6 +77,7 @@ const ProductDisplay = (props) => {
         rating: 5,
         comment: ''
     });
+    const [reviewImages, setReviewImages] = useState([]);
     const [canReview, setCanReview] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [userReviewed, setUserReviewed] = useState(false);
@@ -169,6 +171,24 @@ const ProductDisplay = (props) => {
         });
     };
 
+    const handleImageChange = (e) => {
+        if (e.target.files) {
+            const filesArray = Array.from(e.target.files);
+            setReviewImages(prev => {
+                const totalCount = prev.length + filesArray.length;
+                if (totalCount > 5) {
+                    toast.error("You can only upload up to 5 images in total");
+                    return prev;
+                }
+                return [...prev, ...filesArray];
+            });
+        }
+    };
+
+    const removeImage = (index) => {
+        setReviewImages(prev => prev.filter((_, i) => i !== index));
+    };
+
     const handleReviewSubmit = async (e) => {
         e.preventDefault();
 
@@ -186,16 +206,20 @@ const ProductDisplay = (props) => {
 
         try {
             const token = localStorage.getItem('token');
+            const formData = new FormData();
+            formData.append('rating', reviewForm.rating);
+            formData.append('comment', reviewForm.comment);
+
+            reviewImages.forEach((image) => {
+                formData.append('reviewImages', image);
+            });
+
             const response = await fetch(`${backend_url}/api/products/${product.id}/reviews`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({
-                    rating: reviewForm.rating,
-                    comment: reviewForm.comment
-                })
+                body: formData
             });
 
             const data = await response.json();
@@ -204,6 +228,7 @@ const ProductDisplay = (props) => {
                 toast.success("Your review has been submitted!");
                 setUserReviewed(true);
                 setReviewForm({ rating: 5, comment: '' });
+                setReviewImages([]);
 
                 // Update product data with new review
                 if (data.product) {
@@ -436,6 +461,35 @@ const ProductDisplay = (props) => {
                                             rows="4"
                                         ></textarea>
                                     </div>
+                                    <div className={`review-image-input ${reviewImages.length >= 5 ? 'disabled' : ''}`}>
+                                        <label htmlFor="reviewImages">
+                                            {reviewImages.length >= 5 ? "Image Limit Reached (Max 5)" : "Add Pictures (Max 5):"}
+                                        </label>
+                                        <input
+                                            type="file"
+                                            id="reviewImages"
+                                            name="reviewImages"
+                                            accept="image/*"
+                                            multiple
+                                            onChange={handleImageChange}
+                                            disabled={reviewImages.length >= 5}
+                                        />
+                                        <div className="selected-images-preview">
+                                            {reviewImages.map((img, index) => (
+                                                <div key={index} className="preview-item">
+                                                    <img src={URL.createObjectURL(img)} alt={`preview-${index}`} />
+                                                    <button
+                                                        type="button"
+                                                        className="remove-img-btn"
+                                                        onClick={() => removeImage(index)}
+                                                        aria-label="Remove"
+                                                    >
+                                                        <img src={bin_icon} alt="Remove" />
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
                                     <button
                                         type="submit"
                                         className="submit-review-btn"
@@ -476,6 +530,18 @@ const ProductDisplay = (props) => {
                                     <div className="review-comment">
                                         {review.comment}
                                     </div>
+                                    {review.images && review.images.length > 0 && (
+                                        <div className="review-images">
+                                            {review.images.map((img, imgIndex) => (
+                                                <img
+                                                    key={imgIndex}
+                                                    src={img}
+                                                    alt={`Review image ${imgIndex + 1}`}
+                                                    onClick={() => window.open(img, '_blank')}
+                                                />
+                                            ))}
+                                        </div>
+                                    )}
                                 </div>
                             ))}
                         </div>

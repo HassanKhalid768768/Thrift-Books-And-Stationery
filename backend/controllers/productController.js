@@ -204,6 +204,10 @@ exports.createReview = async (req, res, next) => {
     const userId = req.user._id;
 
     console.log(`Review attempt - Product ID: ${id}, User ID: ${userId}`);
+    console.log(`Review Files:`, req.files ? req.files.length : 0);
+    if (req.files) {
+      req.files.forEach((f, i) => console.log(`  File ${i + 1}: ${f.originalname} -> ${f.path}`));
+    }
 
     // Validate review data
     if (!rating || !comment) {
@@ -352,10 +356,13 @@ exports.createReview = async (req, res, next) => {
     }
 
     // Create review object
+    const reviewImages = req.files ? req.files.map(file => file.path) : [];
+
     const review = {
       userId,
       rating: ratingNum,
       comment,
+      images: reviewImages,
       createdAt: Date.now()
     };
 

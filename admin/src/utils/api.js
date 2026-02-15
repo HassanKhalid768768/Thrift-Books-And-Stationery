@@ -125,7 +125,7 @@ export const api = {
     method: 'PUT'
   }),
 
-  deleteReview: (id) => apiCall(`/api/reviews/${id}`, {
+  deleteReview: (productId, reviewId) => apiCall(`/api/products/${productId}/reviews/${reviewId}`, {
     method: 'DELETE'
   }),
 

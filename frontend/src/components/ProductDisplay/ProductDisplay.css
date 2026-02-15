@@ -130,7 +130,7 @@
     color: var(--accent-color);
 }
 
-.productdisplay-right button {
+.productdisplay-right>button {
     padding: 13px 30px;
     width: 200px;
     font-size: 16px;
@@ -625,4 +625,132 @@
 
 .dark-mode .star-rating img:hover {
     filter: brightness(1) invert(1);
+}
+
+/* Review Images Styles */
+.review-image-input {
+    margin-top: 10px;
+}
+
+.review-image-input label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.review-image-input.disabled label {
+    color: var(--text-muted);
+    cursor: not-allowed;
+}
+
+.review-image-input.disabled input {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.selected-images-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.preview-item {
+    width: 80px;
+    height: 80px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+}
+
+.preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    outline: none !important;
+    box-shadow: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+    user-select: none;
+}
+
+.preview-item img:focus,
+.preview-item img:active,
+.preview-item img:hover {
+    outline: none !important;
+    box-shadow: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+}
+
+.remove-img-btn {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: white;
+    color: #ff4141;
+    border: 1px solid #ff4141;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    padding: 3px;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    outline: none !important;
+    z-index: 10;
+}
+
+.remove-img-btn:focus,
+.remove-img-btn:active {
+    outline: none !important;
+    box-shadow: 0 0 0 2px rgba(255, 65, 65, 0.3);
+}
+
+.remove-img-btn img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: invert(27%) sepia(91%) saturate(7406%) hue-rotate(354deg) brightness(97%) contrast(106%);
+    /* Make black icon red */
+}
+
+.remove-img-btn:hover {
+    background: #fff5f5;
+    transform: scale(1.15);
+}
+
+.review-images {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.review-images img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid var(--border-color);
+    transition: transform 0.2s;
+    outline: none !important;
+    box-shadow: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+    user-select: none;
+}
+
+.review-images img:focus,
+.review-images img:active,
+.review-images img:hover {
+    outline: none !important;
+    box-shadow: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+}
+
+.review-images img:hover {
+    transform: scale(1.05);
 }

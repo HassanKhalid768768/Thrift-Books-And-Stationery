@@ -424,32 +424,32 @@
     .review-management-container {
         padding: 15px;
     }
-    
+
     .review-management-header {
         flex-direction: column;
         align-items: stretch;
     }
-    
+
     .review-stats {
         flex-direction: column;
         gap: 10px;
     }
-    
+
     .review-search {
         flex-direction: column;
         max-width: 100%;
     }
-    
+
     .product-info {
         flex-direction: column;
         text-align: center;
     }
-    
+
     .product-info img {
         width: 100px;
         height: 100px;
     }
-    
+
     .review-header {
         flex-direction: column;
         align-items: flex-start;
@@ -461,33 +461,33 @@
     .review-management-container {
         padding: 10px;
     }
-    
+
     .product-card {
         border-radius: 5px;
     }
-    
+
     .product-header {
         padding: 15px;
     }
-    
+
     .reviews-container {
         padding: 0 15px 15px;
     }
-    
+
     .modal-content {
         padding: 20px;
         width: 95%;
     }
-    
+
     .review-item {
         padding: 12px;
     }
-    
+
     .modal-actions {
         flex-direction: column;
         gap: 10px;
     }
-    
+
     .modal-actions button {
         width: 100%;
     }
@@ -677,4 +677,39 @@
 .dark-mode .cancel-btn:disabled {
     background-color: var(--bg-hover);
     color: var(--text-secondary);
+}
+
+/* Admin Review Images Styles */
+.admin-review-images {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 10px 0;
+}
+
+.admin-review-img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid var(--border-color);
+    transition: transform 0.2s;
+    outline: none !important;
+    box-shadow: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+    user-select: none;
+}
+
+.admin-review-img:focus,
+.admin-review-img:active,
+.admin-review-img:hover {
+    outline: none !important;
+    box-shadow: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+}
+
+.admin-review-img:hover {
+    transform: scale(1.1);
+    z-index: 5;
 }

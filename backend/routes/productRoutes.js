@@ -31,6 +31,6 @@ router.get("/newCollections", productController.getNewCollections);
 router.get("/popularBooks", productController.getPopularBooks);
 router.get("/category/:category", productController.getProductsByCategory);
 router.get("/:id", productController.getProductById);
-router.post("/:id/reviews", authMiddleware, productController.createReview);
+router.post("/:id/reviews", authMiddleware, upload.array('reviewImages', 5), productController.createReview);
 router.delete("/:productId/reviews/:reviewId", authMiddleware, adminMiddleware, productController.deleteReview);
 module.exports = router;
