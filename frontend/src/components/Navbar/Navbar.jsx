@@ -218,7 +218,7 @@ const Navbar = () => {
             </div>
             <div className='navbar'>
                 <div className="nav-logo">
-                    <Link to="/" style={{ textDecoration: 'none' }}>
+                    <Link to="/" style={{ textDecoration: 'none' }} onClick={scrollToTop}>
                         <p>TBS-Thrift & Budget Store</p>
                     </Link>
                 </div>
