@@ -167,7 +167,13 @@ export const api = {
     const params = new URLSearchParams();
     if (cursor) params.append('next_cursor', cursor);
     return apiCall(`/api/products/images?${params.toString()}`);
-  }
+  },
+
+  getOrphanedImages: () => apiCall('/api/products/admin/cloudinary-orphans'),
+
+  cleanupCloudinary: () => apiCall('/api/products/admin/cloudinary-cleanup', {
+    method: 'DELETE'
+  })
 };
 
 // Export backend URL for direct use if needed

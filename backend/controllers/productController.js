@@ -166,9 +166,36 @@ exports.deleteProduct = async (req, res, next) => {
   const { id } = req.params;
   try {
     const product = await Product.findOne({ id });
-    // Delete the image from Cloudinary 
-    const imageId = product.image.split("/").pop().split(".")[0];
-    await cloudinary.uploader.destroy(imageId);
+    if (!product) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+
+    // 1. Delete main Image from Cloudinary
+    if (product.image) {
+      const publicId = cloudinary.getPublicIdFromUrl(product.image);
+      if (publicId) await cloudinary.uploader.destroy(publicId);
+    }
+
+    // 2. Delete Additional Images from Cloudinary
+    if (product.additionalImages && product.additionalImages.length > 0) {
+      for (const imgUrl of product.additionalImages) {
+        const publicId = cloudinary.getPublicIdFromUrl(imgUrl);
+        if (publicId) await cloudinary.uploader.destroy(publicId);
+      }
+    }
+
+    // 3. Delete Review Images from Cloudinary
+    if (product.reviews && product.reviews.length > 0) {
+      for (const review of product.reviews) {
+        if (review.images && review.images.length > 0) {
+          for (const imgUrl of review.images) {
+            const publicId = cloudinary.getPublicIdFromUrl(imgUrl);
+            if (publicId) await cloudinary.uploader.destroy(publicId);
+          }
+        }
+      }
+    }
+
     await Product.findOneAndDelete({ id });
     res.status(200).json(product);
   } catch (err) {
@@ -494,6 +521,21 @@ exports.deleteReview = async (req, res, next) => {
 
     console.log('Removing review:', deletedReview);
 
+    // Delete associated images from Cloudinary
+    const reviewToDelete = product.reviews[reviewIndex];
+    if (reviewToDelete.images && reviewToDelete.images.length > 0) {
+      for (const imgUrl of reviewToDelete.images) {
+        const publicId = cloudinary.getPublicIdFromUrl(imgUrl);
+        if (publicId) {
+          try {
+            await cloudinary.uploader.destroy(publicId);
+          } catch (e) {
+            console.error('Error deleting review image from Cloudinary:', e);
+          }
+        }
+      }
+    }
+
     // Remove the review
     product.reviews.splice(reviewIndex, 1);
 
@@ -599,10 +641,12 @@ exports.updateProduct = async (req, res, next) => {
     if (req.files && req.files['product']) {
       // Delete the old image from Cloudinary if it exists
       if (product.image) {
-        const imageId = product.image.split("/").pop().split(".")[0];
-        try {
-          await cloudinary.uploader.destroy(imageId);
-        } catch (e) { console.error('Error deleting old image:', e); }
+        const publicId = cloudinary.getPublicIdFromUrl(product.image);
+        if (publicId) {
+          try {
+            await cloudinary.uploader.destroy(publicId);
+          } catch (e) { console.error('Error deleting old image:', e); }
+        }
       }
       updatedFields.image = req.files['product'][0].path;
     } else if (req.body.image) {
@@ -612,12 +656,39 @@ exports.updateProduct = async (req, res, next) => {
 
     // Check for existing images to keep
     let currentAdditionalImages = product.additionalImages || [];
+    let imagesToRemove = [];
+
     if (req.body.existingAdditionalImages) {
       try {
         const keptImages = JSON.parse(req.body.existingAdditionalImages);
+        const keptImagesSet = new Set(keptImages);
+
+        // Identify images that were removed
+        imagesToRemove = currentAdditionalImages.filter(img => !keptImagesSet.has(img));
         currentAdditionalImages = Array.isArray(keptImages) ? keptImages : [];
       } catch (e) {
         console.error('Error parsing existingAdditionalImages:', e);
+      }
+    } else if (req.body.existingAdditionalImages === undefined) {
+      // If not provided at all, we keep everything (standard behavior)
+    } else {
+      // Explicitly empty or invalid
+      imagesToRemove = [...currentAdditionalImages];
+      currentAdditionalImages = [];
+    }
+
+    // Delete removed additional images from Cloudinary
+    if (imagesToRemove.length > 0) {
+      for (const imgUrl of imagesToRemove) {
+        const publicId = cloudinary.getPublicIdFromUrl(imgUrl);
+        if (publicId) {
+          try {
+            await cloudinary.uploader.destroy(publicId);
+            console.log(`Deleted removed additional image: ${publicId}`);
+          } catch (e) {
+            console.error('Error deleting additional image from Cloudinary:', e);
+          }
+        }
       }
     }
 
@@ -711,6 +782,128 @@ exports.getCloudinaryImages = async (req, res, next) => {
     res.status(200).json(result);
   } catch (err) {
     console.error("Error fetching Cloudinary images:", err);
+    next(err);
+  }
+};
+
+/**
+ * Helper to get all referenced public IDs from the database
+ */
+async function getReferencedPublicIds() {
+  const products = await Product.find({}, 'image additionalImages reviews.images');
+  const publicIds = new Set();
+
+  products.forEach(product => {
+    // Main image
+    if (product.image) {
+      const pid = cloudinary.getPublicIdFromUrl(product.image);
+      if (pid) publicIds.add(pid);
+    }
+
+    // Additional images
+    if (product.additionalImages) {
+      product.additionalImages.forEach(url => {
+        const pid = cloudinary.getPublicIdFromUrl(url);
+        if (pid) publicIds.add(pid);
+      });
+    }
+
+    // Review images
+    if (product.reviews) {
+      product.reviews.forEach(review => {
+        if (review.images) {
+          review.images.forEach(url => {
+            const pid = cloudinary.getPublicIdFromUrl(url);
+            if (pid) publicIds.add(pid);
+          });
+        }
+      });
+    }
+  });
+
+  return publicIds;
+}
+
+/**
+ * Detect orphaned images in Cloudinary (Admin only)
+ */
+exports.getOrphanedImages = async (req, res, next) => {
+  try {
+    const referencedIds = await getReferencedPublicIds();
+
+    // Fetch all assets from Cloudinary (prefix 'images/' to be safe as per route config)
+    let allAssets = [];
+    let nextCursor = null;
+
+    do {
+      const result = await cloudinary.api.resources({
+        type: 'upload',
+        prefix: 'images/',
+        max_results: 100,
+        next_cursor: nextCursor
+      });
+      allAssets = allAssets.concat(result.resources);
+      nextCursor = result.next_cursor;
+    } while (nextCursor);
+
+    const orphans = allAssets.filter(asset => !referencedIds.has(asset.public_id))
+      .map(asset => ({
+        public_id: asset.public_id,
+        url: asset.secure_url,
+        created_at: asset.created_at
+      }));
+
+    res.status(200).json({
+      count: orphans.length,
+      orphans: orphans
+    });
+  } catch (err) {
+    console.error("Error detecting orphaned images:", err);
+    next(err);
+  }
+};
+
+/**
+ * Delete orphaned images from Cloudinary (Admin only)
+ */
+exports.cleanupCloudinary = async (req, res, next) => {
+  try {
+    const referencedIds = await getReferencedPublicIds();
+
+    let allAssets = [];
+    let nextCursor = null;
+
+    do {
+      const result = await cloudinary.api.resources({
+        type: 'upload',
+        prefix: 'images/',
+        max_results: 100,
+        next_cursor: nextCursor
+      });
+      allAssets = allAssets.concat(result.resources);
+      nextCursor = result.next_cursor;
+    } while (nextCursor);
+
+    const orphanPublicIds = allAssets.filter(asset => !referencedIds.has(asset.public_id))
+      .map(asset => asset.public_id);
+
+    if (orphanPublicIds.length === 0) {
+      return res.status(200).json({ message: "No orphaned images found." });
+    }
+
+    // Delete in batches of 100 (Cloudinary limit)
+    const batchSize = 100;
+    for (let i = 0; i < orphanPublicIds.length; i += batchSize) {
+      const batch = orphanPublicIds.slice(i, i + batchSize);
+      await cloudinary.api.delete_resources(batch);
+    }
+
+    res.status(200).json({
+      message: `Successfully deleted ${orphanPublicIds.length} orphaned images.`,
+      deletedIds: orphanPublicIds
+    });
+  } catch (err) {
+    console.error("Error cleaning up Cloudinary:", err);
     next(err);
   }
 };
