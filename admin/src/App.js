@@ -16,6 +16,7 @@ import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
 import { useContext } from 'react';
 import { DarkModeContext } from './context/DarkModeContext';
+import ScrollToTop from "./components/ScrollToTop/ScrollToTop";
 
 function App() {
   // Get the dark mode state from context
@@ -23,6 +24,7 @@ function App() {
 
   return (
     <div className={`app ${darkMode ? 'dark-mode' : ''}`}>
+      <ScrollToTop />
       <ToastContainer
         position="top-right"
         autoClose={3000}

@@ -25,7 +25,7 @@ const ManageCategories = () => {
             setIsLoading(true);
             const response = await api.getCategoriesAdmin();
             const data = await response.json();
-            
+
             if (response.ok) {
                 setCategories(Array.isArray(data) ? data : []);
             } else {
@@ -51,7 +51,7 @@ const ManageCategories = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         if (!formData.name.trim()) {
             toast.error('Category name is required');
             return;
@@ -138,10 +138,14 @@ const ManageCategories = () => {
         <div className="manage-categories">
             <div className="manage-categories-header">
                 <h1>Manage Categories</h1>
-                <button 
+                <button
                     className="add-category-btn"
                     onClick={() => {
                         resetForm();
+                        setFormData(prev => ({
+                            ...prev,
+                            displayOrder: categories.length + 1
+                        }));
                         setIsModalOpen(true);
                     }}
                 >

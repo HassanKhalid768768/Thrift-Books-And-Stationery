@@ -19,15 +19,17 @@ import "react-toastify/dist/ReactToastify.css";
 import { useContext } from 'react';
 import { DarkModeContext } from './context/DarkModeContext';
 import { usePaymentReturn } from './hooks/usePaymentReturn';
+import ScrollToTop from "./components/ScrollToTop/ScrollToTop";
 
 function App() {
   const { darkMode } = useContext(DarkModeContext);
-  
+
   // Add global payment return detection
   usePaymentReturn();
-  
+
   return (
     <div>
+      <ScrollToTop />
       <ToastContainer
         position="top-right"
         autoClose={3000}
@@ -41,26 +43,26 @@ function App() {
         theme={darkMode ? "dark" : "light"}
         toastClassName={darkMode ? 'dark-toast' : ''}
       />
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/product" element={<Product />}>
-            <Route path=":productId" element={<Product/>}/>
-          </Route>
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/login" element={<LoginSignup />} />
-          <Route path="/order" element={<PlaceOrder/>}/>
-          <Route path="/verify" element={<Verify/>}/>
-          <Route path="/myorders" element={<MyOrders/>}/>
-          <Route path="/search" element={<SearchResults/>}/>
-          <Route path="/faq" element={<FAQ/>}/>
-          <Route path="/shipping-returns" element={<ShippingReturns/>}/>
-          <Route path="/contact" element={<ContactUs/>}/>
-          <Route path="/admin/messages" element={<AdminMessages/>}/>
-          {/* Dynamic category route - must be after specific routes so /product, /cart, etc. don't match */}
-          <Route path="/:categorySlug" element={<ShopCategory />} />
-        </Routes>
-        <Footer />
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/product" element={<Product />}>
+          <Route path=":productId" element={<Product />} />
+        </Route>
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/login" element={<LoginSignup />} />
+        <Route path="/order" element={<PlaceOrder />} />
+        <Route path="/verify" element={<Verify />} />
+        <Route path="/myorders" element={<MyOrders />} />
+        <Route path="/search" element={<SearchResults />} />
+        <Route path="/faq" element={<FAQ />} />
+        <Route path="/shipping-returns" element={<ShippingReturns />} />
+        <Route path="/contact" element={<ContactUs />} />
+        <Route path="/admin/messages" element={<AdminMessages />} />
+        {/* Dynamic category route - must be after specific routes so /product, /cart, etc. don't match */}
+        <Route path="/:categorySlug" element={<ShopCategory />} />
+      </Routes>
+      <Footer />
     </div>
   );
 }
