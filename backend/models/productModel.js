@@ -77,6 +77,20 @@ const productSchema = new mongoose.Schema({
         }],
         default: []
     },
+    colors: {
+        type: [{
+            color: {
+                type: String,
+                required: true
+            },
+            price: {
+                type: Number,
+                required: false,
+                default: null
+            }
+        }],
+        default: []
+    },
     reviews: [reviewSchema],
     averageRating: {
         type: Number,

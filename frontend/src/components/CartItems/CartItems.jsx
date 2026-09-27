@@ -140,10 +140,16 @@ const CartItems = () => {
                                 <img src={e.image} alt="" className="carticon-product-icon"/>
                                 <div className="product-info">
                                     <p>{e.name}</p>
-                                    {itemDetails?.size && (
-                                        <span style={{ fontSize: '0.9em', color: '#666', display: 'block', marginTop: '4px' }}>
-                                            Size: {itemDetails.size}
-                                        </span>
+                                    {(itemDetails?.size || itemDetails?.color) && (
+                                        <div style={{ fontSize: '0.9em', color: '#666', display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '4px' }}>
+                                            {itemDetails?.size && (
+                                                <span>Size: {itemDetails.size}</span>
+                                            )}
+                                            {itemDetails?.size && itemDetails?.color && <span>•</span>}
+                                            {itemDetails?.color && (
+                                                <span>Colour: {itemDetails.color}</span>
+                                            )}
+                                        </div>
                                     )}
                                     {isOutOfStock && (
                                         <span className="out-of-stock-badge">Out of Stock</span>
@@ -163,13 +169,14 @@ const CartItems = () => {
                                     <button 
                                         className="quantity-btn plus-btn"
                                         onClick={() => {
-                                            // Get the product with size info if available
-                                            const productWithSize = itemDetails?.size ? {
+                                            // Get the product with variant info if available
+                                            const productWithVariants = {
                                                 ...e,
-                                                selectedSize: itemDetails.size,
-                                                selectedPrice: itemDetails.price
-                                            } : e;
-                                            addToCart(e.id, 1, productWithSize);
+                                                selectedSize: itemDetails?.size || null,
+                                                selectedColor: itemDetails?.color || null,
+                                                selectedPrice: itemDetails?.price || e.old_price
+                                            };
+                                            addToCart(e.id, 1, productWithVariants);
                                         }}
                                         aria-label="Increase quantity"
                                         disabled={isOutOfStock}

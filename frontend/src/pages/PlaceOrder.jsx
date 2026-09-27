@@ -147,14 +147,20 @@ const PlaceOrder = () => {
                     let itemInfo = { ...item };
                     itemInfo['quantity'] = cartItems[cartKey];
 
-                    // Use size price if available from cartItemDetails
+                    // Use size and color details if available from cartItemDetails
                     if (itemDetails) {
-                        itemInfo['selectedSize'] = itemDetails.size;
+                        itemInfo['selectedSize'] = itemDetails.size || null;
+                        itemInfo['selectedColor'] = itemDetails.color || null;
                         itemInfo['old_price'] = itemDetails.price;
-                    } else if (item.sizes && item.sizes.length > 0) {
-                        // Fallback: use the first size's price or base price
-                        itemInfo['selectedSize'] = item.sizes[0]?.size || null;
-                        itemInfo['old_price'] = item.sizes[0]?.price || item.old_price;
+                    } else {
+                        if (item.sizes && item.sizes.length > 0) {
+                            // Fallback: use the first size's price or base price
+                            itemInfo['selectedSize'] = item.sizes[0]?.size || null;
+                            itemInfo['old_price'] = item.sizes[0]?.price || item.old_price;
+                        }
+                        if (item.colors && item.colors.length > 0) {
+                            itemInfo['selectedColor'] = (typeof item.colors[0] === 'string' ? item.colors[0] : item.colors[0]?.color) || null;
+                        }
                     }
                     orderItems.push(itemInfo);
                 }

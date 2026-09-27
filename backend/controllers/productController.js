@@ -119,6 +119,7 @@ exports.createProduct = async (req, res, next) => {
     }
 
     const { name, category, new_price, old_price, description, sizes } = req.body;
+    const colors = req.body.colors !== undefined ? req.body.colors : req.body.colours;
 
     console.log('CreatesProduct - Body:', JSON.stringify(req.body, null, 2));
     console.log('CreateProduct - Files:', req.files);
@@ -164,6 +165,28 @@ exports.createProduct = async (req, res, next) => {
       }
     }
 
+    // Parse colors if provided
+    let parsedColors = [];
+    if (colors) {
+      try {
+        const rawColors = typeof colors === 'string' ? JSON.parse(colors) : colors;
+        if (Array.isArray(rawColors)) {
+          parsedColors = rawColors.map(c => {
+            if (typeof c === 'string') {
+              return { color: c.trim(), price: null };
+            }
+            return {
+              color: c.color ? c.color.trim() : (c.name ? c.name.trim() : ''),
+              price: c.price && !isNaN(parseFloat(c.price)) && parseFloat(c.price) > 0 ? parseFloat(c.price) : null
+            };
+          }).filter(c => c.color);
+        }
+      } catch (e) {
+        console.error('Error parsing colors:', e);
+        parsedColors = [];
+      }
+    }
+
     const product = await Product.create({
       id,
       name,
@@ -175,9 +198,11 @@ exports.createProduct = async (req, res, next) => {
       new_price,
       old_price,
       sizes: parsedSizes,
+      colors: parsedColors,
     });
     console.log('Create Product - Created product:', product);
     console.log('Create Product - Created product sizes:', product.sizes);
+    console.log('Create Product - Created product colors:', product.colors);
     res.status(200).json(product);
   } catch (err) {
     console.error("Error creating product:", err);
@@ -605,9 +630,11 @@ exports.updateProduct = async (req, res, next) => {
 
     // Get updated fields from request body
     const { name, category, new_price, old_price, description, available, sizes } = req.body;
+    const colors = req.body.colors !== undefined ? req.body.colors : req.body.colours;
 
     console.log('Update Product - Received body:', req.body);
     console.log('Update Product - Sizes field:', sizes);
+    console.log('Update Product - Colors field:', colors);
 
     // Parse sizes if provided
     // Note: With multer FormData, sizes comes as a JSON string
@@ -645,6 +672,40 @@ exports.updateProduct = async (req, res, next) => {
       console.log('Update Product - Sizes not provided in request, keeping existing:', parsedSizes);
     }
 
+    // Parse colors if provided
+    let parsedColors = [];
+    if (colors !== undefined) {
+      if (colors === '' || colors === '[]' || (typeof colors === 'string' && colors.trim() === '[]')) {
+        parsedColors = [];
+        console.log('Update Product - Setting colors to empty array');
+      } else if (colors !== null) {
+        try {
+          const rawColors = typeof colors === 'string' ? JSON.parse(colors) : colors;
+          if (Array.isArray(rawColors)) {
+            parsedColors = rawColors.map(c => {
+              if (typeof c === 'string') {
+                return { color: c.trim(), price: null };
+              }
+              return {
+                color: c.color ? c.color.trim() : (c.name ? c.name.trim() : ''),
+                price: c.price && !isNaN(parseFloat(c.price)) && parseFloat(c.price) > 0 ? parseFloat(c.price) : null
+              };
+            }).filter(c => c.color);
+          } else {
+            parsedColors = [];
+          }
+        } catch (e) {
+          console.error('Update Product - Error parsing colors:', e);
+          parsedColors = [];
+        }
+      } else {
+        parsedColors = [];
+      }
+    } else {
+      parsedColors = product.colors || [];
+      console.log('Update Product - Colors not provided in request, keeping existing:', parsedColors);
+    }
+
     // Create updated product object
     const updatedFields = {
       name: name || product.name,
@@ -652,7 +713,8 @@ exports.updateProduct = async (req, res, next) => {
       new_price: new_price || product.new_price,
       old_price: old_price || product.old_price,
       description: description || product.description,
-      sizes: parsedSizes
+      sizes: parsedSizes,
+      colors: parsedColors
     };
 
     // Handle availability field (allow boolean values)
@@ -776,6 +838,7 @@ exports.updateProduct = async (req, res, next) => {
 
     console.log('Update Product - Updated product:', updatedProduct);
     console.log('Update Product - Updated product sizes:', updatedProduct?.sizes);
+    console.log('Update Product - Updated product colors:', updatedProduct?.colors);
 
     res.status(200).json({
       message: "Product updated successfully",

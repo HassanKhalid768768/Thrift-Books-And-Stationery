@@ -85,6 +85,7 @@ const ProductDisplay = (props) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [productData, setProductData] = useState(product || defaultProduct);
     const [selectedSize, setSelectedSize] = useState(null);
+    const [selectedColor, setSelectedColor] = useState(null);
     const [displayPrice, setDisplayPrice] = useState(product?.old_price || 0);
     const [activeImage, setActiveImage] = useState("");
 
@@ -284,21 +285,33 @@ const ProductDisplay = (props) => {
         return stars;
     };
 
-    // Update display price when size is selected or product changes
+    // Reset selection when product changes
+    useEffect(() => {
+        setSelectedSize(null);
+        setSelectedColor(null);
+    }, [product?.id]);
+
+    // Update display price when size or color is selected or product changes
     useEffect(() => {
         if (product) {
             console.log('ProductDisplay - Product:', product);
             console.log('ProductDisplay - Product sizes:', product.sizes);
+            console.log('ProductDisplay - Product colors:', product.colors);
+            let price = product.old_price || 0;
             if (selectedSize && product.sizes && Array.isArray(product.sizes) && product.sizes.length > 0) {
                 const sizeObj = product.sizes.find(s => s.size === selectedSize);
-                if (sizeObj) {
-                    setDisplayPrice(sizeObj.price);
+                if (sizeObj && sizeObj.price) {
+                    price = sizeObj.price;
                 }
-            } else {
-                setDisplayPrice(product.old_price || 0);
+            } else if (selectedColor && product.colors && Array.isArray(product.colors) && product.colors.length > 0) {
+                const colorObj = product.colors.find(c => (typeof c === 'string' ? c : c.color) === selectedColor);
+                if (colorObj && colorObj.price) {
+                    price = colorObj.price;
+                }
             }
+            setDisplayPrice(price);
         }
-    }, [selectedSize, product]);
+    }, [selectedSize, selectedColor, product]);
 
     // Show a loading UI when product data is not available
     if (isLoading || !product) {
@@ -420,6 +433,52 @@ const ProductDisplay = (props) => {
                     </div>
                 )}
 
+                {/* Colour Selection */}
+                {product?.colors && product.colors.length > 0 && (
+                    <div className="productdisplay-right-colors" style={{ marginBottom: '20px' }}>
+                        <p style={{ marginBottom: '10px', fontWeight: '500' }}>Select Colour:</p>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                            {product.colors.map((colorObj, index) => {
+                                const colorName = typeof colorObj === 'string' ? colorObj : colorObj.color;
+                                const isSelected = selectedColor === colorName;
+                                return (
+                                    <button
+                                        key={index}
+                                        type="button"
+                                        onClick={() => setSelectedColor(colorName)}
+                                        style={{
+                                            padding: '10px 20px',
+                                            border: isSelected ? '2px solid #4CAF50' : '1px solid #ddd',
+                                            backgroundColor: isSelected ? '#4CAF50' : 'transparent',
+                                            color: isSelected ? 'white' : '#333',
+                                            cursor: 'pointer',
+                                            borderRadius: '4px',
+                                            fontWeight: isSelected ? 'bold' : 'normal',
+                                            transition: 'all 0.3s',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '8px'
+                                        }}
+                                    >
+                                        <span
+                                            style={{
+                                                display: 'inline-block',
+                                                width: '14px',
+                                                height: '14px',
+                                                borderRadius: '50%',
+                                                backgroundColor: colorName.toLowerCase(),
+                                                border: isSelected ? '1px solid white' : '1px solid rgba(0,0,0,0.2)',
+                                                boxShadow: 'inset 0 0 2px rgba(0,0,0,0.2)'
+                                            }}
+                                        />
+                                        {colorName}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    </div>
+                )}
+
                 <div className="productdisplay-right-description">
                     {product?.description || "No description available"}
                 </div>
@@ -439,13 +498,18 @@ const ProductDisplay = (props) => {
                                 toast.error("Please select a size");
                                 return;
                             }
-                            // Store size info in product for cart
-                            const productWithSize = {
+                            if (product?.colors && product.colors.length > 0 && !selectedColor) {
+                                toast.error("Please select a colour");
+                                return;
+                            }
+                            // Store size and color info in product for cart
+                            const productWithVariants = {
                                 ...product,
                                 selectedSize: selectedSize,
+                                selectedColor: selectedColor,
                                 selectedPrice: displayPrice
                             };
-                            addToCart(product?.id, 1, productWithSize);
+                            addToCart(product?.id, 1, productWithVariants);
                         }}
                         className="add-to-cart-btn"
                     >

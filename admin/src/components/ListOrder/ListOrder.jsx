@@ -238,8 +238,15 @@ const ListOrder = () => {
                                             </div>
                                             <div className="item-details">
                                                 <p className="item-name">{item.name}</p>
+                                                {(item.selectedSize || item.selectedColor || item.size || item.color) && (
+                                                    <div style={{ fontSize: '0.85rem', color: '#666', marginTop: '2px', display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                                                        {(item.selectedSize || item.size) && <span>Size: <b>{item.selectedSize || item.size}</b></span>}
+                                                        {(item.selectedSize || item.size) && (item.selectedColor || item.color) && <span>|</span>}
+                                                        {(item.selectedColor || item.color) && <span>Colour: <b>{item.selectedColor || item.color}</b></span>}
+                                                    </div>
+                                                )}
                                                 <div className="item-meta">
-                                                    <span className="item-price">PKR {item.price?.toLocaleString('en-PK')}</span>
+                                                    <span className="item-price">PKR {(item.price || item.old_price)?.toLocaleString('en-PK')}</span>
                                                     <span className="item-quantity">x{item.quantity}</span>
                                                 </div>
                                             </div>

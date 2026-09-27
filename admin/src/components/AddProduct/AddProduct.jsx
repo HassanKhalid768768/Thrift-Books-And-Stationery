@@ -27,6 +27,7 @@ const AddProduct = () => {
         old_price: ""
     });
     const [sizes, setSizes] = useState([{ size: "", price: "" }]);
+    const [colors, setColors] = useState([{ color: "", price: "" }]);
 
     // Fetch categories on component mount
     useEffect(() => {
@@ -118,6 +119,23 @@ const AddProduct = () => {
         }
     }
 
+    const handleColorChange = (index, field, value) => {
+        const newColors = [...colors];
+        newColors[index][field] = value;
+        setColors(newColors);
+    }
+
+    const addColor = () => {
+        setColors([...colors, { color: "", price: "" }]);
+    }
+
+    const removeColor = (index) => {
+        if (colors.length > 1) {
+            const newColors = colors.filter((_, i) => i !== index);
+            setColors(newColors);
+        }
+    }
+
     const addProduct = async () => {
         // Validate required fields
         if (!productDetails.name || !productDetails.old_price || (!image && !imageFromLibrary)) {
@@ -137,8 +155,13 @@ const AddProduct = () => {
         // Validate and prepare sizes
         const validSizes = sizes.filter(s => s.size.trim() && s.price && !isNaN(parseFloat(s.price)) && parseFloat(s.price) > 0);
 
+        // Validate and prepare colors
+        const validColors = colors.filter(c => c.color && c.color.trim());
+
         console.log('AddProduct - All sizes:', sizes);
         console.log('AddProduct - Valid sizes:', validSizes);
+        console.log('AddProduct - All colors:', colors);
+        console.log('AddProduct - Valid colors:', validColors);
 
         // Setup FormData with all product details
         const formData = new FormData();
@@ -164,6 +187,17 @@ const AddProduct = () => {
         formData.append("sizes", JSON.stringify(sizesToSend));
         console.log('AddProduct - Sending sizes:', JSON.stringify(sizesToSend));
 
+        // Always send colors (even if empty array)
+        const colorsToSend = validColors.length > 0
+            ? validColors.map(c => ({
+                color: c.color.trim(),
+                price: c.price && !isNaN(parseFloat(c.price)) && parseFloat(c.price) > 0 ? parseFloat(c.price) : null
+            }))
+            : [];
+
+        formData.append("colors", JSON.stringify(colorsToSend));
+        console.log('AddProduct - Sending colors:', JSON.stringify(colorsToSend));
+
         // Append additional images
         additionalImages.forEach((img) => {
             formData.append("additionalImages", img);
@@ -186,7 +220,7 @@ const AddProduct = () => {
                 old_price: ""
             });
             setSizes([{ size: "", price: "" }]);
-            setSizes([{ size: "", price: "" }]);
+            setColors([{ color: "", price: "" }]);
             setImage(false);
             setImageFromLibrary(null);
             setAdditionalImages([]);
@@ -264,6 +298,56 @@ const AddProduct = () => {
                             <button
                                 type="button"
                                 onClick={() => removeSize(index)}
+                                style={{ padding: '8px 15px', cursor: 'pointer', backgroundColor: '#f44336', color: 'white', border: 'none', borderRadius: '4px' }}
+                            >
+                                Remove
+                            </button>
+                        )}
+                    </div>
+                ))}
+            </div>
+
+            <div className="addproduct-itemfield">
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                    <p>Product Colours (Optional)</p>
+                    <button type="button" onClick={addColor} style={{ padding: '5px 15px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white', border: 'none', borderRadius: '4px' }}>
+                        + Add Colour
+                    </button>
+                </div>
+                {colors.map((colorItem, index) => (
+                    <div key={index} style={{ display: 'flex', gap: '10px', marginBottom: '10px', alignItems: 'center' }}>
+                        <div style={{ flex: 1, position: 'relative', display: 'flex', alignItems: 'center' }}>
+                            <input
+                                type="text"
+                                placeholder="Colour (e.g., Red, Blue, Black)"
+                                value={colorItem.color}
+                                onChange={(e) => handleColorChange(index, 'color', e.target.value)}
+                                style={{ width: '100%', padding: '8px 8px 8px 36px', border: '1px solid #ddd', borderRadius: '4px' }}
+                            />
+                            <span
+                                style={{
+                                    position: 'absolute',
+                                    left: '10px',
+                                    width: '18px',
+                                    height: '18px',
+                                    borderRadius: '50%',
+                                    backgroundColor: colorItem.color ? colorItem.color.toLowerCase() : '#e0e0e0',
+                                    border: '1px solid rgba(0,0,0,0.2)',
+                                    pointerEvents: 'none'
+                                }}
+                            />
+                        </div>
+                        <input
+                            type="text"
+                            placeholder="Price (Optional)"
+                            value={colorItem.price}
+                            onChange={(e) => handleColorChange(index, 'price', e.target.value)}
+                            style={{ flex: 1, padding: '8px', border: '1px solid #ddd', borderRadius: '4px' }}
+                        />
+                        {colors.length > 1 && (
+                            <button
+                                type="button"
+                                onClick={() => removeColor(index)}
                                 style={{ padding: '8px 15px', cursor: 'pointer', backgroundColor: '#f44336', color: 'white', border: 'none', borderRadius: '4px' }}
                             >
                                 Remove

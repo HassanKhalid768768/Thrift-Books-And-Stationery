@@ -92,9 +92,10 @@ const StoreContextProvider = (props) => {
         const product = productData || all_product.find(item => item.id === Number(itemId));
         const productName = product ? product.name : 'Item';
 
-        // Determine price and size
+        // Determine price, size and color
         let itemPrice = product?.old_price || 0;
         let selectedSize = null;
+        let selectedColor = null;
 
         if (product?.sizes && product.sizes.length > 0 && product.selectedSize) {
             const sizeObj = product.sizes.find(s => s.size === product.selectedSize);
@@ -104,18 +105,35 @@ const StoreContextProvider = (props) => {
             }
         }
 
-        // Create composite key: itemId_size for items with sizes, just itemId for items without
-        const cartKey = selectedSize ? `${itemId}_${selectedSize}` : itemId;
+        if (product?.colors && product.colors.length > 0 && product.selectedColor) {
+            selectedColor = product.selectedColor;
+            if (!selectedSize) {
+                const colorObj = product.colors.find(c => (typeof c === 'string' ? c : c.color) === product.selectedColor);
+                if (colorObj && colorObj.price) {
+                    itemPrice = colorObj.price;
+                }
+            }
+        }
+
+        if (product?.selectedPrice) {
+            itemPrice = product.selectedPrice;
+        }
+
+        // Create composite key: itemId_size_color
+        let cartKey = `${itemId}`;
+        if (selectedSize) cartKey += `_${selectedSize}`;
+        if (selectedColor) cartKey += `_${selectedColor}`;
 
         // Update cart state with the specified quantity (default is 1)
         if (!cartItems[cartKey]) {
             setCartItems((prev) => ({ ...prev, [cartKey]: quantity }))
-            // Store size and price info for this item
+            // Store size, color and price info for this item
             const newDetails = {
                 ...cartItemDetails,
                 [cartKey]: {
                     itemId: itemId,
                     size: selectedSize,
+                    color: selectedColor,
                     price: itemPrice
                 }
             };
@@ -131,12 +149,20 @@ const StoreContextProvider = (props) => {
             setCartItems((prev) => ({ ...prev, [cartKey]: prev[cartKey] + quantity }))
         }
 
-        // Show success notification with quantity information
-        const sizeText = selectedSize ? ` (Size: ${selectedSize})` : '';
+        // Show success notification with quantity and variant information
+        let variantText = '';
+        if (selectedSize && selectedColor) {
+            variantText = ` (Size: ${selectedSize}, Colour: ${selectedColor})`;
+        } else if (selectedSize) {
+            variantText = ` (Size: ${selectedSize})`;
+        } else if (selectedColor) {
+            variantText = ` (Colour: ${selectedColor})`;
+        }
+
         if (quantity > 1) {
-            toast.success(`Added ${quantity} ${productName}${sizeText}${quantity > 1 ? 's' : ''} to cart`);
+            toast.success(`Added ${quantity} ${productName}${variantText}${quantity > 1 ? 's' : ''} to cart`);
         } else {
-            toast.success(`Added to cart: ${productName}${sizeText}`);
+            toast.success(`Added to cart: ${productName}${variantText}`);
         }
 
         const token = localStorage.getItem('token');
@@ -210,7 +236,14 @@ const StoreContextProvider = (props) => {
         const product = all_product.find(item => item.id === Number(itemId));
         const productName = product ? product.name : 'Item';
         const quantity = cartItems[cartKey];
-        const sizeText = itemDetails?.size ? ` (Size: ${itemDetails.size})` : '';
+        let variantText = '';
+        if (itemDetails?.size && itemDetails?.color) {
+            variantText = ` (Size: ${itemDetails.size}, Colour: ${itemDetails.color})`;
+        } else if (itemDetails?.size) {
+            variantText = ` (Size: ${itemDetails.size})`;
+        } else if (itemDetails?.color) {
+            variantText = ` (Colour: ${itemDetails.color})`;
+        }
 
         // Update cart state - remove the item completely
         setCartItems((prev) => {
@@ -231,7 +264,7 @@ const StoreContextProvider = (props) => {
         }
 
         // Show removal notification
-        toast.info(`Removed from cart: ${productName}${sizeText} (${quantity} ${quantity > 1 ? 'items' : 'item'})`);
+        toast.info(`Removed from cart: ${productName}${variantText} (${quantity} ${quantity > 1 ? 'items' : 'item'})`);
 
         // Update server if user is logged in
         const token = localStorage.getItem('token');

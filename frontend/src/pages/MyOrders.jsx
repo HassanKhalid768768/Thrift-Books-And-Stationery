@@ -139,11 +139,12 @@ const MyOrders = () => {
                                     <p className="order-items">
                                         {order.items && Array.isArray(order.items) ?
                                             order.items.map((item, itemIndex) => {
-                                                if (itemIndex === order.items.length - 1) {
-                                                    return `${item.name} x ${item.quantity}`
-                                                } else {
-                                                    return `${item.name} x ${item.quantity}, `
-                                                }
+                                                const variants = [];
+                                                if (item.selectedSize || item.size) variants.push(`Size: ${item.selectedSize || item.size}`);
+                                                if (item.selectedColor || item.color) variants.push(`Colour: ${item.selectedColor || item.color}`);
+                                                const variantText = variants.length > 0 ? ` (${variants.join(', ')})` : '';
+                                                const isLast = itemIndex === order.items.length - 1;
+                                                return `${item.name}${variantText} x ${item.quantity}${isLast ? '' : ', '}`;
                                             }) : 'No items'}
                                     </p>
                                     <p className="order-amount">PKR {order.amount ? order.amount.toLocaleString('en-PK') : '0'}</p>
