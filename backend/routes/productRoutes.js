@@ -9,11 +9,12 @@ const cloudinary = require("./../utils/cloudinary")
 
 const router = express.Router();
 
-// image storage engine
+// image / video storage engine
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: "images",
+    folder: (req, file) => (file.mimetype && file.mimetype.startsWith("video/") ? "videos" : "images"),
+    resource_type: (req, file) => (file.mimetype && file.mimetype.startsWith("video/") ? "video" : "image"),
   }
 });
 
@@ -25,9 +26,9 @@ router.get("/suggestions", productController.getProductSuggestions);
 router.get("/images", authMiddleware, adminMiddleware, productController.getCloudinaryImages);
 router.get("/admin/cloudinary-orphans", authMiddleware, adminMiddleware, productController.getOrphanedImages);
 router.delete("/admin/cloudinary-cleanup", authMiddleware, adminMiddleware, productController.cleanupCloudinary);
-router.post("/", authMiddleware, upload.fields([{ name: 'product', maxCount: 1 }, { name: 'additionalImages', maxCount: 10 }]), productController.createProduct);
+router.post("/", authMiddleware, upload.fields([{ name: 'product', maxCount: 1 }, { name: 'additionalImages', maxCount: 10 }, { name: 'videos', maxCount: 5 }]), productController.createProduct);
 router.delete("/:id", authMiddleware, adminMiddleware, productController.deleteProduct);
-router.patch("/:id", authMiddleware, adminMiddleware, upload.fields([{ name: 'product', maxCount: 1 }, { name: 'additionalImages', maxCount: 10 }]), productController.updateProduct);
+router.patch("/:id", authMiddleware, adminMiddleware, upload.fields([{ name: 'product', maxCount: 1 }, { name: 'additionalImages', maxCount: 10 }, { name: 'videos', maxCount: 5 }]), productController.updateProduct);
 router.patch("/:id/toggle-availability", authMiddleware, adminMiddleware, productController.toggleProductAvailability);
 router.get("/newCollections", productController.getNewCollections);
 router.get("/popularBooks", productController.getPopularBooks);

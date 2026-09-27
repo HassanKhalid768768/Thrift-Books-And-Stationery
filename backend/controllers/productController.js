@@ -6,6 +6,23 @@ const { normalizeCategory, categoriesMatch, isValidCategory, getValidCategories 
 
 const backend_url = process.env.BACKEND_URL;
 
+const isVideoUrl = (url) => {
+  if (!url || typeof url !== "string") return false;
+  return /\/video\/upload\//.test(url) || /\.(mp4|webm|mov|ogg|m4v)(\?|$)/i.test(url);
+};
+
+const destroyCloudinaryAsset = async (url) => {
+  const publicId = cloudinary.getPublicIdFromUrl(url);
+  if (!publicId) return;
+  try {
+    await cloudinary.uploader.destroy(publicId, {
+      resource_type: isVideoUrl(url) ? "video" : "image",
+    });
+  } catch (e) {
+    console.error("Error deleting Cloudinary asset:", e);
+  }
+};
+
 exports.getAllProducts = async (req, res, next) => {
   try {
     const products = await Product.find({});
@@ -131,6 +148,11 @@ exports.createProduct = async (req, res, next) => {
       }
     }
 
+    let videos = [];
+    if (req.files && req.files['videos']) {
+      videos = req.files['videos'].map(file => file.path);
+    }
+
     // Parse sizes if provided
     let parsedSizes = [];
     if (sizes) {
@@ -147,6 +169,7 @@ exports.createProduct = async (req, res, next) => {
       name,
       image: mainImage,
       additionalImages: additionalImages,
+      videos: videos,
       category,
       description,
       new_price,
@@ -170,27 +193,27 @@ exports.deleteProduct = async (req, res, next) => {
       return res.status(404).json({ error: "Product not found" });
     }
 
-    // 1. Delete main Image from Cloudinary
     if (product.image) {
-      const publicId = cloudinary.getPublicIdFromUrl(product.image);
-      if (publicId) await cloudinary.uploader.destroy(publicId);
+      await destroyCloudinaryAsset(product.image);
     }
 
-    // 2. Delete Additional Images from Cloudinary
     if (product.additionalImages && product.additionalImages.length > 0) {
       for (const imgUrl of product.additionalImages) {
-        const publicId = cloudinary.getPublicIdFromUrl(imgUrl);
-        if (publicId) await cloudinary.uploader.destroy(publicId);
+        await destroyCloudinaryAsset(imgUrl);
       }
     }
 
-    // 3. Delete Review Images from Cloudinary
+    if (product.videos && product.videos.length > 0) {
+      for (const videoUrl of product.videos) {
+        await destroyCloudinaryAsset(videoUrl);
+      }
+    }
+
     if (product.reviews && product.reviews.length > 0) {
       for (const review of product.reviews) {
         if (review.images && review.images.length > 0) {
           for (const imgUrl of review.images) {
-            const publicId = cloudinary.getPublicIdFromUrl(imgUrl);
-            if (publicId) await cloudinary.uploader.destroy(publicId);
+            await destroyCloudinaryAsset(imgUrl);
           }
         }
       }
@@ -715,6 +738,33 @@ exports.updateProduct = async (req, res, next) => {
 
     updatedFields.additionalImages = finalAdditionalImages;
 
+    let currentVideos = product.videos || [];
+    let videosToRemove = [];
+
+    if (req.body.existingVideos) {
+      try {
+        const keptVideos = JSON.parse(req.body.existingVideos);
+        const keptVideosSet = new Set(keptVideos);
+        videosToRemove = currentVideos.filter(video => !keptVideosSet.has(video));
+        currentVideos = Array.isArray(keptVideos) ? keptVideos : [];
+      } catch (e) {
+        console.error('Error parsing existingVideos:', e);
+      }
+    }
+
+    if (videosToRemove.length > 0) {
+      for (const videoUrl of videosToRemove) {
+        await destroyCloudinaryAsset(videoUrl);
+      }
+    }
+
+    let finalVideos = [...currentVideos];
+    if (req.files && req.files['videos']) {
+      const newVideos = req.files['videos'].map(file => file.path);
+      finalVideos = [...finalVideos, ...newVideos];
+    }
+    updatedFields.videos = finalVideos;
+
     console.log('UpdateProduct - Final updatedFields.additionalImages:', updatedFields.additionalImages);
 
     // Update the product
@@ -790,7 +840,7 @@ exports.getCloudinaryImages = async (req, res, next) => {
  * Helper to get all referenced public IDs from the database
  */
 async function getReferencedPublicIds() {
-  const products = await Product.find({}, 'image additionalImages reviews.images');
+  const products = await Product.find({}, 'image additionalImages videos reviews.images');
   const publicIds = new Set();
 
   products.forEach(product => {
@@ -803,6 +853,13 @@ async function getReferencedPublicIds() {
     // Additional images
     if (product.additionalImages) {
       product.additionalImages.forEach(url => {
+        const pid = cloudinary.getPublicIdFromUrl(url);
+        if (pid) publicIds.add(pid);
+      });
+    }
+
+    if (product.videos) {
+      product.videos.forEach(url => {
         const pid = cloudinary.getPublicIdFromUrl(url);
         if (pid) publicIds.add(pid);
       });

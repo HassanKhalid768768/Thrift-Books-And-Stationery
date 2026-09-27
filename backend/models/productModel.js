@@ -44,6 +44,10 @@ const productSchema = new mongoose.Schema({
         type: [String],
         default: []
     },
+    videos: {
+        type: [String],
+        default: []
+    },
     category: {
         type: String,
         required: true,

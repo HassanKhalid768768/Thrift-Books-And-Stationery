@@ -20,6 +20,7 @@ const ProductDisplay = (props) => {
         category: "",
         description: "Loading product details...",
         old_price: 0,
+        videos: [],
         reviews: [],
         averageRating: 0,
         numReviews: 0
@@ -86,6 +87,11 @@ const ProductDisplay = (props) => {
     const [selectedSize, setSelectedSize] = useState(null);
     const [displayPrice, setDisplayPrice] = useState(product?.old_price || 0);
     const [activeImage, setActiveImage] = useState("");
+
+    const isVideoUrl = (url) => {
+        if (!url || typeof url !== "string") return false;
+        return /\/video\/upload\//.test(url) || /\.(mp4|webm|mov|ogg|m4v)(\?|$)/i.test(url);
+    };
 
     // Update active image and product data when product changes
     useEffect(() => {
@@ -309,31 +315,41 @@ const ProductDisplay = (props) => {
         <div className={`productdisplay ${darkMode ? 'dark-mode' : ''}`}>
             <div className="productdisplay-left">
                 <div className="productdisplay-img">
-                    <img
-                        ref={imageRef}
-                        className="productdisplay-main-img zoomable-image"
-                        src={activeImage || product.image || ''}
-                        alt={product.name || 'Product'}
-                        onMouseMove={handleMouseMove}
-                        onMouseEnter={handleMouseEnter}
-                        onMouseLeave={handleMouseLeave}
-                    />
-                    {/* Zoom lens - follows mouse cursor */}
-                    {isZooming && (
-                        <div
-                            ref={zoomRef}
-                            className="zoom-lens"
-                            style={{
-                                backgroundImage: `url(${activeImage || product.image})`,
-                                backgroundPosition: `${zoomPosition.x}% ${zoomPosition.y}%`,
-                                backgroundSize: '300%',
-                                backgroundRepeat: 'no-repeat'
-                            }}
+                    {isVideoUrl(activeImage || product.image) ? (
+                        <video
+                            key={activeImage || product.image}
+                            className="productdisplay-main-img productdisplay-main-video"
+                            src={activeImage || product.image || ''}
+                            controls
+                            playsInline
                         />
+                    ) : (
+                        <>
+                            <img
+                                ref={imageRef}
+                                className="productdisplay-main-img zoomable-image"
+                                src={activeImage || product.image || ''}
+                                alt={product.name || 'Product'}
+                                onMouseMove={handleMouseMove}
+                                onMouseEnter={handleMouseEnter}
+                                onMouseLeave={handleMouseLeave}
+                            />
+                            {isZooming && (
+                                <div
+                                    ref={zoomRef}
+                                    className="zoom-lens"
+                                    style={{
+                                        backgroundImage: `url(${activeImage || product.image})`,
+                                        backgroundPosition: `${zoomPosition.x}% ${zoomPosition.y}%`,
+                                        backgroundSize: '300%',
+                                        backgroundRepeat: 'no-repeat'
+                                    }}
+                                />
+                            )}
+                        </>
                     )}
                 </div>
-                {/* Image Gallery */}
-                {(product.additionalImages && product.additionalImages.length > 0) && (
+                {((product.additionalImages && product.additionalImages.length > 0) || (product.videos && product.videos.length > 0)) && (
                     <div className="productdisplay-img-list">
                         <img
                             src={product.image}
@@ -341,14 +357,26 @@ const ProductDisplay = (props) => {
                             onClick={() => setActiveImage(product.image)}
                             className={activeImage === product.image ? 'active-thumbnail' : ''}
                         />
-                        {product.additionalImages.map((img, index) => (
+                        {product.additionalImages && product.additionalImages.map((img, index) => (
                             <img
-                                key={index}
+                                key={`img-${index}`}
                                 src={img}
                                 alt={`View ${index + 1}`}
                                 onClick={() => setActiveImage(img)}
                                 className={activeImage === img ? 'active-thumbnail' : ''}
                             />
+                        ))}
+                        {product.videos && product.videos.map((video, index) => (
+                            <button
+                                type="button"
+                                key={`video-${index}`}
+                                className={`product-video-thumb ${activeImage === video ? 'active-thumbnail' : ''}`}
+                                onClick={() => setActiveImage(video)}
+                                aria-label={`Video ${index + 1}`}
+                            >
+                                <video src={video} muted playsInline />
+                                <span className="product-video-play">▶</span>
+                            </button>
                         ))}
                     </div>
                 )}

@@ -3,7 +3,7 @@ import "./AddProduct.css";
 import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
 import { DarkModeContext } from "../../context/DarkModeContext";
-import { FiUploadCloud, FiImage } from 'react-icons/fi';
+import { FiUploadCloud, FiImage, FiVideo } from 'react-icons/fi';
 import { api } from '../../utils/api';
 import CloudinaryImageSelector from '../CloudinaryImageSelector/CloudinaryImageSelector';
 
@@ -15,6 +15,7 @@ const AddProduct = () => {
     const [imageFromLibrary, setImageFromLibrary] = useState(null); // URL string from library
     const [additionalImages, setAdditionalImages] = useState([]); // File objects
     const [additionalImagesFromLibrary, setAdditionalImagesFromLibrary] = useState([]); // URL strings from library
+    const [videos, setVideos] = useState([]);
     const [showImageSelector, setShowImageSelector] = useState(false);
     const [selectorMode, setSelectorMode] = useState('main'); // 'main' or 'additional'
     const [uploading, setUploading] = useState(false);
@@ -67,6 +68,16 @@ const AddProduct = () => {
 
     const removeLibraryImage = (index) => {
         setAdditionalImagesFromLibrary(prev => prev.filter((_, i) => i !== index));
+    }
+
+    const videosHandler = (e) => {
+        if (e.target.files) {
+            setVideos(prev => [...prev, ...Array.from(e.target.files)]);
+        }
+    }
+
+    const removeVideo = (index) => {
+        setVideos(prev => prev.filter((_, i) => i !== index));
     }
 
     const openImageSelector = (mode) => {
@@ -162,6 +173,10 @@ const AddProduct = () => {
             formData.append("additionalImageUrls", JSON.stringify(additionalImagesFromLibrary));
         }
 
+        videos.forEach((video) => {
+            formData.append("videos", video);
+        });
+
         const response = await api.addProduct(formData);
         if (response.ok) {
             setProductDetails({
@@ -176,6 +191,7 @@ const AddProduct = () => {
             setImageFromLibrary(null);
             setAdditionalImages([]);
             setAdditionalImagesFromLibrary([]);
+            setVideos([]);
             toast.success("product added");
         } else {
             const data = await response.json();
@@ -275,59 +291,108 @@ const AddProduct = () => {
                 </select>
             </div>
 
-            <div className="addproduct-itemfield">
-                <p>Product Image</p>
-                <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
-                    <label htmlFor="file-input" className="upload-area-container">
-                        {image ? (
-                            <img
-                                src={URL.createObjectURL(image)}
-                                alt="Product Preview"
-                                className="addproduct-thumbnail-img"
-                            />
-                        ) : imageFromLibrary ? (
-                            <img
-                                src={imageFromLibrary}
-                                alt="Product Preview"
-                                className="addproduct-thumbnail-img"
-                            />
+            <div className="media-fields-row">
+                <div className="addproduct-itemfield">
+                    <p>Product Image</p>
+                    <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                        <label htmlFor="file-input" className="upload-area-container">
+                            {image ? (
+                                <img
+                                    src={URL.createObjectURL(image)}
+                                    alt="Product Preview"
+                                    className="addproduct-thumbnail-img"
+                                />
+                            ) : imageFromLibrary ? (
+                                <img
+                                    src={imageFromLibrary}
+                                    alt="Product Preview"
+                                    className="addproduct-thumbnail-img"
+                                />
+                            ) : (
+                                <>
+                                    <FiUploadCloud className="upload-icon" />
+                                    <p className="upload-text">
+                                        {uploading ? 'Uploading...' : 'Click or drag image to upload'}
+                                    </p>
+                                </>
+                            )}
+                        </label>
+                        <input
+                            onChange={imageHandler}
+                            type="file"
+                            name="image"
+                            id="file-input"
+                            hidden
+                            accept="image/*"
+                        />
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                            <p style={{ margin: 0, fontSize: '0.9rem' }}>OR</p>
+                            <button
+                                type="button"
+                                className="select-library-btn"
+                                onClick={() => openImageSelector('main')}
+                                style={{
+                                    padding: '8px 12px',
+                                    background: '#f0f0f0',
+                                    border: '1px solid #ddd',
+                                    borderRadius: '4px',
+                                    cursor: 'pointer',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '5px'
+                                }}
+                            >
+                                <FiImage /> Select from Library
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="addproduct-itemfield">
+                    <p>Product Videos (Optional)</p>
+                    <label htmlFor="video-file-input" className="upload-area-container">
+                        {videos.length > 0 ? (
+                            <div className="video-preview-grid">
+                                {videos.map((video, index) => (
+                                    <div key={`video-${index}`} className="video-preview-item">
+                                        <video
+                                            src={URL.createObjectURL(video)}
+                                            className="addproduct-thumbnail-img"
+                                            muted
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                removeVideo(index);
+                                            }}
+                                            className="remove-media-btn"
+                                        >
+                                            X
+                                        </button>
+                                    </div>
+                                ))}
+                                <span className="upload-text">Click to add more videos</span>
+                            </div>
                         ) : (
                             <>
-                                <FiUploadCloud className="upload-icon" />
-                                <p className="upload-text">
-                                    {uploading ? 'Uploading...' : 'Click or drag image to upload'}
-                                </p>
+                                <FiVideo className="upload-icon" />
+                                <p className="upload-text">Click to upload product video</p>
                             </>
                         )}
                     </label>
                     <input
-                        onChange={imageHandler}
+                        onChange={videosHandler}
                         type="file"
-                        name="image"
-                        id="file-input"
+                        name="videos"
+                        id="video-file-input"
                         hidden
-                        accept="image/*"
+                        multiple
+                        accept="video/*"
                     />
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-                        <p style={{ margin: 0, fontSize: '0.9rem' }}>OR</p>
-                        <button
-                            type="button"
-                            className="select-library-btn"
-                            onClick={() => openImageSelector('main')}
-                            style={{
-                                padding: '8px 12px',
-                                background: '#f0f0f0',
-                                border: '1px solid #ddd',
-                                borderRadius: '4px',
-                                cursor: 'pointer',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '5px'
-                            }}
-                        >
-                            <FiImage /> Select from Library
-                        </button>
-                    </div>
+                    <p style={{ fontSize: '0.8rem', color: '#666' }}>
+                        {videos.length} video(s) selected. MP4, WebM, or MOV recommended.
+                    </p>
                 </div>
             </div>
 

@@ -4,7 +4,7 @@ import upload_area from "./../../assets/upload_area.svg";
 import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
 import { DarkModeContext } from "../../context/DarkModeContext";
-import { FiUploadCloud, FiImage } from 'react-icons/fi';
+import { FiUploadCloud, FiImage, FiVideo } from 'react-icons/fi';
 import { api } from '../../utils/api';
 import CloudinaryImageSelector from '../CloudinaryImageSelector/CloudinaryImageSelector';
 
@@ -26,6 +26,8 @@ const EditProduct = ({ isOpen, onClose, product, onProductUpdated }) => {
     const [additionalImages, setAdditionalImages] = useState([]); // New images to upload
     const [existingAdditionalImages, setExistingAdditionalImages] = useState([]); // URLs of existing images
     const [newAdditionalImageUrls, setNewAdditionalImageUrls] = useState([]); // New URLs from library
+    const [existingVideos, setExistingVideos] = useState([]);
+    const [newVideos, setNewVideos] = useState([]);
     const [showImageSelector, setShowImageSelector] = useState(false);
     const [selectorMode, setSelectorMode] = useState('main'); // 'main' or 'additional'
     const [imageFromLibrary, setImageFromLibrary] = useState(null); // URL string from library for main image replacement
@@ -78,6 +80,8 @@ const EditProduct = ({ isOpen, onClose, product, onProductUpdated }) => {
             setExistingAdditionalImages(product.additionalImages || []);
             setAdditionalImages([]);
             setNewAdditionalImageUrls([]);
+            setExistingVideos(product.videos || []);
+            setNewVideos([]);
             setImageFromLibrary(null);
         }
     }, [product, isOpen]);
@@ -111,6 +115,20 @@ const EditProduct = ({ isOpen, onClose, product, onProductUpdated }) => {
 
     const removeNewLibraryImage = (index) => {
         setNewAdditionalImageUrls(prev => prev.filter((_, i) => i !== index));
+    }
+
+    const videosHandler = (e) => {
+        if (e.target.files) {
+            setNewVideos(prev => [...prev, ...Array.from(e.target.files)]);
+        }
+    }
+
+    const removeExistingVideo = (index) => {
+        setExistingVideos(prev => prev.filter((_, i) => i !== index));
+    }
+
+    const removeNewVideo = (index) => {
+        setNewVideos(prev => prev.filter((_, i) => i !== index));
     }
 
     const openImageSelector = (mode) => {
@@ -192,6 +210,11 @@ const EditProduct = ({ isOpen, onClose, product, onProductUpdated }) => {
         // Append list of existing images to keep
         // Append list of existing images to keep
         formData.append("existingAdditionalImages", JSON.stringify(existingAdditionalImages));
+        formData.append("existingVideos", JSON.stringify(existingVideos));
+
+        newVideos.forEach((video) => {
+            formData.append("videos", video);
+        });
 
         // Append new additional images from library
         if (newAdditionalImageUrls.length > 0) {
@@ -568,6 +591,93 @@ const EditProduct = ({ isOpen, onClose, product, onProductUpdated }) => {
                             />
                             <p style={{ fontSize: '0.8rem', color: '#666' }}>
                                 {existingAdditionalImages.length + additionalImages.length + newAdditionalImageUrls.length} images total
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="editproduct-itemfield">
+                        <p>Product Videos (Optional)</p>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                                {existingVideos.map((videoUrl, index) => (
+                                    <div key={`existing-video-${index}`} style={{ position: 'relative' }}>
+                                        <video
+                                            src={videoUrl}
+                                            className="editproduct-thumbnail-img"
+                                            style={{ width: '80px', height: '80px', objectFit: 'cover' }}
+                                            muted
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => removeExistingVideo(index)}
+                                            style={{
+                                                position: 'absolute',
+                                                top: '-5px',
+                                                right: '-5px',
+                                                background: 'red',
+                                                color: 'white',
+                                                border: 'none',
+                                                borderRadius: '50%',
+                                                width: '20px',
+                                                height: '20px',
+                                                cursor: 'pointer',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                fontSize: '12px'
+                                            }}
+                                        >
+                                            X
+                                        </button>
+                                    </div>
+                                ))}
+                                {newVideos.map((video, index) => (
+                                    <div key={`new-video-${index}`} style={{ position: 'relative' }}>
+                                        <video
+                                            src={URL.createObjectURL(video)}
+                                            className="editproduct-thumbnail-img"
+                                            style={{ width: '80px', height: '80px', objectFit: 'cover' }}
+                                            muted
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => removeNewVideo(index)}
+                                            style={{
+                                                position: 'absolute',
+                                                top: '-5px',
+                                                right: '-5px',
+                                                background: 'red',
+                                                color: 'white',
+                                                border: 'none',
+                                                borderRadius: '50%',
+                                                width: '20px',
+                                                height: '20px',
+                                                cursor: 'pointer',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                fontSize: '12px'
+                                            }}
+                                        >
+                                            X
+                                        </button>
+                                    </div>
+                                ))}
+                                <label htmlFor="edit-video-file-input" className="upload-area-container" style={{ width: '80px', height: '80px', minHeight: '80px', border: '1px dashed #ddd', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+                                    <FiVideo className="upload-icon" style={{ fontSize: '24px' }} />
+                                </label>
+                            </div>
+                            <input
+                                onChange={videosHandler}
+                                type="file"
+                                name="videos"
+                                id="edit-video-file-input"
+                                hidden
+                                multiple
+                                accept="video/*"
+                            />
+                            <p style={{ fontSize: '0.8rem', color: '#666' }}>
+                                {existingVideos.length + newVideos.length} video(s) total
                             </p>
                         </div>
                     </div>
