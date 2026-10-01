@@ -99,12 +99,23 @@
 
 
 .productdisplay-main-img {
-    width: 440px;
-    height: 440px;
+    display: block;
+    margin-bottom: 0;
+    max-width: 100%;
+    height: auto;
     object-fit: contain;
-    background-color: var(--bg-secondary);
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
+}
+
+@media (max-width: 500px) {
+    .productdisplay {
+        gap: 0;
+    }
+    .productdisplay-left {
+        margin-bottom: 0;
+    }
+    .productdisplay-right {
+        margin: 0;
+    }
 }
 
 /* Image zoom functionality */
